@@ -6,7 +6,7 @@
 
 **Architecture:** A client component (`ChatWidget`) posts `{ message, history }` to a Next.js route handler at `/api/chat`. The handler validates the body, rate-limits by IP, builds a system instruction from the existing typed portfolio data, and calls the Gemini REST API with a server-only key. The reply is rendered as plain text. Nothing is persisted — conversation lives in React state and dies on reload.
 
-**Tech Stack:** Next.js 14 App Router, React 18, TypeScript 5, Tailwind CSS 3.4, lucide-react, Vitest 3.2, Gemini REST API (`gemini-2.5-flash`) called with plain `fetch` — no SDK dependency added.
+**Tech Stack:** Next.js 14 App Router, React 18, TypeScript 5, Tailwind CSS 3.4, lucide-react, Vitest 3.2, Gemini REST API (`gemini-3.5-flash-lite`) called with plain `fetch` — no SDK dependency added.
 
 **Spec:** `docs/superpowers/specs/2026-08-01-portfolio-ai-chat-design.md`
 
@@ -37,48 +37,51 @@ Why these boundaries: `prompt.ts` owns everything sent *to* the model, `validate
 
 ---
 
-## Task 1: Gemini API key setup
+## Task 1: Gemini API key setup — ✅ DONE (2026-08-02)
 
 No code in this task. This is the manual prerequisite — everything else fails without it.
+
+Completed: key created as `portfolio-chat-local`, `client/.env.local` filled and confirmed ignored by `client/.gitignore:29`, `.env.example` committed as `bde3aeb`. The key was validated against the live API, which is how the model name and `thinkingConfig` corrections below were found.
 
 **Files:**
 - Create: `client/.env.example`
 - Create (local only, never committed): `client/.env.local`
 
-- [ ] **Step 1: Get a Gemini API key**
+- [x] **Step 1: Get a Gemini API key**
 
 1. Open https://aistudio.google.com/apikey in a browser and sign in with a Google account.
 2. Click **Create API key**.
 3. Pick an existing Google Cloud project or let it create one. The free tier needs no billing account.
-4. Copy the key. It looks like `AIzaSy...`.
+4. Copy the key. Formats vary by account age — older keys start with `AIzaSy…`, newer ones with `AQ.…`. Either is fine.
 
 Keep this key private. Anyone holding it can spend the quota.
 
-- [ ] **Step 2: Create the local env file**
+- [x] **Step 2: Create the local env file**
 
 Create `client/.env.local` with this line, replacing the placeholder with the real key:
 
 ```
-GEMINI_API_KEY=AIzaSy_replace_with_your_real_key
+GEMINI_API_KEY=replace_with_your_real_key
 ```
 
 The name has **no** `NEXT_PUBLIC_` prefix. That prefix would ship the key to the browser. `.env.local` is already covered by the `.env*.local` rule in `.gitignore`, so it will not be committed.
 
-- [ ] **Step 3: Verify the key works before writing any code**
+- [x] **Step 3: Verify the key works before writing any code**
 
 Run this from anywhere (substitute the real key):
 
 ```bash
-curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent" \
-  -H "x-goog-api-key: AIzaSy_replace_with_your_real_key" \
+curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent" \
+  -H "x-goog-api-key: replace_with_your_real_key" \
   -H "Content-Type: application/json" \
   -d '{"contents":[{"role":"user","parts":[{"text":"Say OK"}]}]}'
 ```
 
 Expected: JSON containing `"candidates"` with a `"text"` field.
 If you get `API_KEY_INVALID` or a 403, the key is wrong or not enabled — redo Step 1 before continuing.
+A 404 saying the model "is no longer available to new users" means the key is fine but the model name is retired — probe a newer one with the same curl rather than trusting `ListModels`, which still lists models that `generateContent` rejects.
 
-- [ ] **Step 4: Create the committed example file**
+- [x] **Step 4: Create the committed example file**
 
 Create `client/.env.example`:
 
@@ -90,14 +93,14 @@ Create `client/.env.example`:
 GEMINI_API_KEY=
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add client/.env.example
 git commit -m "chore: document GEMINI_API_KEY for the chat widget"
 ```
 
-- [ ] **Step 6: Confirm the secret is not staged**
+- [x] **Step 6: Confirm the secret is not staged**
 
 Run: `git status --porcelain client/`
 Expected: `client/.env.local` does NOT appear in the output. If it does, stop and fix `.gitignore` before going further.
@@ -738,7 +741,7 @@ No unit test here — this file is a network boundary, and the spec explicitly e
 Create `client/src/lib/chat/gemini.ts`:
 
 ```ts
-const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_MODEL = "gemini-3.5-flash-lite";
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 export const MAX_OUTPUT_TOKENS = 500;
@@ -778,7 +781,6 @@ export async function generateReply(
       generationConfig: {
         temperature: 0.2,
         maxOutputTokens: MAX_OUTPUT_TOKENS,
-        thinkingConfig: { thinkingBudget: 0 },
       },
     }),
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
@@ -798,7 +800,7 @@ export async function generateReply(
 }
 ```
 
-`thinkingBudget: 0` turns off the 2.5-series reasoning pass. A portfolio Q&A does not need it, and it would otherwise consume thinking tokens on every message. `temperature: 0.2` keeps answers close to the source data.
+No `thinkingConfig`. Verified live against `gemini-3.5-flash-lite`: responses come back with no `thoughtsTokenCount` at all, so the model does not think by default and there is nothing to switch off. The 2.5-era `thinkingConfig: { thinkingBudget: 0 }` is worse than useless here — the 3.x API rejects it with HTTP 400 `Request contains an invalid argument`. (`thinkingLevel: "low"` is accepted but changes nothing.) `temperature: 0.2` keeps answers close to the source data.
 
 - [ ] **Step 2: Verify it compiles**
 
@@ -1265,7 +1267,7 @@ Run `cd client && pnpm dev`, open http://localhost:3000, and check each of these
 5. Pressing `Escape` closes the panel.
 6. Scrolling down makes the scroll-to-top button appear *above* the chat button, not under it.
 7. Toggling the site's dark mode keeps the panel readable.
-8. In DevTools → Network, the `/api/chat` request body contains no API key, and searching the page source for `AIzaSy` finds nothing.
+8. In DevTools → Network, the `/api/chat` request body contains no API key. Copy the first 8 characters of the real key out of `client/.env.local`, search the page source and every JS chunk for that substring, and confirm zero hits. (Do not search for a fixed prefix like `AIzaSy` — key formats vary, so a clean result would prove nothing.)
 
 - [ ] **Step 5: Verify the fail-closed path**
 
