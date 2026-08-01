@@ -16,7 +16,8 @@ function pruneStaleKeys(now: number): void {
 // ponytail: in-memory and per-instance, so it resets on cold start. Move to Redis
 // only if a single process stops being the whole app.
 export function checkRateLimit(key: string, now: number = Date.now()): boolean {
-  if (hits.size > MAX_TRACKED_KEYS) {
+  // Reclaim capacity by pruning stale entries when at capacity
+  if (hits.size >= MAX_TRACKED_KEYS) {
     pruneStaleKeys(now);
   }
 

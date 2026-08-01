@@ -65,4 +65,23 @@ describe("checkRateLimit", () => {
     // But the already-tracked key should still be limited normally (over limit)
     expect(checkRateLimit(trackedIp, now)).toBe(false);
   });
+
+  it("accepts new keys after stale entries are pruned at capacity", () => {
+    const now = 1_000;
+    const staleTime = now + RATE_LIMIT_WINDOW_MS;
+
+    // Insert one key at its limit
+    for (let attempt = 0; attempt < RATE_LIMIT_MAX; attempt += 1) {
+      checkRateLimit("10.0.0.1", now);
+    }
+
+    // Insert MAX_TRACKED_KEYS - 1 more distinct IPs to reach capacity
+    for (let i = 0; i < 999; i += 1) {
+      checkRateLimit(`1.0.0.${i}`, now);
+    }
+
+    // Now we're at capacity (1000 keys). All entries are stale at this time.
+    // A new key should be accepted (pruneStaleKeys removed all entries)
+    expect(checkRateLimit("20.0.0.1", staleTime)).toBe(true);
+  });
 });
