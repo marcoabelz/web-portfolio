@@ -6,11 +6,11 @@ const MAX_TRACKED_KEYS = 1000;
 const hits = new Map<string, number[]>();
 
 function pruneStaleKeys(now: number): void {
-  for (const [key, timestamps] of hits) {
+  hits.forEach((timestamps, key) => {
     if (timestamps.every((timestamp) => now - timestamp >= RATE_LIMIT_WINDOW_MS)) {
       hits.delete(key);
     }
-  }
+  });
 }
 
 // ponytail: in-memory and per-instance, so it resets on cold start. Move to Redis
@@ -18,6 +18,12 @@ function pruneStaleKeys(now: number): void {
 export function checkRateLimit(key: string, now: number = Date.now()): boolean {
   if (hits.size > MAX_TRACKED_KEYS) {
     pruneStaleKeys(now);
+    // Enforce hard ceiling by evicting oldest keys after stale sweep
+    while (hits.size >= MAX_TRACKED_KEYS) {
+      const oldest = hits.keys().next().value;
+      if (oldest === undefined) break;
+      hits.delete(oldest);
+    }
   }
 
   const recent = (hits.get(key) ?? []).filter(
