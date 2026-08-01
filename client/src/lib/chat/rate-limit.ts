@@ -18,12 +18,13 @@ function pruneStaleKeys(now: number): void {
 export function checkRateLimit(key: string, now: number = Date.now()): boolean {
   if (hits.size > MAX_TRACKED_KEYS) {
     pruneStaleKeys(now);
-    // Enforce hard ceiling by evicting oldest keys after stale sweep
-    while (hits.size >= MAX_TRACKED_KEYS) {
-      const oldest = hits.keys().next().value;
-      if (oldest === undefined) break;
-      hits.delete(oldest);
-    }
+  }
+
+  // ponytail: at capacity, we refuse to start tracking new keys, so a spoofed-key
+  // flood can lock out new visitors for up to one window; a shared store (Redis)
+  // keyed per-instance removes the ceiling.
+  if (!hits.has(key) && hits.size >= MAX_TRACKED_KEYS) {
+    return false;
   }
 
   const recent = (hits.get(key) ?? []).filter(
