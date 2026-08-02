@@ -1,0 +1,101 @@
+{
+  "profile": {
+    "title": "Full-Stack Engineer",
+    "specialty": "Backend, AI Systems & Production Infrastructure",
+    "introduction": "I build production-grade SaaS and AI-powered products end-to-end, from Next.js interfaces and Fastify APIs to data pipelines, browser automation, computer vision, and Docker-based deployment.",
+    "availability": "Open to relevant full-stack, backend, and AI product engineering opportunities."
+  },
+  "aboutFacts": [
+    "4+ years combined experience",
+    "Software Engineer & Software Quality Assurance"
+  ],
+  "aboutParagraphs": [
+    "I'm a Full-Stack Engineer with 4+ years of combined experience across production software development and embedded software quality assurance.",
+    "My work spans B2B SaaS, AI-powered products, computer vision, enterprise software, industrial monitoring, browser automation, billing systems, and production infrastructure. I enjoy taking products from operational requirements through system design, implementation, deployment, and production reliability.",
+    "My QA background shaped the systematic approach I bring to debugging, testing, traceability, and resilient software delivery."
+  ],
+  "experiences": {
+    "satellyte": {
+      "title": "Full-Stack Engineer",
+      "displayStart": "March 2026",
+      "displayEnd": "Present",
+      "summary": "Building an AI-powered B2B sales intelligence platform that transforms buying signals into scored leads.",
+      "highlights": [
+        "Develop Next.js dashboards and Fastify/BullMQ services that process multiple buying-signal strategies.",
+        "Build multi-provider enrichment workflows for identifying and scoring decision-makers.",
+        "Implement browser automation with Playwright and Browserbase.",
+        "Develop public REST APIs with authentication, credit metering, and rate limiting.",
+        "Support production delivery with Docker, GitHub Actions, and GHCR."
+      ]
+    },
+    "nexio": {
+      "title": "Full-Stack Engineer",
+      "displayStart": "September 2025",
+      "displayEnd": "March 2026",
+      "summary": "Built and shipped three production systems spanning computer vision, AI recruitment, and industrial monitoring.",
+      "highlights": [
+        "Developed a Python computer-vision service with FastAPI, YOLO, OpenCV, and TensorRT for three industrial camera feeds.",
+        "Built TypeScript APIs, role-based access control, event delivery, and a Next.js operator dashboard for three production lines.",
+        "Designed resilient delivery with idempotency keys, local buffering, and batch synchronization.",
+        "Developed a multi-tenant AI recruitment platform with AI CV screening, voice interviews, candidate pipelines, and Stripe billing.",
+        "Built an MQTT, Node-RED, TimescaleDB, Grafana, and Telegram monitoring pipeline."
+      ]
+    },
+    "delta": {
+      "title": "Full-Stack Developer",
+      "displayStart": "August 2024",
+      "displayEnd": "August 2025",
+      "summary": "Developed an internal ERP platform connecting Sales, Purchasing, Inventory, and Production operations.",
+      "highlights": [
+        "Built Next.js and React interfaces supported by REST APIs developed with Node.js and Express.js.",
+        "Designed operational data models using PostgreSQL and MongoDB.",
+        "Implemented authentication, role-based access, search, filtering, pagination, exports, and cross-document workflows.",
+        "Translated internal operational workflows into practical product features."
+      ]
+    },
+    "sys": {
+      "title": "Software QA Engineer",
+      "displayStart": "September 2021",
+      "displayEnd": "November 2023",
+      "summary": "Tested embedded automotive transmission control software under internal, automotive, and Japanese engineering standards.",
+      "highlights": [
+        "Performed white-box testing on embedded transmission-control software written in C.",
+        "Achieved the required 100% test coverage across assigned software modules.",
+        "Developed unit tests with winAMS and debugged output discrepancies.",
+        "Built Excel-based verification tools and produced traceable test cases, coverage reports, and technical documentation."
+      ]
+    }
+  },
+  "skillGroupTitles": {
+    "programmingLanguages": "Programming Languages",
+    "frontend": "Frontend",
+    "backendApis": "Backend & APIs",
+    "databases": "Databases",
+    "aiAutomation": "AI & Automation",
+    "infrastructure": "Infrastructure",
+    "industrialIot": "Industrial & IoT"
+  },
+  "education": {
+    "hacktiv8": {
+      "program": "Full Stack JavaScript Immersive Program",
+      "period": "March 2024 – July 2024",
+      "result": "Final Score: 94.2/100"
+    },
+    "gunadarma": {
+      "program": "Informatics Engineering",
+      "period": "2016 – 2020",
+      "result": "GPA: 3.21/4.00"
+    }
+  },
+  "languages": {
+    "indonesian": {
+      "name": "Indonesian",
+      "proficiency": "Native"
+    },
+    "english": {
+      "name": "English",
+      "proficiency": "Working Proficiency",
+      "evidence": "Englishvit TOEFL ITP-style Assessment — 477, November 2024"
+    }
+  }
+}

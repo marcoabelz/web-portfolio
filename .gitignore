@@ -1,0 +1,6 @@
+.superpowers/
+
+# agent tooling scratch output, not part of the site
+.playwright-mcp/
+chunk-scan.json
+header-before.png

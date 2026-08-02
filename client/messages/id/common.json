@@ -1,0 +1,118 @@
+{
+  "navigation": {
+    "work": "Proyek",
+    "experience": "Pengalaman",
+    "skills": "Keahlian",
+    "contact": "Kontak",
+    "resume": "Resume"
+  },
+  "actions": {
+    "viewSelectedWork": "Lihat Proyek Saya",
+    "downloadResume": "Unduh CV",
+    "getInTouch": "Hubungi Saya",
+    "browseEarlierProjects": "Lihat proyek lama",
+    "backToSelectedWork": "Kembali",
+    "viewCaseStudy": "Lihat studi kasus",
+    "liveProduct": "Lihat aplikasi",
+    "repository": "Repositori"
+  },
+  "sections": {
+    "selectedWork": {
+      "eyebrow": "Proyek Unggulan",
+      "title": "Sistem yang berjalan di produksi.",
+      "description": "Lima produk: SaaS B2B, computer vision, rekrutmen, operasional perusahaan, hingga monitoring pabrik."
+    },
+    "experience": {
+      "eyebrow": "Pengalaman",
+      "title": "Dari QA ke Full-Stack Engineer."
+    },
+    "skills": {
+      "eyebrow": "Keahlian Teknis",
+      "title": "Perangkat yang saya pakai membangun sistem."
+    },
+    "credentials": {
+      "eyebrow": "Pendidikan & Bahasa",
+      "title": "Pendidikan dan bahasa.",
+      "education": "Pendidikan",
+      "languages": "Bahasa"
+    },
+    "contact": {
+      "eyebrow": "Kontak",
+      "title": "Mari bangun software yang benar-benar menyelesaikan masalah operasional."
+    },
+    "archive": {
+      "eyebrow": "Proyek lama",
+      "title": "Arsip Proyek",
+      "description": "Kumpulan produk komersial dan proyek latihan yang pernah saya kerjakan, disimpan sebagai jejak rekam."
+    }
+  },
+  "caseStudy": {
+    "context": "Konteks",
+    "role": "Peran",
+    "relatedWork": "Aplikasi lainnya",
+    "sections": {
+      "overview": "Tentang aplikasi",
+      "features": "Fitur",
+      "role": "Tanggung jawab",
+      "stack": "Tech stack",
+      "screenshots": "Screenshot"
+    }
+  },
+  "labels": {
+    "basedIn": "Domisili di {location}",
+    "availability": "Status",
+    "privateProject": "Proyek privat",
+    "privateProductionSystem": "Sistem produksi privat",
+    "repositoryUnavailable": "Repositori tidak dipublikasikan",
+    "sanitizedVisual": "Gambar pengganti",
+    "sanitizedVisualDescription": "Ilustrasi pengganti yang ditampilkan tanpa data produk yang bersifat rahasia.",
+    "signalIntelligence": "Intelijen sinyal",
+    "industrialVision": "Visi industri",
+    "talentPipeline": "Alur kandidat",
+    "plantTelemetry": "Telemetri pabrik",
+    "portfolio": "Portofolio",
+    "projectArchiveMetadataTitle": "Arsip Proyek",
+    "projectArchiveMetadataDescription": "Proyek komersial dan latihan yang pernah dikerjakan {name}.",
+    "caseStudyMetadataTitle": "Studi Kasus {projectName}",
+    "socialImageEyebrow": "Rekayasa produk / sistem / delivery",
+    "socialImageDescription": "SaaS, sistem AI, dan infrastruktur siap produksi—dari antarmuka hingga deployment.",
+    "socialImageCategory": "WEB",
+    "siteMetadataTitle": "{name} | Full-Stack Engineer",
+    "siteMetadataDescription": "Full-Stack Engineer yang fokus pada sistem backend, produk berbasis AI, computer vision, otomasi browser, dan infrastruktur produksi."
+  },
+  "accessibility": {
+    "skipToMainContent": "Langsung ke konten utama",
+    "scrollToTop": "Kembali ke atas",
+    "home": "{name}, beranda",
+    "logo": "{name}, beranda",
+    "primaryNavigation": "Navigasi utama",
+    "mobileNavigation": "Navigasi mobile",
+    "openNavigation": "Buka menu",
+    "closeNavigation": "Tutup menu",
+    "socialLinks": "Tautan sosial",
+    "emailMarco": "Kirim email ke {name}",
+    "marcoOnSocial": "{name} di {platform}",
+    "contactOnSocial": "Hubungi {name} lewat {platform}",
+    "technologyStack": "Tech stack",
+    "experienceTechnologyStack": "Tech stack {company}",
+    "projectHighlights": "Sorotan proyek",
+    "openLiveProduct": "Lihat aplikasi {projectName}",
+    "enlargeScreenshot": "Perbesar screenshot",
+    "closeScreenshot": "Tutup screenshot",
+    "openRepository": "Buka repositori {projectName} di GitHub",
+    "opensInNewTab": "dibuka di tab baru",
+    "switchToLightMode": "Ganti ke mode terang",
+    "switchToDarkMode": "Ganti ke mode gelap",
+    "toggleColorTheme": "Ganti tema warna"
+  },
+  "language": {
+    "current": "Indonesia",
+    "english": "English",
+    "indonesian": "Indonesia",
+    "switchTo": "Ganti bahasa ke {language}",
+    "selector": "Bahasa"
+  },
+  "footer": {
+    "copyright": "© {year} {name}"
+  }
+}

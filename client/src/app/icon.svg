@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title description">
+  <title id="title">Marco Abel Zefanya monogram</title>
+  <desc id="description">A geometric M and Z monogram in white and blue on a navy background.</desc>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#0f172a"/>
+  <path d="M48 2h14v14L48 2Z" fill="#2563eb"/>
+  <path
+    d="M13 44V20l10 12 10-12v24"
+    fill="none"
+    stroke="#f8fafc"
+    stroke-width="5"
+    stroke-linecap="square"
+    stroke-linejoin="miter"
+  />
+  <path
+    d="M39 22h13L39 42h13"
+    fill="none"
+    stroke="#60a5fa"
+    stroke-width="4.5"
+    stroke-linecap="square"
+    stroke-linejoin="miter"
+  />
+</svg>

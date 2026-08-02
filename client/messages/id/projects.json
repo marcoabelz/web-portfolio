@@ -1,0 +1,218 @@
+{
+  "selected": {
+    "satellyte": {
+      "descriptor": "Platform Intelijen Penjualan AI",
+      "contextLabel": "Produksi",
+      "role": "Full-Stack Engineer",
+      "outcome": "Mengubah sinyal pembelian yang tersedia publik menjadi lead B2B yang diperkaya dan diberi skor.",
+      "highlights": [
+        "10+ strategi sinyal pembelian",
+        "Enrichment lead multi-provider",
+        "API produksi dan alur otomasi"
+      ],
+      "cover": {
+        "alt": "Peta sinyal abstrak yang menggambarkan alur intelijen lead Satellyte"
+      },
+      "screenshots": [
+        "Daftar radar sinyal, setiap radar memiliki ICP, jumlah lead, dan status eksekusinya sendiri.",
+        "Tabel lead lengkap dengan skor, jenis sinyal, radar asal, email dan telepon hasil enrichment, beserta statusnya.",
+        "AI discovery: cukup jelaskan kebutuhan dengan bahasa sehari-hari, hasilnya perusahaan yang sesuai.",
+        "Panel perusahaan yang menampilkan para pengambil keputusan, dikelompokkan per level.",
+        "Pengaturan integrasi untuk Slack, HeyReach, Instantly, dan webhook API mandiri."
+      ],
+      "caseStudy": {
+        "overview": [
+          "Satellyte adalah platform intelijen penjualan B2B berbasis AI. Platform ini memantau sinyal pembelian yang tersedia publik, mengubahnya menjadi lead yang telah diberi skor beserta data kontaknya, lalu mengirim lead tersebut ke tools yang sudah digunakan tim sales."
+        ],
+        "features": [
+          "Radar sinyal yang berjalan terus di latar belakang dengan 10+ strategi sinyal pembelian.",
+          "Workspace lead yang menampilkan skor, jenis sinyal, radar asal, lokasi, dan status setiap lead.",
+          "Enrichment kontak dari banyak provider beserta fallback, sehingga kegagalan satu provider tidak membuat hasilnya kosong.",
+          "AI discovery: jelaskan perusahaan atau orang yang dicari dengan bahasa sehari-hari, hasilnya langsung tersedia.",
+          "Tampilan perusahaan yang memuat daftar pengambil keputusan per level, lengkap dengan pencarian lanjutan.",
+          "Integrasi ke Slack, HeyReach, dan Instantly, ditambah webhook API untuk kebutuhan mandiri.",
+          "Otomasi interaksi LinkedIn dan alur pembuatan konten yang dibantu AI.",
+          "REST API publik dengan perhitungan kredit, penagihan Stripe yang idempoten, dan rilis melalui Docker/GHCR."
+        ],
+        "responsibilities": [
+          "Membangun antarmuka produk di Next.js, dari workspace radar dan lead sampai halaman pengaturan.",
+          "Membangun layanan Fastify, mesin sinyal berbasis BullMQ, dan seluruh background job untuk proses berdurasi panjang.",
+          "Menyatukan seluruh provider enrichment di balik satu alur seragam lengkap dengan fallback-nya.",
+          "Membangun lapisan otomasi browser, termasuk batas aman per akun.",
+          "Membangun API publik: perhitungan kredit, autentikasi, dan rate limiting.",
+          "Mengelola rilis ke produksi melalui Docker, GHCR, dan GitHub Actions."
+        ]
+      }
+    },
+    "palmgrade": {
+      "descriptor": "Sistem Visi Komputer Industri",
+      "contextLabel": "Produksi",
+      "role": "Full-Stack Engineer",
+      "outcome": "Menilai kualitas buah sawit dari tiga kamera produksi dan menampilkan hasilnya langsung kepada operator.",
+      "highlights": [
+        "Tiga feed kamera sekaligus",
+        "Dashboard operator tiga lini",
+        "Pengiriman event tahan koneksi putus"
+      ],
+      "cover": {
+        "alt": "Bingkai kamera dan kotak deteksi abstrak yang menggambarkan visi komputer Palmgrade"
+      },
+      "caseStudy": {
+        "overview": [
+          "Palmgrade menilai kualitas buah sawit saat melewati tiga kamera produksi, lalu menampilkan hasilnya kepada operator selagi batch tersebut masih berjalan di lini."
+        ],
+        "features": [
+          "Inferensi langsung dari tiga kamera sekaligus menggunakan YOLO, OpenCV, dan TensorRT di balik layanan FastAPI.",
+          "Dashboard operator untuk tiga lini produksi dengan pembaruan langsung melalui Server-Sent Events.",
+          "Penampil hasil tangkapan AI, sehingga keluaran model dapat diperiksa secara persis.",
+          "Akses berbasis peran yang memisahkan operator dan supervisor.",
+          "Pengiriman event yang tahan koneksi putus: buffer lokal dan sinkronisasi batch dengan UUID, sehingga pengiriman ulang tidak menghasilkan data ganda."
+        ],
+        "responsibilities": [
+          "Membangun layanan inferensi Python di sekitar model visi dan pipeline kameranya.",
+          "Membangun API TypeScript, jalur event, dan aturan akses per peran.",
+          "Membangun dashboard operator di Next.js beserta penampil hasil tangkapan AI.",
+          "Menyusun strategi buffer dan sinkronisasi untuk koneksi pabrik yang tidak stabil.",
+          "Mengemas seluruh sistem menjadi container berversi untuk dipasang di pabrik."
+        ]
+      }
+    },
+    "ai-recruitment-platform": {
+      "descriptor": "Alur Perekrutan Multi-Tenant",
+      "contextLabel": "Komersial",
+      "role": "Full-Stack Engineer",
+      "outcome": "Menyatukan penyaringan pelamar, wawancara suara, pekerjaan rekruter, dan penagihan dalam satu produk.",
+      "highlights": [
+        "Penyaringan CV berbasis AI",
+        "Wawancara suara berbasis AI",
+        "Kontrol penagihan multi-tenant"
+      ],
+      "cover": {
+        "alt": "Pipeline kandidat abstrak yang menggambarkan platform rekrutmen AI"
+      },
+      "caseStudy": {
+        "overview": [
+          "Produk rekrutmen multi-tenant yang mendampingi proses hiring dari pembuatan lowongan, masuknya kandidat, penyaringan, wawancara, sampai penagihan langganan, tanpa perlu berpindah tools."
+        ],
+        "features": [
+          "Pengelolaan lowongan lengkap dengan pipeline kandidat yang dapat dipindahkan secara drag and drop.",
+          "Penyaringan CV berbasis AI yang menghasilkan skor terstruktur dan dapat ditinjau, bukan sekadar satu angka penilaian.",
+          "Wawancara suara berbasis AI dengan hasil yang tersimpan langsung pada data kandidat.",
+          "Penjadwalan wawancara dan dashboard rekruter untuk memantau seluruh pipeline.",
+          "Checkout Stripe, paket langganan, perhitungan pemakaian, dan webhook yang tidak terhitung ganda.",
+          "Batas tenant dan peran yang dijaga melalui JWT, ditambah cache Redis pada jalur yang sering dibaca."
+        ],
+        "responsibilities": [
+          "Membangun backend TypeScript berlapis beserta batas data antar tenant.",
+          "Membangun model peran JWT, lapisan cache, dan API publiknya.",
+          "Membangun alur penyaringan AI dan wawancara suara, termasuk penyimpanan hasil terstrukturnya.",
+          "Mengintegrasikan penagihan Stripe secara menyeluruh, termasuk webhook yang idempoten.",
+          "Membangun dashboard untuk rekruter."
+        ]
+      }
+    },
+    "internal-erp-platform": {
+      "descriptor": "Sistem Operasional Terintegrasi",
+      "contextLabel": "Internal",
+      "role": "Full-Stack Developer",
+      "outcome": "Menghubungkan Penjualan, Pembelian, Inventaris, dan Produksi dalam satu alur operasional.",
+      "highlights": [
+        "Alur dokumen lintas modul",
+        "Akses operasional per peran",
+        "Pencarian, paginasi, dan ekspor"
+      ],
+      "cover": {
+        "alt": "Dashboard ERP yang telah disamarkan, menampilkan modul-modul operasional"
+      },
+      "caseStudy": {
+        "overview": [
+          "Platform ERP internal yang menghubungkan proses harian Penjualan, Pembelian, Inventaris, dan Produksi, sehingga satu alur dokumen operasional berjalan di empat departemen sekaligus."
+        ],
+        "features": [
+          "Dokumen penjualan dan pembelian yang mengikuti satu alur bisnis yang sama.",
+          "Modul inventaris dan produksi yang terhubung dengan dokumen-dokumen tersebut.",
+          "Akses per peran, sehingga setiap departemen hanya dapat membuka bagian yang menjadi tanggung jawabnya.",
+          "Pencarian, filter, dan paginasi di seluruh modul.",
+          "Ekspor ke spreadsheet dan navigasi antar dokumen agar mudah ditelusuri."
+        ],
+        "responsibilities": [
+          "Membangun modul frontend dan pola interaksi yang digunakan ulang di seluruh modul.",
+          "Mengembangkan perilaku REST API di balik setiap dokumen operasional.",
+          "Menyusun model data di PostgreSQL dan MongoDB sesuai bentuk record-nya.",
+          "Menerjemahkan cara kerja staf sehari-hari menjadi fitur produk.",
+          "Menempatkan aturan alur kerja di layanan backend, bukan tersebar di UI."
+        ]
+      }
+    },
+    "factory-monitoring-system": {
+      "descriptor": "Platform Data Sensor Industri",
+      "contextLabel": "Produksi",
+      "role": "Full-Stack Engineer",
+      "outcome": "Mengalirkan data sensor pabrik dari MQTT ke dashboard dan laporan terjadwal di perangkat seluler.",
+      "highlights": [
+        "Pipeline MQTT ke TimescaleDB",
+        "Dashboard operasional Grafana",
+        "Laporan dan ekspor lewat Telegram"
+      ],
+      "cover": {
+        "alt": "Jejak sensor abstrak yang menggambarkan sistem pemantauan pabrik"
+      },
+      "caseStudy": {
+        "overview": [
+          "Stack monitoring pabrik untuk mengumpulkan, menyimpan, menampilkan, dan melaporkan data sensor, sehingga supervisor dapat memantau kondisi pabrik dari perangkat seluler tanpa harus berada di ruang kontrol."
+        ],
+        "features": [
+          "Pipeline berbasis container dari MQTT melalui Node-RED menuju TimescaleDB.",
+          "Dashboard Grafana untuk memantau kondisi pabrik secara langsung.",
+          "Ringkasan grafik terjadwal yang dikirim melalui Telegram.",
+          "Ekspor Excel untuk pelaporan di luar dashboard.",
+          "Setiap layanan dapat dijalankan ulang secara terpisah, sehingga satu kegagalan tidak menjatuhkan keseluruhan sistem."
+        ],
+        "responsibilities": [
+          "Menghubungkan sumber MQTT ke pemrosesan Node-RED.",
+          "Menyiapkan penyimpanan time-series untuk data sensor yang mengalir terus-menerus.",
+          "Menyusun tampilan Grafana yang benar-benar digunakan supervisor.",
+          "Membangun layanan pelaporan Telegram dengan TypeScript beserta penjadwalannya.",
+          "Mengemas seluruh stack menggunakan Docker Compose."
+        ]
+      }
+    }
+  },
+  "archive": {
+    "nutrical": {
+      "descriptor": "Perencanaan intervensi gizi dan kalkulator pengadaan, lengkap dengan ekspor spreadsheet.",
+      "contextLabel": "Komersial",
+      "coverAlt": "Antarmuka perencanaan gizi Nutrical"
+    },
+    "zamasto": {
+      "descriptor": "Profil perusahaan, alur publikasi, CMS mandiri, dan penanganan kontak otomatis.",
+      "contextLabel": "Komersial",
+      "coverAlt": "Beranda profil perusahaan Zamasto"
+    },
+    "m-event": {
+      "descriptor": "Aplikasi mobile untuk mencari event terdekat, membeli tiket, dan membayar melalui Midtrans.",
+      "contextLabel": "Pelatihan",
+      "coverAlt": "Layar pencarian event seluler M Event"
+    },
+    "xiaopee": {
+      "descriptor": "Katalog produk responsif dengan pencarian tanpa batas, akun, detail, dan wishlist.",
+      "contextLabel": "Pelatihan",
+      "coverAlt": "Beranda katalog produk Xiaopee"
+    },
+    "instaclone": {
+      "descriptor": "Feed sosial mobile dengan login, follow, like, komentar, dan pencarian pengguna.",
+      "contextLabel": "Pelatihan",
+      "coverAlt": "Feed sosial seluler Instaclone"
+    },
+    "chatting-app": {
+      "descriptor": "Chat room real-time di browser yang dibangun menggunakan event Socket.IO.",
+      "contextLabel": "Pelatihan",
+      "coverAlt": "Papan percakapan real-time Chatting App"
+    },
+    "omahucok": {
+      "descriptor": "Alur pemesanan hotel dan CMS dengan ketersediaan kamar, media, dan pembayaran.",
+      "contextLabel": "Pelatihan",
+      "coverAlt": "Beranda pemesanan hotel Omahucok"
+    }
+  }
+}

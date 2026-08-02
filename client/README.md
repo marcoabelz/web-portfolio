@@ -115,6 +115,15 @@ The color theme rides on a `data-theme` attribute on `<html>`, not on a class. A
 
 The locale links in `src/components/layout/LanguageSwitcher.tsx` pass `scroll={false}`. Without it, Next scrolls to the top on every navigation and a reader switching language mid-page is thrown back to the hero.
 
+## Case study screenshots
+
+`src/components/work/ScreenshotGallery.tsx` renders the screenshots of a case study as one horizontally scrollable row (CSS scroll-snap, one card per screen on a phone) and opens the full-resolution file in a native `<dialog>` when a card is clicked. Only Satellyte has screenshots; every other project falls through to the sanitized cover in `CaseStudy.tsx`, which the gallery does not touch.
+
+Two things the component depends on:
+
+- Every published screenshot is exported at 1920x1200. The `width`/`height` on the dialog image are that size, so a differently proportioned file would be letterboxed by `object-contain` rather than reserving the wrong box.
+- `showModal()` runs in an effect keyed on the selected screenshot, not in the click handler, so the dialog never paints an empty frame before React commits the state change. Escape and backdrop dismissal come from the platform; only the close button is ours.
+
 ## Content and routes
 
 Typed portfolio content lives in `src/data`, with shared contracts in `src/types`. Reusable page composition is organized under `src/components/sections`, `src/components/work`, `src/components/layout`, and `src/components/ui`.
