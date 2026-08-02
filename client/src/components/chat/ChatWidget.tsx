@@ -8,7 +8,11 @@ import type { ChatMessage } from "@/types/chat";
 
 const SESSION_MESSAGE_CAP = 20;
 const GREETING = "Ask me anything about Abel's experience, projects, or skills.";
-const HINT_DURATION_MS = 5000;
+const HINT_TEXT = "Ask about Abel — click here";
+const HINT_TYPING_MS = 45;
+// The countdown starts once the last character lands, so the hold is reading time.
+// Starting it at mount would spend a quarter of the window on the animation itself.
+const HINT_HOLD_MS = 5000;
 
 // The visitor's bubble sits right and filled, the assistant's left and outlined, so the
 // two sides stay distinguishable by position and weight, not by colour alone.
@@ -28,6 +32,7 @@ export function ChatWidget() {
   const [error, setError] = useState<string | null>(null);
   const [failedMessage, setFailedMessage] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(true);
+  const [typedLength, setTypedLength] = useState(0);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
@@ -40,12 +45,32 @@ export function ChatWidget() {
     if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
 
-  // One nudge per page load, then it gets out of the way on its own.
+  // Motion is the whole point of the hint, so anyone who asked for less of it gets the
+  // finished sentence instead of a moving one.
   useEffect(() => {
-    const timer = setTimeout(() => setShowHint(false), HINT_DURATION_MS);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setTypedLength(HINT_TEXT.length);
+    }
+  }, []);
+
+  // One self-rescheduling timeout per character rather than an interval: the cleanup is
+  // a single clearTimeout, and there is no timer left running once the text is complete.
+  useEffect(() => {
+    if (!showHint || typedLength >= HINT_TEXT.length) return;
+
+    const timer = setTimeout(() => setTypedLength((current) => current + 1), HINT_TYPING_MS);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [showHint, typedLength]);
+
+  // One nudge per page load, then it gets out of the way on its own.
+  useEffect(() => {
+    if (typedLength < HINT_TEXT.length) return;
+
+    const timer = setTimeout(() => setShowHint(false), HINT_HOLD_MS);
+
+    return () => clearTimeout(timer);
+  }, [typedLength]);
 
   useEffect(() => {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight });
@@ -122,19 +147,37 @@ export function ChatWidget() {
 
   return (
     <>
-      {/* Decorative nudge only: the toggle already carries the accessible name, so an
-          auto-dismissing duplicate would just interrupt a screen reader. It never takes
-          pointer events, so it cannot swallow a click meant for the button beside it. */}
-      <div
-        aria-hidden="true"
-        className={`pointer-events-none fixed bottom-5 right-[4.5rem] z-50 flex h-11 items-center border border-line bg-surface px-3 shadow-editorial transition-opacity duration-500 md:bottom-8 md:right-[5.25rem] motion-reduce:transition-none ${
-          showHint && !isOpen ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <span className="whitespace-nowrap font-mono text-xs uppercase tracking-widest text-muted">
-          Ask about Abel — click here
-        </span>
-      </div>
+      {showHint && !isOpen && (
+        <div className="fixed bottom-5 right-[4.5rem] z-50 flex h-11 items-center gap-1 border border-line bg-surface pl-3 pr-1 shadow-editorial md:bottom-8 md:right-[5.25rem]">
+          {/* The full sentence sizes the box from the first frame. The panel is anchored
+              right, so without a sizer every new character would shove the whole hint
+              leftwards instead of typing into place. */}
+          <span
+            aria-hidden="true"
+            className="relative whitespace-nowrap font-mono text-xs uppercase tracking-widest text-muted"
+          >
+            <span className="invisible">{HINT_TEXT}</span>
+            <span className="absolute inset-y-0 left-0 flex items-center">
+              {HINT_TEXT.slice(0, typedLength)}
+              {typedLength < HINT_TEXT.length && (
+                <span className="ml-px animate-pulse text-accent motion-reduce:animate-none">|</span>
+              )}
+            </span>
+          </span>
+
+          {/* The nudge is decorative — the toggle beside it already announces itself — but
+              dismissing is a real action, so this button stays reachable while the text
+              above does not get spelled out one character at a time. */}
+          <button
+            type="button"
+            onClick={() => setShowHint(false)}
+            aria-label="Dismiss chat hint"
+            className="inline-flex size-9 items-center justify-center text-muted transition-colors hover:text-ink focus-visible:text-ink motion-reduce:transition-none"
+          >
+            <X className="size-3.5" strokeWidth={1.8} aria-hidden="true" />
+          </button>
+        </div>
+      )}
 
       <button
         ref={toggleRef}
