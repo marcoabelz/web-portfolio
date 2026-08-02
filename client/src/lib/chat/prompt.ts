@@ -113,18 +113,22 @@ export function buildPortfolioContext(): string {
 
 const DELIMITER_PATTERN = /<\/?user_message>/gi;
 
-export function wrapUserMessage(message: string): string {
+export function stripDelimiters(text: string): string {
   // One replace pass never rescans what removal splices together, so
   // "<use</user_message>r_message>" would emit a live tag. Repeat until stable.
   // Terminates: every pass that changes the string makes it strictly shorter.
-  let sanitized = message;
+  let sanitized = text;
 
   for (let previous = ""; sanitized !== previous; ) {
     previous = sanitized;
     sanitized = sanitized.replace(DELIMITER_PATTERN, "");
   }
 
-  return `<user_message>\n${sanitized}\n</user_message>`;
+  return sanitized;
+}
+
+export function wrapUserMessage(message: string): string {
+  return `<user_message>\n${stripDelimiters(message)}\n</user_message>`;
 }
 
 const RULES = `You are the assistant embedded in ${content.profile.name}'s portfolio website. Your only job is to answer visitor questions about ${content.profile.name} using the PORTFOLIO DATA section below.
