@@ -9,17 +9,10 @@ const themeStorageKey = "portfolio-theme";
 // from because it has to run as an inline string before hydration.
 export function resolveStoredTheme(): "dark" | "light" {
   try {
-    const savedTheme = localStorage.getItem(themeStorageKey);
-    if (savedTheme === "dark" || savedTheme === "light") return savedTheme;
+    if (localStorage.getItem(themeStorageKey) === "light") return "light";
   } catch {}
 
-  try {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  } catch {}
-
-  return "light";
+  return "dark";
 }
 
 // The restore below has to land before the browser paints the new language, and

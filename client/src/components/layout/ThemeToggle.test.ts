@@ -23,6 +23,16 @@ describe("theme survives a locale switch", () => {
     expect(themeToggle).not.toContain("classList");
   });
 
+  // Dark is the site's own default, so only a saved "light" turns the palette off.
+  it("ignores the operating system preference", () => {
+    const read = (path: string) =>
+      readFileSync(new URL(path, import.meta.url), "utf8");
+
+    expect(read("./ThemeScript.tsx")).not.toContain("prefers-color-scheme");
+    expect(read("./ThemeToggle.tsx")).not.toContain("prefers-color-scheme");
+    expect(read("./ThemeToggle.tsx")).toContain('return "dark";');
+  });
+
   it("restores the theme attribute when the remount drops it", () => {
     const source = readFileSync(new URL("./ThemeToggle.tsx", import.meta.url), "utf8");
 

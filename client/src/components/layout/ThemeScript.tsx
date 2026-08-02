@@ -1,20 +1,14 @@
+// Dark is the site's own default, so the operating system does not get a vote:
+// only a visitor who picked light in the toggle gets light.
 const themeScript = `(() => {
-  let prefersDark = false;
   let savedTheme = null;
-
-  try {
-    prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  } catch {}
 
   try {
     savedTheme = localStorage.getItem("portfolio-theme");
   } catch {}
 
-  const shouldUseDark =
-    savedTheme === "dark" || (savedTheme !== "light" && prefersDark);
-
   try {
-    document.documentElement.dataset.theme = shouldUseDark ? "dark" : "light";
+    document.documentElement.dataset.theme = savedTheme === "light" ? "light" : "dark";
   } catch {}
 })();`;
 
