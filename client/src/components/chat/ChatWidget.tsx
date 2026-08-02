@@ -7,7 +7,18 @@ import { MAX_MESSAGE_LENGTH } from "@/lib/chat/validate";
 import type { ChatMessage } from "@/types/chat";
 
 const SESSION_MESSAGE_CAP = 20;
-const GREETING = "Ask me anything about Marco's experience, projects, or skills.";
+const GREETING = "Ask me anything about Abel's experience, projects, or skills.";
+const HINT_DURATION_MS = 5000;
+
+// The visitor's bubble sits right and filled, the assistant's left and outlined, so the
+// two sides stay distinguishable by position and weight, not by colour alone.
+const BUBBLE_BASE = "max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm";
+const USER_BUBBLE = `${BUBBLE_BASE} ml-auto rounded-br-sm bg-accent text-canvas`;
+// Text colour is appended per bubble rather than shared: two colour utilities on one
+// element are decided by CSS source order, not by the order they appear in className.
+const MODEL_BUBBLE_BASE = `${BUBBLE_BASE} mr-auto rounded-bl-sm border border-line bg-elevated`;
+const MODEL_BUBBLE = `${MODEL_BUBBLE_BASE} text-ink`;
+const THINKING_BUBBLE = `${MODEL_BUBBLE_BASE} text-muted`;
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +27,7 @@ export function ChatWidget() {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [failedMessage, setFailedMessage] = useState<string | null>(null);
+  const [showHint, setShowHint] = useState(true);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
@@ -27,6 +39,13 @@ export function ChatWidget() {
   useEffect(() => {
     if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
+
+  // One nudge per page load, then it gets out of the way on its own.
+  useEffect(() => {
+    const timer = setTimeout(() => setShowHint(false), HINT_DURATION_MS);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight });
@@ -103,11 +122,28 @@ export function ChatWidget() {
 
   return (
     <>
+      {/* Decorative nudge only: the toggle already carries the accessible name, so an
+          auto-dismissing duplicate would just interrupt a screen reader. It never takes
+          pointer events, so it cannot swallow a click meant for the button beside it. */}
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none fixed bottom-5 right-[4.5rem] z-50 flex h-11 items-center border border-line bg-surface px-3 shadow-editorial transition-opacity duration-500 md:bottom-8 md:right-[5.25rem] motion-reduce:transition-none ${
+          showHint && !isOpen ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <span className="whitespace-nowrap font-mono text-xs uppercase tracking-widest text-muted">
+          Ask about Abel — click here
+        </span>
+      </div>
+
       <button
         ref={toggleRef}
         type="button"
-        onClick={() => setIsOpen((current) => !current)}
-        aria-label={isOpen ? "Close chat" : "Ask about Marco"}
+        onClick={() => {
+          setShowHint(false);
+          setIsOpen((current) => !current);
+        }}
+        aria-label={isOpen ? "Close chat" : "Ask about Abel"}
         aria-expanded={isOpen}
         aria-controls="chat-panel"
         className="fixed bottom-5 right-5 z-50 inline-flex size-11 items-center justify-center border border-line bg-surface text-ink shadow-lg transition-colors duration-300 hover:border-accent hover:bg-ink hover:text-canvas focus-visible:border-accent motion-reduce:transition-none md:bottom-8 md:right-8"
@@ -131,7 +167,7 @@ export function ChatWidget() {
         className={`fixed bottom-32 right-5 z-50 ${isOpen ? "flex" : ""} h-[26rem] max-h-[calc(100vh-9rem)] w-[min(22rem,calc(100vw-2.5rem))] flex-col border border-line bg-surface shadow-editorial md:bottom-36 md:max-h-[calc(100vh-10rem)] md:right-8`}
       >
         <div className="border-b border-line px-4 py-3">
-          <p className="font-mono text-xs uppercase tracking-widest text-muted">Ask about Marco</p>
+          <p className="font-mono text-xs uppercase tracking-widest text-muted">Ask about Abel</p>
         </div>
 
         <div
@@ -141,17 +177,10 @@ export function ChatWidget() {
           aria-label="Chat messages"
           className="flex-1 space-y-3 overflow-y-auto px-4 py-3 text-sm"
         >
-          <p className="text-muted">{GREETING}</p>
+          <p className={MODEL_BUBBLE}>{GREETING}</p>
 
           {messages.map((message, index) => (
-            <p
-              key={index}
-              className={
-                message.role === "user"
-                  ? "whitespace-pre-wrap text-ink"
-                  : "whitespace-pre-wrap border-l-2 border-accent pl-3 text-ink"
-              }
-            >
+            <p key={index} className={message.role === "user" ? USER_BUBBLE : MODEL_BUBBLE}>
               <span className="sr-only">
                 {message.role === "user" ? "You said: " : "Assistant said: "}
               </span>
@@ -159,7 +188,7 @@ export function ChatWidget() {
             </p>
           ))}
 
-          {isSending && <p className="text-muted">Thinking…</p>}
+          {isSending && <p className={THINKING_BUBBLE}>Thinking…</p>}
 
           {error && (
             <div className="space-y-2">
