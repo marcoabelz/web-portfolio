@@ -1,6 +1,19 @@
 export const RATE_LIMIT_MAX = 5;
 export const RATE_LIMIT_WINDOW_MS = 60_000;
 
+// `x-real-ip` is a single value the edge proxy writes, so a caller cannot prepend to it.
+// `x-forwarded-for` is a client-appendable list, hence the fallback rather than the default.
+// Takes a header reader so a Request and next/headers() are limited by the same rule.
+export function clientKey(requestHeaders: Readonly<{ get(name: string): string | null }>): string {
+  const realIp = requestHeaders.get("x-real-ip")?.trim();
+
+  if (realIp) {
+    return realIp;
+  }
+
+  return requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+}
+
 // Sized so honest traffic never reaches it: at 1000 a single spoofed-header flood
 // could fill the map and lock out real visitors for a whole window.
 export const MAX_TRACKED_KEYS = 50_000;

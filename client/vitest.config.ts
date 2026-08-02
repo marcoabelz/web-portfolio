@@ -4,6 +4,10 @@ import { defineConfig } from "vitest/config";
 const projectRoot = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
+  // tsconfig keeps JSX for Next to compile, which leaves it unparseable here.
+  esbuild: {
+    jsx: "automatic",
+  },
   resolve: {
     alias: {
       "@": `${projectRoot}src`,
@@ -11,6 +15,6 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
   },
 });

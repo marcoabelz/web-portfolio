@@ -418,6 +418,10 @@ async function checkRobots(origin) {
   expect(contentType.toLowerCase().startsWith("text/plain"), route, `expected text/plain, received ${contentType || "no content-type"}`);
   expect(sitemapLines.length === 1, route, `expected exactly one Sitemap directive, found ${sitemapLines.length}`);
   expect(sitemapLines[0] === expectedSitemap, route, `expected Sitemap ${expectedSitemap}, received ${sitemapLines[0] || "none"}`);
+  // The content editor is password-protected, but crawlers should not be handing its
+  // address to scanners either. Whether /admin itself answers depends on the admin
+  // environment variables, so only the directive is asserted here.
+  expect(/^Disallow:\s*\/admin\s*$/im.test(body), route, "expected /admin to be disallowed");
 }
 
 async function checkSitemap(origin) {

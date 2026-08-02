@@ -19,6 +19,12 @@ describe("locale middleware matcher", () => {
     expect(middlewareMatches("/work/palmgrade")).toBe(true);
   });
 
+  it("does not localize the content editor", () => {
+    // Left in, next-intl would send /admin to /en/admin, which is not a route.
+    expect(middlewareMatches("/admin")).toBe(false);
+    expect(middlewareMatches("/admin/")).toBe(false);
+  });
+
   it("does not localize metadata and static asset routes", () => {
     expect(middlewareMatches("/opengraph-image")).toBe(false);
     expect(middlewareMatches("/robots.txt")).toBe(false);

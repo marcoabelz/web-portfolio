@@ -2,25 +2,11 @@ import { NextResponse } from "next/server";
 
 import { generateReply, type GeminiTurn } from "@/lib/chat/gemini";
 import { stripDelimiters, SYSTEM_INSTRUCTION, wrapUserMessage } from "@/lib/chat/prompt";
-import { checkRateLimit } from "@/lib/chat/rate-limit";
+import { checkRateLimit, clientKey } from "@/lib/chat/rate-limit";
 import { parseChatRequest } from "@/lib/chat/validate";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-function clientKey(request: Request): string {
-  // `x-real-ip` is a single value the edge proxy writes, so a caller cannot prepend to it.
-  // `x-forwarded-for` is a client-appendable list, hence the fallback rather than the default.
-  const realIp = request.headers.get("x-real-ip")?.trim();
-
-  if (realIp) {
-    return realIp;
-  }
-
-  const forwarded = request.headers.get("x-forwarded-for");
-
-  return forwarded?.split(",")[0]?.trim() || "unknown";
-}
 
 // A browser sends Sec-Fetch-Site on every fetch; only "same-origin" and "none" come from
 // this site's own pages. Blocking the rest stops a drive-by page on another domain from
@@ -58,7 +44,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
 
-  if (!checkRateLimit(clientKey(request))) {
+  if (!checkRateLimit(clientKey(request.headers))) {
     return NextResponse.json(
       { error: "Too many messages. Please wait a minute before asking again." },
       { status: 429 },

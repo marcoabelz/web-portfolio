@@ -49,6 +49,26 @@ than an error. Never rename it to `NEXT_PUBLIC_*`. The abuse controls in `src/li
 (input validation, per-IP rate limiting, prompt delimiting, history sanitising) each exist to
 close a specific hole — read the README section before simplifying any of them.
 
+## Content editor
+
+`/admin` is the one surface that changes copy without a code change: it edits the six
+message files and commits them through the GitHub API. Read the README section "Content
+editor" before touching it. What is easy to get wrong:
+
+- `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, `GITHUB_TOKEN`, and `GITHUB_REPO`
+  are required together and server-side only. A missing one makes `/admin` a 404 on
+  purpose, the same fail-closed shape as `GEMINI_API_KEY`. Never rename them to
+  `NEXT_PUBLIC_*`.
+- `middleware.ts` excludes `/admin` next to `/api`. Without that exclusion the locale
+  middleware redirects `/admin` to `/en/admin`, which does not exist; `middleware.test.ts`
+  fails if it drifts.
+- en/id parity is enforced twice: `Editor.tsx` applies every add and remove to both locales
+  at once, and `checkDraft` re-verifies leaf paths and ICU placeholders on the server
+  because a server action is a public endpoint. Neither layer is redundant.
+- `Fields.tsx` holds the recursive form renderer only so it can be render-tested without
+  mocking the server actions — `Editor.tsx` imports `./actions`, which `Fields.test.tsx`
+  cannot load.
+
 ## Case study screenshots
 
 `ScreenshotGallery.tsx` is the only client component under `src/components/work`. It shows

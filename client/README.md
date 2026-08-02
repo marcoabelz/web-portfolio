@@ -65,6 +65,33 @@ Abuse handling, in `src/lib/chat/`:
 
 Known limitation: the widget's own interface copy (button labels, greeting, placeholder) is English on both locales. Replies still follow the visitor's language because the system instruction asks for it, but the chrome is not yet wired into the message catalogs.
 
+## Content editor
+
+`/admin` edits the six message files in the browser and commits the result, so changing copy needs neither an editor nor a manual deploy: save, and the host rebuilds the site from the new commit in about a minute. Git is the storage — there is no database.
+
+Setup:
+
+1. Create a fine-grained personal access token at https://github.com/settings/personal-access-tokens, with repository access limited to this repository and one permission: `Contents: read and write`.
+2. Fill in `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` (`openssl rand -base64 32`), `GITHUB_TOKEN`, and `GITHUB_REPO` (`owner/repo`) in `.env.local`. `GITHUB_BRANCH` is optional and defaults to `main`.
+3. Deploying: add the same variables in the hosting dashboard (Vercel → Project → Settings → Environment Variables). They take effect on the next deployment. Never prefix any of them with `NEXT_PUBLIC_`.
+
+Without all five the editor fails closed like the chat widget: `/admin` is a 404 rather than a login box that could never succeed. `src/middleware.ts` skips `/admin` so it is never localized, and `robots.ts` disallows it.
+
+What it can change:
+
+- Wording only — every string in `messages/en` and `messages/id`, the two languages side by side. The form is generated from the JSON, so a key added to a message file becomes editable with no change to the editor.
+- Adding a project, or changing a slug, date, URL, or technology list, is still a code change in `src/data`. Those are invariant facts and are deliberately not editable here.
+- Add and remove on a list apply to both languages at once, so the en/id parity the tests require cannot be broken from the editor. Adding is offered only where an entry already exists, since an empty list gives no shape to copy.
+
+Before committing, `checkDraft` in `src/lib/admin/draft.ts` re-checks the submitted draft against the repository: same shape, no blank strings, same leaf count in both languages, same ICU placeholders. A draft that fails is rejected with the reason and nothing is written. One save is one commit across all six files, so it is one rebuild rather than six.
+
+Sign-in handling:
+
+- The session is an expiry stamp signed with HMAC and kept in a cookie — no session store to run. It is `httpOnly`, `SameSite=Lax`, scoped to `/admin`, `Secure` in production, and lasts 8 hours.
+- Credentials are compared through SHA-256 digests, so the comparison is constant-time and leaks no length, and both comparisons always run.
+- Sign-in reuses the chat widget's per-IP limiter, so password guessing is throttled at the same 5 attempts per minute.
+- `saveDraft` re-checks the session itself. Server actions are public endpoints; the page having rendered the editor is not proof the caller is signed in.
+
 ## Localization maintenance
 
 English is the default locale and keeps unprefixed URLs. Indonesian uses the `/id` prefix. Routing is configured in `src/i18n/routing.ts`; path normalization and language alternates live in `src/i18n/locale.ts`.
