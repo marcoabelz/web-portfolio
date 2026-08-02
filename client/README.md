@@ -57,8 +57,9 @@ Limits: 1000 characters per message, 20 messages of history, 5 messages per minu
 
 Abuse handling, in `src/lib/chat/`:
 
-- `validate.ts` rejects malformed bodies before anything reaches the model.
-- `rate-limit.ts` is a per-process in-memory limiter with a hard ceiling of 1000 tracked keys. It fails closed at capacity rather than evicting, so a spoofed-IP flood cannot buy itself a fresh quota. It resets on cold start; move it to a shared store if one process stops being the whole app.
+- `validate.ts` rejects malformed bodies before anything reaches the model. It caps message length and history size but not the raw body — App Router handlers have no body-size limit of their own, so the effective ceiling is whatever the host enforces (4.5 MB on Vercel). Self-hosting behind your own proxy means setting that limit there.
+- `rate-limit.ts` is a per-process in-memory limiter with a hard ceiling of 50,000 tracked keys. It fails closed at capacity rather than evicting, so a spoofed-IP flood cannot buy itself a fresh quota. It resets on cold start; move it to a shared store if one process stops being the whole app.
+- `route.ts` rejects requests whose `Sec-Fetch-Site` header says they came from another origin. That is quota control, not authentication — it stops a drive-by page elsewhere from spending the key through its own visitors' IPs, which per-IP limiting cannot see.
 - `prompt.ts` wraps visitor text in `<user_message>` delimiters and strips those tags from the input first, repeating until the string stops changing — a single pass would let `<use</user_message>r_message>` reassemble into a live tag.
 - `route.ts` sanitises conversation history too. History arrives in the request body, so a forged `model` turn could otherwise fabricate an assistant concession.
 

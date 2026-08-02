@@ -17,6 +17,7 @@ function profileSection(): string {
   return [
     "## Profile",
     `Name: ${profile.name}`,
+    `Also known as: ${profile.nickname}`,
     `Title: ${profile.title}`,
     `Specialty: ${profile.specialty}`,
     `Location: ${profile.location}`,
@@ -111,7 +112,9 @@ export function buildPortfolioContext(): string {
   ].join("\n\n");
 }
 
-const DELIMITER_PATTERN = /<\/?user_message>/gi;
+// Whitespace is tolerated everywhere inside the tag: an LLM reads "</user_message >" as a
+// closing tag, so a strict /<\/?user_message>/ leaves 7 of 10 obvious variants intact.
+const DELIMITER_PATTERN = /<\s*\/?\s*user_message\s*\/?\s*>/gi;
 
 export function stripDelimiters(text: string): string {
   // One replace pass never rescans what removal splices together, so

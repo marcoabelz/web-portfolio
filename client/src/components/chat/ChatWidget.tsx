@@ -19,6 +19,7 @@ export function ChatWidget() {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   const askedCount = messages.filter((message) => message.role === "user").length;
   const capReached = askedCount >= SESSION_MESSAGE_CAP;
@@ -35,7 +36,12 @@ export function ChatWidget() {
     if (!isOpen) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsOpen(false);
+      if (event.key !== "Escape") return;
+
+      setIsOpen(false);
+      // The panel that held focus is about to be hidden; without this, focus falls back
+      // to <body> and a keyboard user restarts the tab order from the top of the page.
+      toggleRef.current?.focus();
     };
 
     window.addEventListener("keydown", onKeyDown);
@@ -98,6 +104,7 @@ export function ChatWidget() {
   return (
     <>
       <button
+        ref={toggleRef}
         type="button"
         onClick={() => setIsOpen((current) => !current)}
         aria-label={isOpen ? "Close chat" : "Ask about Marco"}
@@ -114,11 +121,14 @@ export function ChatWidget() {
 
       {/* `flex` is applied only while open: Tailwind's preflight [hidden] rule and the .flex
           utility have equal specificity, and utilities are emitted last, so a permanent
-          `flex` class would beat the hidden attribute and pin the panel open. */}
+          `flex` class would beat the hidden attribute and pin the panel open.
+          The bottom offset clears ScrollToTop (bottom-20 / md:bottom-24, both size-11):
+          the panel outranks it on z-index, so any overlap would hide a button that is
+          still in the tab order. */}
       <div
         id="chat-panel"
         hidden={!isOpen}
-        className={`fixed bottom-20 right-5 z-50 ${isOpen ? "flex" : ""} h-[26rem] w-[min(22rem,calc(100vw-2.5rem))] flex-col border border-line bg-surface shadow-editorial md:bottom-24 md:right-8`}
+        className={`fixed bottom-32 right-5 z-50 ${isOpen ? "flex" : ""} h-[26rem] max-h-[calc(100vh-9rem)] w-[min(22rem,calc(100vw-2.5rem))] flex-col border border-line bg-surface shadow-editorial md:bottom-36 md:max-h-[calc(100vh-10rem)] md:right-8`}
       >
         <div className="border-b border-line px-4 py-3">
           <p className="font-mono text-xs uppercase tracking-widest text-muted">Ask about Marco</p>

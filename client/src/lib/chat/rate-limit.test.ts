@@ -2,10 +2,18 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import {
   checkRateLimit,
+  MAX_TRACKED_KEYS,
   RATE_LIMIT_MAX,
   RATE_LIMIT_WINDOW_MS,
   resetRateLimit,
 } from "@/lib/chat/rate-limit";
+
+// Fills the map to exactly MAX_TRACKED_KEYS, counting keys the test already tracked.
+function fillToCapacity(now: number, alreadyTracked: number): void {
+  for (let index = 0; index < MAX_TRACKED_KEYS - alreadyTracked; index += 1) {
+    checkRateLimit(`filler-${index}`, now);
+  }
+}
 
 describe("checkRateLimit", () => {
   beforeEach(() => {
@@ -53,12 +61,8 @@ describe("checkRateLimit", () => {
       checkRateLimit(trackedIp, now);
     }
 
-    // Insert MAX_TRACKED_KEYS - 1 more distinct IPs to reach capacity
-    for (let i = 0; i < 999; i += 1) {
-      checkRateLimit(`1.0.0.${i}`, now);
-    }
+    fillToCapacity(now, 1);
 
-    // Now the map has 1000 entries. We're at capacity.
     // A new key should be refused (fail closed)
     expect(checkRateLimit("20.0.0.1", now)).toBe(false);
 
@@ -75,13 +79,9 @@ describe("checkRateLimit", () => {
       checkRateLimit("10.0.0.1", now);
     }
 
-    // Insert MAX_TRACKED_KEYS - 1 more distinct IPs to reach capacity
-    for (let i = 0; i < 999; i += 1) {
-      checkRateLimit(`1.0.0.${i}`, now);
-    }
+    fillToCapacity(now, 1);
 
-    // Now we're at capacity (1000 keys). All entries are stale at this time.
-    // A new key should be accepted (pruneStaleKeys removed all entries)
+    // At capacity, but every entry is stale by staleTime, so pruning reclaims room.
     expect(checkRateLimit("20.0.0.1", staleTime)).toBe(true);
   });
 });

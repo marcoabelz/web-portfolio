@@ -83,4 +83,22 @@ describe("stripDelimiters", () => {
   it("removes a spliced tag", () => {
     expect(stripDelimiters("<use</user_message>r_message>hi")).toBe("hi");
   });
+
+  it.each([
+    "</user_message >",
+    "< /user_message>",
+    "</ user_message>",
+    "</user_message\n>",
+    "</user_message\t>",
+    "</user_message/>",
+    "<  /  user_message  >",
+  ])("removes the whitespace variant %j", (tag) => {
+    expect(stripDelimiters(`${tag}hi`)).toBe("hi");
+  });
+
+  it("leaves benign angle brackets and the bare word alone", () => {
+    const benign = "Is a < b > c? user_message is a word.";
+
+    expect(stripDelimiters(benign)).toBe(benign);
+  });
 });

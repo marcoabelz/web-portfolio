@@ -1,7 +1,9 @@
 export const RATE_LIMIT_MAX = 5;
 export const RATE_LIMIT_WINDOW_MS = 60_000;
 
-const MAX_TRACKED_KEYS = 1000;
+// Sized so honest traffic never reaches it: at 1000 a single spoofed-header flood
+// could fill the map and lock out real visitors for a whole window.
+export const MAX_TRACKED_KEYS = 50_000;
 
 const hits = new Map<string, number[]>();
 
