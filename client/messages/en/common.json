@@ -1,0 +1,118 @@
+{
+  "navigation": {
+    "work": "Project",
+    "experience": "Experience",
+    "skills": "Skills",
+    "contact": "Contact",
+    "resume": "Resume"
+  },
+  "actions": {
+    "viewSelectedWork": "View Selected Work",
+    "downloadResume": "Download Resume",
+    "getInTouch": "Get in Touch",
+    "browseEarlierProjects": "Browse earlier projects",
+    "backToSelectedWork": "Back",
+    "viewCaseStudy": "View case study",
+    "liveProduct": "View app",
+    "repository": "Repository"
+  },
+  "sections": {
+    "selectedWork": {
+      "eyebrow": "Featured Projects",
+      "title": "Systems running in production.",
+      "description": "Five products spanning B2B SaaS, computer vision, recruiting, enterprise operations, and industrial monitoring."
+    },
+    "experience": {
+      "eyebrow": "Experience",
+      "title": "From QA to Full-Stack Engineer."
+    },
+    "skills": {
+      "eyebrow": "Technical Skills",
+      "title": "Tools I build with."
+    },
+    "credentials": {
+      "eyebrow": "Education & Languages",
+      "title": "Education and languages.",
+      "education": "Education",
+      "languages": "Languages"
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "title": "Let's build software that solves an operational problem."
+    },
+    "archive": {
+      "eyebrow": "Earlier work",
+      "title": "Project Archive",
+      "description": "A selection of earlier commercial products and training projects, kept here as a record of the work."
+    }
+  },
+  "caseStudy": {
+    "context": "Context",
+    "role": "Role",
+    "relatedWork": "Other apps",
+    "sections": {
+      "overview": "About the app",
+      "features": "Features",
+      "role": "Responsibilities",
+      "stack": "Technology stack",
+      "screenshots": "Screenshots"
+    }
+  },
+  "labels": {
+    "basedIn": "Based in {location}",
+    "availability": "Availability",
+    "privateProject": "Private project",
+    "privateProductionSystem": "Private production system",
+    "repositoryUnavailable": "Repository unavailable",
+    "sanitizedVisual": "Sanitized visual/cover",
+    "sanitizedVisualDescription": "Representative visual published without confidential product data.",
+    "signalIntelligence": "Signal intelligence",
+    "industrialVision": "Industrial vision",
+    "talentPipeline": "Talent pipeline",
+    "plantTelemetry": "Plant telemetry",
+    "portfolio": "Portfolio",
+    "projectArchiveMetadataTitle": "Project Archive",
+    "projectArchiveMetadataDescription": "Earlier commercial and training projects by {name}.",
+    "caseStudyMetadataTitle": "{projectName} Case Study",
+    "socialImageEyebrow": "Product engineering / systems / delivery",
+    "socialImageDescription": "Production-grade SaaS, AI systems, and infrastructure—from interface to deployment.",
+    "socialImageCategory": "WEB",
+    "siteMetadataTitle": "{name} | Full-Stack Engineer",
+    "siteMetadataDescription": "Full-Stack Engineer specializing in backend systems, AI-powered products, computer vision, browser automation, and production infrastructure."
+  },
+  "accessibility": {
+    "skipToMainContent": "Skip to main content",
+    "scrollToTop": "Scroll to top",
+    "home": "{name}, home",
+    "logo": "{name}, home",
+    "primaryNavigation": "Primary navigation",
+    "mobileNavigation": "Mobile navigation",
+    "openNavigation": "Open navigation",
+    "closeNavigation": "Close navigation",
+    "socialLinks": "Social links",
+    "emailMarco": "Email {name}",
+    "marcoOnSocial": "{name} on {platform}",
+    "contactOnSocial": "Contact {name} on {platform}",
+    "technologyStack": "Technology stack",
+    "experienceTechnologyStack": "{company} technology stack",
+    "projectHighlights": "Project highlights",
+    "openLiveProduct": "View the {projectName} app",
+    "enlargeScreenshot": "Enlarge screenshot",
+    "closeScreenshot": "Close screenshot",
+    "openRepository": "Open {projectName} repository on GitHub",
+    "opensInNewTab": "opens in a new tab",
+    "switchToLightMode": "Switch to light mode",
+    "switchToDarkMode": "Switch to dark mode",
+    "toggleColorTheme": "Toggle color theme"
+  },
+  "language": {
+    "current": "English",
+    "english": "English",
+    "indonesian": "Indonesia",
+    "switchTo": "Switch language to {language}",
+    "selector": "Language"
+  },
+  "footer": {
+    "copyright": "© {year} {name}"
+  }
+}

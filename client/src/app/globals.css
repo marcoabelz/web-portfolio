@@ -1,36 +1,122 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
+@layer base {
+  :root {
+    color-scheme: light;
+    --canvas: 247 247 244;
+    --surface: 255 255 252;
+    --elevated: 240 244 248;
+    --ink: 15 23 42;
+    --muted: 71 85 105;
+    --line: 203 213 225;
+    --accent: 37 99 235;
+    --accent-strong: 29 78 216;
+    --shadow-editorial: 0 18px 50px rgb(15 23 42 / 0.08);
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --canvas: 8 15 29;
+    --surface: 15 25 43;
+    --elevated: 23 37 61;
+    --ink: 238 242 247;
+    --muted: 148 163 184;
+    --line: 51 65 85;
+    --accent: 96 165 250;
+    --accent-strong: 147 197 253;
+    --shadow-editorial: 0 20px 60px rgb(2 6 23 / 0.42);
+  }
+
+  * {
+    @apply border-line;
+  }
+
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    min-width: 320px;
+    overflow-x: hidden;
+    @apply bg-canvas text-ink;
+  }
+
+  ::selection {
+    background-color: rgb(var(--accent) / 0.18);
+  }
+
+  :focus-visible {
+    outline: 3px solid rgb(var(--accent));
+    outline-offset: 3px;
+  }
 }
 
-body {
-  font-family: "Roboto", sans-serif;
+@layer components {
+  .skip-link {
+    @apply fixed left-4 top-3 z-[100] -translate-y-20 rounded-md bg-ink px-4 py-2 text-sm font-semibold text-canvas transition-transform;
+  }
+
+  .skip-link:focus {
+    @apply translate-y-0;
+  }
+
+  .section-space {
+    @apply py-20 md:py-28 lg:py-32;
+  }
+
+  .eyebrow {
+    @apply font-mono text-xs font-semibold uppercase tracking-[0.22em] text-accent;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .editorial-rule {
+    @apply border-t border-line;
+  }
+
+  .reveal-section.reveal-ready {
+    opacity: 0;
+    transform: translate3d(0, 2rem, 0);
+    transition:
+      opacity 620ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .reveal-section.reveal-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    will-change: auto;
+  }
 }
 
-.pre-title {
-  text-transform: uppercase;
-  letter-spacing: 0.5rem;
-  color: #0369a1;
-  position: relative;
-  width: fit-content;
-  font-weight: 400;
-  font-size: 0.9rem;
-}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 
-.pictures {
-  display: flex;
-  gap: 5;
-  overflow-x: auto;
-  white-space: nowrap;
-  max-width: max-content !important;
-}
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 
-.mobile {
-  max-width: fit-content;
-  height: auto;
+  .reveal-section.reveal-ready,
+  .reveal-section.reveal-visible {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

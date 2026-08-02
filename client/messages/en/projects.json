@@ -1,0 +1,218 @@
+{
+  "selected": {
+    "satellyte": {
+      "descriptor": "AI Sales Intelligence Platform",
+      "contextLabel": "Production",
+      "role": "Full-Stack Engineer",
+      "outcome": "Turns public buying signals into enriched, scored leads for B2B revenue teams.",
+      "highlights": [
+        "10+ buying-signal strategies",
+        "Multi-provider lead enrichment",
+        "Production API and automation workflows"
+      ],
+      "cover": {
+        "alt": "Abstract signal map representing Satellyte lead intelligence workflows"
+      },
+      "screenshots": [
+        "Signal radars, each with its own ICP, lead count, and run status.",
+        "Lead table with score, signal type, source radar, enriched email and phone, and status.",
+        "AI discovery turning a plain-language prompt into matching companies.",
+        "Company drawer listing decision-makers grouped by seniority.",
+        "Integration settings for Slack, HeyReach, Instantly, and a custom webhook API."
+      ],
+      "caseStudy": {
+        "overview": [
+          "Satellyte is an AI-powered B2B sales intelligence platform. It watches public buying signals, turns them into scored leads with contact data already attached, and pushes those leads into the tools a revenue team already uses."
+        ],
+        "features": [
+          "Signal radars that run 10+ buying-signal strategies continuously in the background.",
+          "A lead workspace showing score, signal type, source radar, location, and status for every lead.",
+          "Multi-provider contact enrichment with fallbacks, so one provider failing does not empty the result.",
+          "AI discovery: describe the company or person you want in plain language and get matching results.",
+          "Company view that lists decision-makers by seniority and can go find more of them.",
+          "Integrations with Slack, HeyReach, and Instantly, plus a custom webhook API.",
+          "LinkedIn engagement automation and AI-assisted content workflows.",
+          "Credit-metered public REST API, Stripe billing with idempotent webhooks, and Docker/GHCR delivery."
+        ],
+        "responsibilities": [
+          "Built the Next.js product interface, from the radar and lead workspaces to the settings surface.",
+          "Built the Fastify services, the BullMQ signal engine, and the background jobs behind every long-running task.",
+          "Orchestrated the enrichment providers behind one normalized workflow with fallbacks.",
+          "Built the browser automation layer, including per-account safety limits.",
+          "Built the public API, its credit metering, authentication, and rate limiting.",
+          "Owned production delivery through Docker, GHCR, and GitHub Actions."
+        ]
+      }
+    },
+    "palmgrade": {
+      "descriptor": "Industrial Computer Vision System",
+      "contextLabel": "Production",
+      "role": "Full-Stack Engineer",
+      "outcome": "Grades palm fruit from three live industrial camera feeds and surfaces results to operators in real time.",
+      "highlights": [
+        "Three concurrent camera feeds",
+        "Three-line operator dashboard",
+        "Offline-tolerant event delivery"
+      ],
+      "cover": {
+        "alt": "Abstract camera frames and detection boxes representing Palmgrade computer vision"
+      },
+      "caseStudy": {
+        "overview": [
+          "Palmgrade grades palm fruit as it passes three production camera feeds, and puts the result in front of factory operators while the batch is still on the line."
+        ],
+        "features": [
+          "Live inference on three camera feeds at once, using YOLO, OpenCV, and TensorRT behind a FastAPI service.",
+          "Operator dashboard covering all three production lines, updated live over Server-Sent Events.",
+          "AI capture viewer for reviewing exactly what the model saw on a graded batch.",
+          "Role-based access separating operators from supervisors.",
+          "Offline-tolerant event delivery: local buffering and batch sync with UUID idempotency keys, so a retry never duplicates a reading."
+        ],
+        "responsibilities": [
+          "Built the Python inference service around the vision models and the camera pipeline.",
+          "Built the TypeScript API, the event path, and the role-based access rules.",
+          "Built the Next.js operator dashboard and the AI capture viewer.",
+          "Designed the buffering and synchronization strategy for unstable factory connectivity.",
+          "Packaged the stack as versioned containers for deployment inside the plant."
+        ]
+      }
+    },
+    "ai-recruitment-platform": {
+      "descriptor": "Multi-Tenant Hiring Workflow",
+      "contextLabel": "Commercial",
+      "role": "Full-Stack Engineer",
+      "outcome": "Combines applicant screening, voice interviews, recruiter workflows, and usage-based billing in one product.",
+      "highlights": [
+        "AI CV screening",
+        "Voice-based AI interviews",
+        "Multi-tenant billing controls"
+      ],
+      "cover": {
+        "alt": "Abstract candidate pipeline representing the AI recruitment platform"
+      },
+      "caseStudy": {
+        "overview": [
+          "A multi-tenant recruitment product that carries hiring from job setup and candidate intake through screening, interviews, and subscription billing, without splitting the process across separate tools."
+        ],
+        "features": [
+          "Job management with drag-and-drop candidate pipelines.",
+          "AI CV screening that returns structured, reviewable scores instead of one opaque verdict.",
+          "Voice-based AI interviews, with results attached to the candidate record.",
+          "Interview scheduling and a recruiter dashboard for the whole pipeline.",
+          "Stripe checkout, plans, usage metering, and webhooks that cannot be applied twice.",
+          "Tenant and role boundaries enforced through JWT, with Redis caching on high-read paths."
+        ],
+        "responsibilities": [
+          "Built the layered TypeScript backend and the tenant data boundaries.",
+          "Built the JWT role model, the caching layer, and the public API surface.",
+          "Built the AI screening and voice interview workflows, and the structured results they persist.",
+          "Integrated Stripe billing end to end, including idempotent webhook processing.",
+          "Built the recruiter-facing dashboard."
+        ]
+      }
+    },
+    "internal-erp-platform": {
+      "descriptor": "Connected Operations System",
+      "contextLabel": "Internal",
+      "role": "Full-Stack Developer",
+      "outcome": "Connects Sales, Purchasing, Inventory, and Production around one consistent operational flow.",
+      "highlights": [
+        "Cross-module document flows",
+        "Role-based operational access",
+        "Search, pagination, and exports"
+      ],
+      "cover": {
+        "alt": "Sanitized ERP dashboard showing operational modules"
+      },
+      "caseStudy": {
+        "overview": [
+          "An internal ERP platform that connects the daily Sales, Purchasing, Inventory, and Production processes so one operational document flow runs across all four departments."
+        ],
+        "features": [
+          "Sales and purchasing documents that follow one consistent business flow.",
+          "Inventory and production modules tied to those documents.",
+          "Role-based access, so each department only reaches what it should.",
+          "Search, filtering, and pagination across every module.",
+          "Spreadsheet exports and cross-document navigation for traceability."
+        ],
+        "responsibilities": [
+          "Built the frontend modules and the shared interaction patterns reused across them.",
+          "Developed the REST API behavior behind each operational document.",
+          "Modeled the data across PostgreSQL and MongoDB, per record shape.",
+          "Translated the staff's real workflows into product features.",
+          "Kept workflow rules in backend services rather than scattered across the UI."
+        ]
+      }
+    },
+    "factory-monitoring-system": {
+      "descriptor": "Industrial Sensor Data Platform",
+      "contextLabel": "Production",
+      "role": "Full-Stack Engineer",
+      "outcome": "Moves plant sensor readings from MQTT ingestion to dashboards and scheduled mobile reports.",
+      "highlights": [
+        "MQTT-to-TimescaleDB pipeline",
+        "Grafana operational dashboards",
+        "Telegram reports and exports"
+      ],
+      "cover": {
+        "alt": "Abstract sensor traces representing the factory monitoring system"
+      },
+      "caseStudy": {
+        "overview": [
+          "A factory monitoring stack that collects, stores, visualizes, and reports plant sensor data, so supervisors get operational visibility from their phone instead of the control room."
+        ],
+        "features": [
+          "Containerized pipeline from MQTT through Node-RED into TimescaleDB.",
+          "Grafana dashboards for live plant conditions.",
+          "Scheduled chart summaries delivered through Telegram.",
+          "Excel exports for reporting outside the dashboard.",
+          "Each service restarts independently, so one failure does not take the stack down."
+        ],
+        "responsibilities": [
+          "Connected the MQTT sources to Node-RED processing.",
+          "Set up time-series storage for continuous sensor readings.",
+          "Configured the Grafana views supervisors actually use.",
+          "Built the TypeScript Telegram reporting service and its schedules.",
+          "Packaged the whole stack with Docker Compose."
+        ]
+      }
+    }
+  },
+  "archive": {
+    "nutrical": {
+      "descriptor": "Nutrition intervention planning and procurement calculator with spreadsheet export.",
+      "contextLabel": "Commercial",
+      "coverAlt": "Nutrical nutrition planning interface"
+    },
+    "zamasto": {
+      "descriptor": "Company profile, publishing workflow, custom CMS, and automated contact handling.",
+      "contextLabel": "Commercial",
+      "coverAlt": "Zamasto company profile homepage"
+    },
+    "m-event": {
+      "descriptor": "Mobile event discovery, nearby search, ticketing, and Midtrans payment experience.",
+      "contextLabel": "Training",
+      "coverAlt": "M Event mobile event discovery screen"
+    },
+    "xiaopee": {
+      "descriptor": "Responsive product catalogue with infinite search, accounts, details, and wishlists.",
+      "contextLabel": "Training",
+      "coverAlt": "Xiaopee product catalogue homepage"
+    },
+    "instaclone": {
+      "descriptor": "Mobile social feed with authentication, follows, likes, comments, and user search.",
+      "contextLabel": "Training",
+      "coverAlt": "Instaclone mobile social feed"
+    },
+    "chatting-app": {
+      "descriptor": "Browser-based real-time room chat built around Socket.IO events.",
+      "contextLabel": "Training",
+      "coverAlt": "Chatting App real-time conversation board"
+    },
+    "omahucok": {
+      "descriptor": "Hotel booking and CMS workflow with room availability, media, and payments.",
+      "contextLabel": "Training",
+      "coverAlt": "Omahucok hotel booking homepage"
+    }
+  }
+}
