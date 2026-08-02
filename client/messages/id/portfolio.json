@@ -11,9 +11,7 @@
   ],
   "aboutParagraphs": [
     "Full-Stack Engineer dengan pengalaman lebih dari 4 tahun dalam pengembangan software serta quality assurance.",
-
     "Pengalaman saya mencakup pengembangan SaaS B2B, produk berbasis AI, computer vision, sistem perusahaan, pemantauan industri, otomatisasi browser, sistem pembayaran dan penagihan, serta infrastruktur produksi. Saya terbiasa menangani pengembangan produk secara menyeluruh, mulai dari menerjemahkan kebutuhan operasional menjadi rancangan sistem hingga implementasi, deployment, dan menjaga keandalan sistem di lingkungan produksi.",
-
     "Pengalaman saya di bidang QA membentuk pola kerja yang sistematis, khususnya dalam proses debugging, pengujian, ketertelusuran, serta pengembangan perangkat lunak yang andal dan tangguh."
   ],
   "experiences": {
@@ -76,7 +74,7 @@
     "aiAutomation": "AI & Otomasi",
     "infrastructure": "Infrastruktur",
     "industrialIot": "Industri & IoT"
-  },  
+  },
   "education": {
     "hacktiv8": {
       "program": "Full Stack JavaScript Immersive Program",
