@@ -35,8 +35,10 @@ export function ScreenshotGallery({ screenshots, labels }: ScreenshotGalleryProp
         className="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 sm:mt-10"
         role="list"
       >
+        {/* A slide stops short of the full width so the next one peeks in: a touch
+            device hides the scrollbar, and without that edge the row looks static. */}
         {screenshots.map((screenshot) => (
-          <li key={screenshot.src} className="w-[min(100%,42rem)] shrink-0 snap-start">
+          <li key={screenshot.src} className="w-[min(85%,42rem)] shrink-0 snap-start sm:w-[min(100%,42rem)]">
             <button
               type="button"
               onClick={() => setActive(screenshot)}

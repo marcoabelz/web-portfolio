@@ -76,6 +76,21 @@ export function ChatWidget() {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight });
   }, [messages, isSending, error]);
 
+  // On a phone the panel covers most of the screen, so the page behind it is frozen:
+  // scrolling content you cannot see reads as the widget being broken. The blur that
+  // goes with it is the backdrop below, hidden at the same breakpoint.
+  useEffect(() => {
+    if (!isOpen) return;
+    if (!window.matchMedia("(max-width: 767px)").matches) return;
+
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -179,6 +194,15 @@ export function ChatWidget() {
         </div>
       )}
 
+      {isOpen && (
+        <button
+          type="button"
+          onClick={() => setIsOpen(false)}
+          aria-label="Close chat"
+          className="fixed inset-0 z-40 bg-canvas/60 backdrop-blur-sm md:hidden"
+        />
+      )}
+
       <button
         ref={toggleRef}
         type="button"
@@ -189,7 +213,9 @@ export function ChatWidget() {
         aria-label={isOpen ? "Close chat" : "Ask about Abel"}
         aria-expanded={isOpen}
         aria-controls="chat-panel"
-        className="fixed bottom-5 right-5 z-50 inline-flex size-11 items-center justify-center border border-line bg-surface text-ink shadow-lg transition-colors duration-300 hover:border-accent hover:bg-ink hover:text-canvas focus-visible:border-accent motion-reduce:transition-none md:bottom-8 md:right-8"
+        className={`fixed bottom-5 right-5 z-50 inline-flex size-11 items-center justify-center border border-line bg-surface text-ink shadow-lg transition-[opacity,background-color,border-color,color] duration-300 hover:border-accent hover:bg-ink hover:text-canvas hover:opacity-100 focus-visible:border-accent focus-visible:opacity-100 motion-reduce:transition-none md:bottom-8 md:right-8 ${
+          isOpen ? "opacity-100" : "opacity-70"
+        }`}
       >
         {isOpen ? (
           <X className="size-4" strokeWidth={1.8} aria-hidden="true" />
@@ -256,6 +282,9 @@ export function ChatWidget() {
           <label className="sr-only" htmlFor="chat-input">
             Your question
           </label>
+          {/* The input is 16px on a phone: iOS Safari zooms the whole page in when a
+              focused field is any smaller, dropping the reader somewhere they did not
+              ask to be. It drops back to the panel's own scale from sm up. */}
           <input
             id="chat-input"
             ref={inputRef}
@@ -264,7 +293,7 @@ export function ChatWidget() {
             maxLength={MAX_MESSAGE_LENGTH}
             disabled={capReached}
             placeholder={capReached ? "Message limit reached — reload to reset" : "Type a question…"}
-            className="min-h-9 flex-1 bg-transparent px-2 text-sm text-ink placeholder:text-muted focus:outline-none disabled:cursor-not-allowed"
+            className="min-h-9 flex-1 bg-transparent px-2 text-base text-ink placeholder:text-muted focus:outline-none disabled:cursor-not-allowed sm:text-sm"
           />
           <button
             type="submit"

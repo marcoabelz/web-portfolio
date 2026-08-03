@@ -38,8 +38,10 @@ type CaseStudyProps = {
   };
 };
 
+// Hyphenation rides along with the justification so a phone-width column does not
+// open rivers of whitespace; the browser breaks words per the `lang` on <html>.
 const SECTION_CLASS =
-  "grid gap-5 border-t border-line pt-8 sm:pt-10 sm:text-justify lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12";
+  "grid gap-5 border-t border-line pt-8 text-justify hyphens-auto sm:pt-10 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12";
 const SECTION_TITLE_CLASS = "text-lg font-semibold tracking-[-0.02em] text-ink";
 
 function NarrativeSection({
@@ -130,7 +132,7 @@ export function CaseStudy({ project, links, labels }: CaseStudyProps) {
               <p className="mt-4 text-lg font-semibold text-accent sm:text-xl">
                 {project.descriptor}
               </p>
-              <p className="mt-6 max-w-3xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
+              <p className="mt-6 max-w-3xl text-justify hyphens-auto text-base leading-7 text-muted sm:text-lg sm:leading-8">
                 {project.outcome}
               </p>
             </div>
