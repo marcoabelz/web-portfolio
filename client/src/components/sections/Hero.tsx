@@ -55,17 +55,19 @@ export function Hero({ profile, facts, paragraphs, links, labels }: HeroProps) {
           {/* <p className="mt-6 max-w-2xl text-xl font-semibold leading-snug tracking-[-0.02em] text-accent sm:text-2xl">
             {profile.specialty}
           </p> */}
-          {/* Justified text opens rivers of whitespace in a phone-width column,
-              so it only kicks in once the measure is wide enough to absorb it. */}
-          <div className="min-w-0 mt-6 space-y-6 text-base leading-8 text-muted sm:text-lg sm:leading-9 sm:text-justify">
+          {/* Justified text opens rivers of whitespace in a phone-width column, so
+              hyphenation carries it — the browser breaks words per the `lang` on <html>. */}
+          <div className="min-w-0 mt-6 space-y-6 text-justify hyphens-auto text-base leading-8 text-muted sm:text-lg sm:leading-9">
             {paragraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
-          <div className="mt-9 flex min-w-0 flex-wrap gap-3 sm:gap-4">
+          {/* Stacked full-width on a phone: three side-by-side buttons wrap into
+              ragged fragments once the labels are longer than a third of the screen. */}
+          <div className="mt-9 flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
             <Link
               href={links.work}
-              className="inline-flex min-h-11 items-center justify-center gap-2 bg-ink px-5 py-3 text-sm font-semibold text-canvas transition-colors duration-200 hover:bg-accent"
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 bg-ink px-5 py-3 text-sm font-semibold text-canvas transition-colors duration-200 hover:bg-accent sm:w-auto"
             >
               {labels.viewSelectedWork}
               <ArrowDown
@@ -77,7 +79,7 @@ export function Hero({ profile, facts, paragraphs, links, labels }: HeroProps) {
             <a
               href={profile.resumePath}
               download
-              className="inline-flex min-h-11 items-center justify-center gap-2 border border-line bg-surface px-5 py-3 text-sm font-semibold text-ink transition-colors duration-200 hover:border-accent hover:text-accent"
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-line bg-surface px-5 py-3 text-sm font-semibold text-ink transition-colors duration-200 hover:border-accent hover:text-accent sm:w-auto"
             >
               {labels.downloadResume}
               <Download
@@ -88,7 +90,7 @@ export function Hero({ profile, facts, paragraphs, links, labels }: HeroProps) {
             </a>
             <Link
               href={links.contact}
-              className="inline-flex min-h-11 items-center justify-center gap-2 px-3 py-3 text-sm font-semibold text-ink underline decoration-line underline-offset-4 transition-colors duration-200 hover:text-accent"
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 px-3 py-3 text-sm font-semibold text-ink underline decoration-line underline-offset-4 transition-colors duration-200 hover:text-accent sm:w-auto"
             >
               {labels.getInTouch}
               <ArrowRight
@@ -112,8 +114,10 @@ export function Hero({ profile, facts, paragraphs, links, labels }: HeroProps) {
         </div>
       </Container>
       <Container className="">
-        <ol className="flex justify-between">
-          {facts.map((fact, index) => (
+        {/* Three facts side by side on a phone shred into two-word columns, so they
+            stack until there is room for the row. */}
+        <ol className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+          {facts.map((fact) => (
             <li key={fact}>
               <span className="text-sm font-semibold leading-6 text-accent sm:text-base">
                 {fact}

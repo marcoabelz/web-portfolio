@@ -45,7 +45,7 @@ export function ScrollToTop({ label }: { readonly label: string }) {
         tabIndex={isVisible ? 0 : -1}
         className={`fixed bottom-20 right-5 z-40 inline-flex size-11 items-center justify-center border border-line bg-surface text-ink shadow-lg transition-[opacity,transform,background-color,border-color,color] duration-300 hover:border-accent hover:bg-ink hover:text-canvas focus-visible:border-accent motion-reduce:transition-none md:bottom-24 md:right-8 ${
           isVisible
-            ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+            ? "pointer-events-auto translate-y-0 scale-100 opacity-70 hover:opacity-100 focus-visible:opacity-100"
             : "pointer-events-none translate-y-3 scale-95 opacity-0"
         }`}
       >

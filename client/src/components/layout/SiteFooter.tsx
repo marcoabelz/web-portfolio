@@ -17,15 +17,19 @@ type SiteFooterProps = Readonly<{
 export function SiteFooter({ name, socialLinks, labels }: SiteFooterProps) {
   const footerLinks = socialLinks.filter(({ id }) => id !== "whatsApp");
 
+  // The extra bottom padding on a phone keeps the last row of links out from under
+  // the fixed chat and scroll-to-top buttons.
   return (
-    <footer className="border-t border-line py-8">
+    <footer className="border-t border-line pb-24 pt-8 sm:pb-8">
       <Container className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-muted">
+        <p className="text-center text-sm text-muted sm:text-left">
           {labels.copyright}
         </p>
 
         <nav aria-label={labels.socialLinks}>
-          <ul className="flex flex-wrap items-center gap-x-5 gap-y-3">
+          {/* Spread edge to edge on a phone so three short links read as a row rather
+              than a left-hugged clump; natural spacing again beside the copyright. */}
+          <ul className="flex flex-wrap items-center justify-between gap-x-5 gap-y-3 sm:justify-start">
             {footerLinks.map((link) => (
               <li key={link.href}>
                 {link.external ? (
