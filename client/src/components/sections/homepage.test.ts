@@ -6,6 +6,7 @@ vi.mock("next-intl/server", () => ({ setRequestLocale: vi.fn() }));
 
 import LocalizedHome from "@/app/[locale]/page";
 import { ExternalLink } from "@/components/ui/ExternalLink";
+import { getHomeSections } from "@/data/home";
 import { getPortfolioContent } from "@/data/portfolio";
 import { getSelectedProjects } from "@/data/projects";
 import { getMessages } from "@/i18n/messages";
@@ -37,10 +38,12 @@ function decodeVisibleText(html: string): string {
     .trim();
 }
 
+// The way React escapes an attribute value, apostrophes included ("child's" in an alt).
 function escapeAttribute(value: string): string {
   return value
     .replaceAll("&", "&amp;")
     .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#x27;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;");
 }
@@ -63,59 +66,67 @@ describe.each(["en", "id"] as const)("localized %s homepage", (locale) => {
     const { common } = getMessages(locale);
 
     expect(text).toContain(portfolio.profile.title);
-    // The hero leads with the about paragraphs now; profile.introduction and
-    // profile.specialty are only kept as source material for the chat prompt.
-    expect(text).not.toContain(portfolio.profile.introduction);
+    expect(text).toContain(portfolio.profile.intro.lead);
+    expect(text).toContain(portfolio.profile.intro.tail);
 
-    expect(text).toContain(common.actions.viewSelectedWork);
+    expect(text).toContain(common.actions.viewApps);
+    expect(text).toContain(common.actions.startProject);
     expect(text).toContain(common.actions.downloadResume);
-    expect(text).toContain(common.actions.getInTouch);
 
-    expect(text).toContain(common.sections.selectedWork.eyebrow);
-    expect(text).toContain(common.sections.selectedWork.title);
-    expect(text).toContain(common.sections.selectedWork.description);
+    expect(text).toContain(common.sections.apps.title);
+    expect(text).toContain(common.sections.apps.description);
+    expect(text).toContain(common.sections.apps.privateNote);
+    expect(text).toContain(common.sections.apps.live);
     expect(text).toContain(common.actions.viewCaseStudy);
-    expect(text).toContain(common.actions.liveProduct);
-    expect(text).toContain(common.labels.privateProject);
+    expect(text).toContain(common.labels.privateProductionSystem);
     expect(text).toContain(common.actions.browseEarlierProjects);
 
-    expect(text).toContain(common.sections.experience.eyebrow);
+    expect(text).toContain(common.sections.experience.description);
     expect(text).toContain(common.sections.experience.title);
-    expect(text).toContain(common.sections.skills.eyebrow);
-    expect(text).toContain(common.sections.skills.title);
-    expect(text).toContain(common.sections.credentials.eyebrow);
-    expect(text).toContain(common.sections.credentials.title);
-    expect(text).toContain(common.sections.credentials.education);
-    expect(text).toContain(common.sections.credentials.languages);
-    expect(text).toContain(common.sections.contact.eyebrow);
-    expect(text).toContain(common.sections.contact.title);
+    expect(text).toContain(common.sections.stack.title);
+    expect(text).toContain(common.sections.stack.description);
+    expect(text).toContain(common.sections.about.title);
+    expect(text).toContain(common.sections.about.education);
+    expect(text).toContain(common.sections.about.languages);
+    // Every about paragraph renders, whatever the editor makes them say.
+    portfolio.aboutParagraphs.forEach((paragraph) => expect(text).toContain(paragraph));
+    expect(text).toContain(common.sections.contact.label);
+    expect(text).toContain(common.sections.contact.titleLead);
+    expect(text).toContain(common.sections.contact.titleAccent);
 
-    expect(text).toContain(portfolio.aboutFacts[0]);
-    expect(text).toContain(portfolio.aboutParagraphs[0]);
     expect(text).toContain(portfolio.experiences[0].summary);
     expect(text).toContain(portfolio.skillGroups[0].title);
     expect(text).toContain(portfolio.education[0].program);
     expect(text).toContain(portfolio.languages[0].proficiency);
     expect(text).toContain(portfolio.profile.availability);
-    expect(text).toContain(
-      common.labels.basedIn.replace("{location}", portfolio.profile.location),
-    );
 
     projects.forEach((project) => {
       expect(text).toContain(project.contextLabel);
-      expect(text).toContain(project.descriptor);
     });
 
+    const headingIds: Record<string, string> = {
+      apps: "apps-heading",
+      about: "about-heading",
+      services: "services-heading",
+      experience: "experience-heading",
+      stack: "stack-heading",
+      testimonials: "testimonials-heading",
+      lab: "lab-heading",
+      contact: "contact-heading",
+    };
     const headingPositions = [
       "hero-heading",
-      "work-heading",
-      "experience-heading",
-      "skills-heading",
-      "credentials-heading",
-      "contact-heading",
+      ...getHomeSections().map(({ id }) => headingIds[id]),
     ].map((id) => html.indexOf(`id="${id}"`));
     expect(headingPositions.every((position) => position >= 0)).toBe(true);
     expect(headingPositions).toEqual([...headingPositions].sort((a, b) => a - b));
+  });
+
+  it("renders sections in content order with their anchors", async () => {
+    const { html } = await renderHomepage(locale);
+    const ids = Array.from(html.matchAll(/<section[^>]*id="([a-z]+)"/g), (match) => match[1]);
+
+    expect(ids).toEqual(getHomeSections().map((section) => section.id));
   });
 
   it("renders localized routes and the complete homepage accessibility contract", async () => {
@@ -125,7 +136,7 @@ describe.each(["en", "id"] as const)("localized %s homepage", (locale) => {
     const { common } = getMessages(locale);
     const prefix = locale === "en" ? "" : "/id";
 
-    expect(html).toContain(`href="${prefix || "/"}#work"`);
+    expect(html).toContain(`href="${prefix || "/"}#apps"`);
     expect(html).toContain(`href="${prefix || "/"}#contact"`);
     expect(html).toContain(`href="${prefix}/work/archive"`);
     projects.forEach((project) => {
@@ -135,9 +146,6 @@ describe.each(["en", "id"] as const)("localized %s homepage", (locale) => {
       Array.from(html.matchAll(/href="(?:\/id)?\/work\/(?!archive(?:"|\/))[^"#]+"/g)),
     ).toHaveLength(projects.length);
 
-    expect(html).toContain(
-      `aria-label="${escapeAttribute(common.accessibility.projectHighlights)}"`,
-    );
     expect(html).toContain(
       `aria-label="${escapeAttribute(common.accessibility.technologyStack)}"`,
     );
@@ -150,13 +158,17 @@ describe.each(["en", "id"] as const)("localized %s homepage", (locale) => {
       expect(html).toContain(`aria-label="${escapeAttribute(label)}"`);
     });
 
+    // A card with screenshots (featured, or private with dummy data) shows its image
+    // cover when it has one, otherwise its first screenshot; without screenshots it
+    // shows the sanitized cover.
     projects.forEach((project) => {
       expect(project.cover.alt.trim()).not.toBe("");
-      expect(html).toContain(
-        project.cover.kind === "image"
-          ? `alt="${escapeAttribute(project.cover.alt)}"`
-          : `aria-label="${escapeAttribute(project.cover.alt)}"`,
-      );
+      if (project.screenshots.length > 0) {
+        const alt = project.cover.kind === "image" ? project.cover.alt : project.screenshots[0].alt;
+        expect(html).toContain(`alt="${escapeAttribute(alt)}"`);
+      } else {
+        expect(html).toContain(`aria-label="${escapeAttribute(project.cover.alt)}"`);
+      }
     });
 
     const publicProject = projects.find((project) => project.privacy === "public")!;
@@ -165,19 +177,15 @@ describe.each(["en", "id"] as const)("localized %s homepage", (locale) => {
       publicProject.name,
     );
     expect(html).toContain(
-      `aria-label="${escapeAttribute(`${liveProductLabel} (${common.accessibility.opensInNewTab})`)}"`,
+      `aria-label="${escapeAttribute(`${common.sections.apps.live}: ${liveProductLabel} (${common.accessibility.opensInNewTab})`)}"`,
     );
     expect(html).toContain('target="_blank" rel="noopener noreferrer"');
 
+    // Every external social is reachable from the contact section.
     portfolio.socialLinks
       .filter((social) => social.external)
       .forEach((social) => {
-        const contactLabel = common.accessibility.contactOnSocial
-          .replace("{name}", portfolio.profile.name)
-          .replace("{platform}", social.label);
-        expect(html).toContain(
-          `aria-label="${escapeAttribute(`${contactLabel} (${common.accessibility.opensInNewTab})`)}"`,
-        );
+        expect(html).toContain(`href="${escapeAttribute(social.href)}"`);
       });
   });
 });

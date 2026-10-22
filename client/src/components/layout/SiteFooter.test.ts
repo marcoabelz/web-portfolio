@@ -3,32 +3,26 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { getPortfolioContent } from "@/data/portfolio";
 
 (globalThis as typeof globalThis & { React: typeof React }).React = React;
 
 describe("SiteFooter", () => {
-  it("uses stable social IDs and announces external tabs in the active language", () => {
-    const portfolio = getPortfolioContent("id");
-    const socialLinks = portfolio.socialLinks.map((link) =>
-      link.id === "whatsApp" ? { ...link, label: "Pesan instan" as "WhatsApp" } : link,
-    );
+  it("shows the copyright and a back-to-top link that lands on the main content", () => {
     const html = renderToStaticMarkup(React.createElement(SiteFooter, {
-      name: portfolio.profile.name,
-      socialLinks,
-      labels: {
-        copyright: `© 2026 ${portfolio.profile.name}`,
-        socialLinks: "Tautan media sosial",
-        email: `Kirim email kepada ${portfolio.profile.name}`,
-        social: "{name} di {platform}",
-        opensInNewTab: "dibuka di tab baru",
-      },
+      labels: { copyright: "© 2026 Someone", backToTop: "Kembali ke atas" },
     }));
 
-    expect(html).not.toContain("Pesan instan");
-    expect(html).toContain(
-      `aria-label="${portfolio.profile.name} di LinkedIn (dibuka di tab baru)"`,
-    );
-    expect(html).toContain('target="_blank" rel="noopener noreferrer"');
+    expect(html).toContain("© 2026 Someone");
+    expect(html).toContain("Kembali ke atas");
+    expect(html).toContain('href="#main-content"');
+  });
+
+  it("no longer repeats the social links the contact section carries", () => {
+    const html = renderToStaticMarkup(React.createElement(SiteFooter, {
+      labels: { copyright: "© 2026 Someone", backToTop: "Back to top" },
+    }));
+
+    expect(html).not.toContain("_blank");
+    expect(html).not.toContain("mailto:");
   });
 });

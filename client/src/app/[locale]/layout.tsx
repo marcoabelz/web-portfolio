@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Manrope } from "next/font/google";
+import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import type { AbstractIntlMessages } from "next-intl";
@@ -10,6 +10,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { ThemeScript } from "@/components/layout/ThemeScript";
+import { getNavigation } from "@/data/home";
 import { getPortfolioContent } from "@/data/portfolio";
 import { isLocale, languageAlternates, localizePath } from "@/i18n/locale";
 import { getMessages } from "@/i18n/messages";
@@ -37,17 +38,25 @@ function formatMessage(
   );
 }
 
-const manrope = Manrope({
+const display = Inter_Tight({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-manrope",
+  variable: "--font-display",
+  weight: ["600"],
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
+const sans = Inter({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-ibm-plex-mono",
+  variable: "--font-sans",
   weight: ["400", "500", "600"],
+});
+
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-mono",
+  weight: ["400", "500"],
 });
 
 export function generateStaticParams() {
@@ -110,8 +119,9 @@ export default function LocaleLayout({ children, params: { locale } }: Props) {
   setRequestLocale(locale);
 
   const messages = getMessages(locale);
-  const { accessibility, footer, language, navigation: navigationLabels } = messages.common;
-  const { navigation, profile, socialLinks } = getPortfolioContent(locale);
+  const { accessibility, actions, footer, language, navigation: navigationLabels } = messages.common;
+  const { profile } = getPortfolioContent(locale);
+  const navigation = getNavigation(locale);
   const serializedPersonStructuredData = JSON.stringify(
     buildPersonStructuredData(locale),
   ).replace(/</g, "\\u003c");
@@ -120,7 +130,7 @@ export default function LocaleLayout({ children, params: { locale } }: Props) {
     <html
       lang={locale}
       suppressHydrationWarning
-      className={`${manrope.variable} ${ibmPlexMono.variable}`}
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
     >
       <head>
         <ThemeScript />
@@ -158,17 +168,12 @@ export default function LocaleLayout({ children, params: { locale } }: Props) {
             {children}
           </main>
           <SiteFooter
-            name={profile.name}
-            socialLinks={socialLinks}
             labels={{
               copyright: formatMessage(footer.copyright, {
                 year: new Date().getFullYear(),
                 name: profile.name,
               }),
-              socialLinks: accessibility.socialLinks,
-              email: accessibility.emailMarco,
-              social: accessibility.marcoOnSocial,
-              opensInNewTab: accessibility.opensInNewTab,
+              backToTop: actions.backToTop,
             }}
           />
           <ScrollToTop label={accessibility.scrollToTop} />

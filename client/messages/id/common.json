@@ -1,49 +1,89 @@
 {
   "navigation": {
-    "work": "Proyek",
+    "apps": "Aplikasi",
+    "about": "Tentang",
+    "services": "Layanan",
     "experience": "Pengalaman",
-    "skills": "Keahlian",
     "contact": "Kontak",
     "resume": "Resume"
   },
   "actions": {
-    "viewSelectedWork": "Lihat Proyek Saya",
+    "viewApps": "Lihat aplikasi",
+    "startProject": "Mulai proyek",
     "downloadResume": "Unduh CV",
-    "getInTouch": "Hubungi Saya",
     "browseEarlierProjects": "Lihat proyek lama",
     "backToSelectedWork": "Kembali",
     "viewCaseStudy": "Lihat studi kasus",
     "liveProduct": "Lihat aplikasi",
-    "repository": "Repositori"
+    "repository": "Repositori",
+    "emailMe": "Kirim email",
+    "backToTop": "Kembali ke atas"
   },
   "sections": {
-    "selectedWork": {
-      "eyebrow": "Proyek Unggulan",
-      "title": "Sistem yang berjalan di produksi.",
-      "description": "Lima produk: SaaS B2B, computer vision, rekrutmen, operasional perusahaan, hingga monitoring pabrik."
+    "apps": {
+      "title": "Aplikasi pilihan",
+      "description": "Produk yang saya bangun dan jalankan di produksi: SaaS B2B, computer vision, rekrutmen, operasional, dan monitoring industri.",
+      "privateNote": "Sistem privat hanya ditampilkan dengan data demo karangan, tanpa nama klien atau data perusahaan.",
+      "live": "Live"
     },
     "experience": {
-      "eyebrow": "Pengalaman",
-      "title": "Dari QA ke Full-Stack Engineer."
+      "title": "Pengalaman",
+      "description": "Dari QA ke full-stack engineer.",
+      "present": "Sekarang",
+      "showDetails": "Lihat detail",
+      "hideDetails": "Tutup detail",
+      "highlightsLabel": "Sorotan",
+      "stackLabel": "Stack"
     },
-    "skills": {
-      "eyebrow": "Keahlian Teknis",
-      "title": "Perangkat yang saya pakai membangun sistem."
+    "stack": {
+      "title": "Stack",
+      "description": "Alat yang saya pakai di produksi, dikelompokkan per lapisan."
     },
-    "credentials": {
-      "eyebrow": "Pendidikan & Bahasa",
-      "title": "Pendidikan dan bahasa.",
+    "about": {
+      "title": "Tentang",
       "education": "Pendidikan",
       "languages": "Bahasa"
     },
+    "services": {
+      "title": "Layanan",
+      "description": "Untuk tim yang sedang merekrut maupun klien dengan proyek. Engineer yang sama, standar yang sama.",
+      "process": "Proses",
+      "step": "Langkah {number}"
+    },
     "contact": {
-      "eyebrow": "Kontak",
-      "title": "Mari bangun software yang benar-benar menyelesaikan masalah operasional."
+      "label": "Kontak",
+      "titleLead": "Mari bekerja",
+      "titleAccent": "sama.",
+      "hiring": {
+        "label": "Rekrutmen",
+        "title": "Butuh engineer di tim Anda?",
+        "description": "Posisi full-time di full-stack, backend, atau rekayasa produk AI."
+      },
+      "freelance": {
+        "label": "Freelance",
+        "title": "Punya proyek?",
+        "description": "SaaS, fitur AI, dashboard, atau tools internal. Ceritakan kebutuhan Anda."
+      }
     },
     "archive": {
       "eyebrow": "Proyek lama",
       "title": "Arsip Proyek",
-      "description": "Kumpulan produk komersial dan proyek latihan yang pernah saya kerjakan, disimpan sebagai jejak rekam."
+      "description": "Kumpulan produk komersial yang pernah saya kerjakan, disimpan sebagai jejak rekam."
+    },
+    "facts": {
+      "experienceLabel": "Pengalaman",
+      "experienceCaption": "tahun di engineering dan QA",
+      "shippedLabel": "Dirilis",
+      "shippedCaption": "produk, dari SaaS sampai sistem industri",
+      "basedInLabel": "Berbasis di",
+      "dailyStack": "Stack harian"
+    },
+    "testimonials": {
+      "title": "Testimoni"
+    },
+    "lab": {
+      "title": "Lab",
+      "description": "Kode publik yang bisa dibaca siapa saja, termasuk situs ini."
     }
   },
   "caseStudy": {
@@ -59,26 +99,22 @@
     }
   },
   "labels": {
-    "basedIn": "Domisili di {location}",
     "availability": "Status",
-    "privateProject": "Proyek privat",
     "privateProductionSystem": "Sistem produksi privat",
     "repositoryUnavailable": "Repositori tidak dipublikasikan",
     "sanitizedVisual": "Gambar pengganti",
     "sanitizedVisualDescription": "Ilustrasi pengganti yang ditampilkan tanpa data produk yang bersifat rahasia.",
-    "signalIntelligence": "Intelijen sinyal",
-    "industrialVision": "Visi industri",
-    "talentPipeline": "Alur kandidat",
-    "plantTelemetry": "Telemetri pabrik",
     "portfolio": "Portofolio",
     "projectArchiveMetadataTitle": "Arsip Proyek",
-    "projectArchiveMetadataDescription": "Proyek komersial dan latihan yang pernah dikerjakan {name}.",
+    "projectArchiveMetadataDescription": "Proyek komersial yang pernah dikerjakan {name}.",
     "caseStudyMetadataTitle": "Studi Kasus {projectName}",
-    "socialImageEyebrow": "Rekayasa produk / sistem / delivery",
-    "socialImageDescription": "SaaS, sistem AI, dan infrastruktur siap produksi—dari antarmuka hingga deployment.",
-    "socialImageCategory": "WEB",
     "siteMetadataTitle": "{name} | Full-Stack Engineer",
-    "siteMetadataDescription": "Full-Stack Engineer yang fokus pada sistem backend, produk berbasis AI, computer vision, otomasi browser, dan infrastruktur produksi."
+    "siteMetadataDescription": "Full-Stack Engineer yang fokus pada sistem backend, produk berbasis AI, computer vision, otomasi browser, dan infrastruktur produksi.",
+    "workMode": {
+      "onsite": "On-site",
+      "hybrid": "Hybrid",
+      "remote": "Remote"
+    }
   },
   "accessibility": {
     "skipToMainContent": "Langsung ke konten utama",
@@ -89,10 +125,6 @@
     "mobileNavigation": "Navigasi mobile",
     "openNavigation": "Buka menu",
     "closeNavigation": "Tutup menu",
-    "socialLinks": "Tautan sosial",
-    "emailMarco": "Kirim email ke {name}",
-    "marcoOnSocial": "{name} di {platform}",
-    "contactOnSocial": "Hubungi {name} lewat {platform}",
     "technologyStack": "Tech stack",
     "experienceTechnologyStack": "Tech stack {company}",
     "projectHighlights": "Sorotan proyek",

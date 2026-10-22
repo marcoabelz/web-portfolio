@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { once } from "node:events";
 import { createServer } from "node:net";
 import { resolve } from "node:path";
@@ -12,7 +13,6 @@ const DEFAULT_BUILD_TIMEOUT_MS = 180_000;
 const SIGNAL_EXIT_CODES = { SIGINT: 130, SIGTERM: 143 };
 const PROJECT_ROOT = fileURLToPath(new URL("..", import.meta.url));
 const NEXT_BIN = fileURLToPath(new URL("../node_modules/next/dist/bin/next", import.meta.url));
-const CV_PATH = "/Marco_Abel_Zefanya_Full_Stack_Engineer_CV.pdf";
 const UNKNOWN_PATH = "/work/not-a-project";
 const INVALID_LOCALE_PATH = "/fr";
 const configuredBuildTimeout = Number(process.env.ROUTE_SMOKE_BUILD_TIMEOUT_MS);
@@ -20,55 +20,36 @@ const BUILD_TIMEOUT_MS = Number.isInteger(configuredBuildTimeout) && configuredB
   ? configuredBuildTimeout
   : DEFAULT_BUILD_TIMEOUT_MS;
 
-const SELECTED_CASE_STUDIES = [
-  {
-    slug: "satellyte",
-    name: "Satellyte",
-    identifyingText: {
-      en: "AI Sales Intelligence Platform",
-      id: "Platform Intelijen Penjualan AI",
-    },
+// Expectations come from the content files, so a publish from the editor does not
+// leave this manifest asserting copy that no longer exists.
+const readJson = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url), "utf8"));
+const site = readJson("../content/site.json");
+const CV_PATH = site.profile.resumePath;
+const projectFacts = readJson("../content/projects.json");
+const projectCopy = {
+  en: readJson("../messages/en/projects.json"),
+  id: readJson("../messages/id/projects.json"),
+};
+const commonCopy = {
+  en: readJson("../messages/en/common.json"),
+  id: readJson("../messages/id/common.json"),
+};
+
+const SELECTED_CASE_STUDIES = projectFacts.selected.map(({ slug, name }) => ({
+  slug,
+  name,
+  identifyingText: {
+    en: projectCopy.en.selected[slug].descriptor,
+    id: projectCopy.id.selected[slug].descriptor,
   },
-  {
-    slug: "palmgrade",
-    name: "Palmgrade",
-    identifyingText: {
-      en: "Industrial Computer Vision System",
-      id: "Sistem Visi Komputer Industri",
-    },
-  },
-  {
-    slug: "ai-recruitment-platform",
-    name: "AI Recruitment Platform",
-    identifyingText: {
-      en: "Multi-Tenant Hiring Workflow",
-      id: "Alur Perekrutan Multi-Tenant",
-    },
-  },
-  {
-    slug: "internal-erp-platform",
-    name: "Internal ERP Platform",
-    identifyingText: {
-      en: "Connected Operations System",
-      id: "Sistem Operasional Terintegrasi",
-    },
-  },
-  {
-    slug: "factory-monitoring-system",
-    name: "Factory Monitoring System",
-    identifyingText: {
-      en: "Industrial Sensor Data Platform",
-      id: "Platform Data Sensor Industri",
-    },
-  },
-];
+}));
 
 const LOGICAL_ROUTES = [
   {
     path: "/",
     identifyingText: {
-      en: ["Marco Abel Zefanya", "View Selected Work"],
-      id: ["Marco Abel Zefanya", "Lihat Proyek Saya"],
+      en: [site.profile.name, commonCopy.en.actions.viewApps],
+      id: [site.profile.name, commonCopy.id.actions.viewApps],
     },
   },
   ...SELECTED_CASE_STUDIES.map(({ slug, name, identifyingText }) => ({
@@ -81,8 +62,8 @@ const LOGICAL_ROUTES = [
   {
     path: "/work/archive",
     identifyingText: {
-      en: ["Project Archive", "Earlier work"],
-      id: ["Arsip Proyek", "Proyek lama"],
+      en: [commonCopy.en.sections.archive.title, commonCopy.en.sections.archive.eyebrow],
+      id: [commonCopy.id.sections.archive.title, commonCopy.id.sections.archive.eyebrow],
     },
   },
 ];
@@ -176,6 +157,17 @@ export function assertDirectResponse(response, expectedUrl, route) {
 
   expect(!response.redirected, route, "response was redirected");
   expect(response.url === expectedUrl, route, `expected direct response URL ${expectedUrl}, received ${response.url || "none"}`);
+}
+
+// The way React escapes text in server-rendered HTML, so a name like
+// "Event Agency Website & CMS" is found as "Event Agency Website &amp; CMS".
+function escapeHtmlText(value) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#x27;");
 }
 
 function decodeXml(value) {
@@ -402,7 +394,7 @@ async function checkHtmlRoute(origin, { path: route, canonicalPath, locale, iden
   const actualLocale = tagAttributes(htmlTag).lang;
   expect(actualLocale === locale, route, `expected <html lang=${JSON.stringify(locale)}>, received ${JSON.stringify(actualLocale || "none")}`);
   for (const text of identifyingText) {
-    expect(html.includes(text), route, `expected identifying text ${JSON.stringify(text)}`);
+    expect(html.includes(text) || html.includes(escapeHtmlText(text)), route, `expected identifying text ${JSON.stringify(text)}`);
   }
 }
 
@@ -533,6 +525,8 @@ async function runChecks(origin) {
   console.log("PASS /opengraph-image");
   await checkTextAsset(origin, "/icon.svg", "image/svg+xml", "<svg");
   console.log("PASS /icon.svg");
+  await checkTextAsset(origin, "/icons.svg", "image/svg+xml", '<symbol id="si-');
+  console.log("PASS /icons.svg");
   await checkBinary(origin, "/favicon.ico", "image/x-icon", [0x00, 0x00, 0x01, 0x00], 64);
   console.log("PASS /favicon.ico");
   await checkBinary(origin, CV_PATH, "application/pdf", [0x25, 0x50, 0x44, 0x46, 0x2d], 1_024);

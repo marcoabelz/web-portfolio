@@ -31,5 +31,7 @@ describe("locale middleware matcher", () => {
     expect(middlewareMatches("/sitemap.xml")).toBe(false);
     expect(middlewareMatches("/favicon.ico")).toBe(false);
     expect(middlewareMatches("/icon.svg")).toBe(false);
+    // Chips <use> the sprite by URL; a locale redirect would break every logo.
+    expect(middlewareMatches("/icons.svg")).toBe(false);
   });
 });

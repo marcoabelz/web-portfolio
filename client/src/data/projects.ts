@@ -1,123 +1,16 @@
 import { getMessages } from "@/i18n/messages";
 import type { Locale } from "@/i18n/locale";
+import { getContentFiles } from "@/lib/content/load";
 import type {
   ArchiveProject,
-  ArchiveProjectId,
   CaseStudyContent,
-  ProjectContextId,
   SelectedProject,
   SelectedProjectSlug,
 } from "@/types/portfolio";
 
-const SELECTED_PROJECT_FACTS = [
-  {
-    slug: "satellyte",
-    contextId: "production",
-    name: "Satellyte",
-    stack: ["Next.js", "Fastify", "BullMQ", "PostgreSQL", "Redis", "Playwright", "Docker", "GitHub Actions"],
-    privacy: "public",
-    liveUrl: "https://satellyte.ai",
-    cover: { kind: "abstract", variant: "satellyte" },
-  },
-  {
-    slug: "palmgrade",
-    contextId: "production",
-    name: "Palmgrade",
-    stack: ["Python", "FastAPI", "YOLO", "OpenCV", "TensorRT", "Next.js", "PostgreSQL", "Docker"],
-    privacy: "private",
-    cover: { kind: "abstract", variant: "vision" },
-  },
-  {
-    slug: "ai-recruitment-platform",
-    contextId: "commercial",
-    name: "AI Recruitment Platform",
-    stack: ["TypeScript", "Next.js", "Node.js", "PostgreSQL", "Redis", "Stripe", "LLM APIs"],
-    privacy: "private",
-    cover: { kind: "abstract", variant: "recruitment" },
-  },
-  {
-    slug: "internal-erp-platform",
-    contextId: "internal",
-    name: "Internal ERP Platform",
-    stack: ["TypeScript", "Next.js", "React", "Node.js", "Express.js", "PostgreSQL", "MongoDB"],
-    privacy: "private",
-    cover: { kind: "image", src: "/work/internal-erp.jpg" },
-  },
-  {
-    slug: "factory-monitoring-system",
-    contextId: "production",
-    name: "Factory Monitoring System",
-    stack: ["MQTT", "Node-RED", "TimescaleDB", "Grafana", "TypeScript", "Telegram API", "Docker"],
-    privacy: "private",
-    cover: { kind: "abstract", variant: "monitoring" },
-  },
-] as const;
-
 export function getSelectedProjectSlugs(): readonly SelectedProjectSlug[] {
-  return SELECTED_PROJECT_FACTS.map(({ slug }) => slug);
+  return getContentFiles().projects.selected.map(({ slug }) => slug);
 }
-
-const ARCHIVE_PROJECT_FACTS = [
-  {
-    id: "nutrical",
-    contextId: "commercial",
-    name: "Nutrical",
-    stack: ["Next.js", "TypeScript", "TanStack Query", "Express.js", "Prisma", "Excel"],
-    coverSrc: "/work/archive/nutrical.jpg",
-  },
-  {
-    id: "zamasto",
-    contextId: "commercial",
-    name: "Zamasto",
-    stack: ["React", "Node.js", "Express.js", "PostgreSQL", "Google Apps Script"],
-    coverSrc: "/work/archive/zamasto.png",
-  },
-  {
-    id: "m-event",
-    contextId: "training",
-    name: "M Event",
-    stack: ["React Native", "Expo", "Express.js", "PostgreSQL", "Midtrans"],
-    coverSrc: "/work/archive/m-event.jpg",
-  },
-  {
-    id: "xiaopee",
-    contextId: "training",
-    name: "Xiaopee",
-    stack: ["Next.js", "TypeScript", "MongoDB", "DaisyUI"],
-    coverSrc: "/work/archive/xiaopee.png",
-    repositoryUrl: "https://github.com/marcoabelz/xiaopee",
-  },
-  {
-    id: "instaclone",
-    contextId: "training",
-    name: "Instaclone",
-    stack: ["React Native", "Expo", "GraphQL", "MongoDB", "Redis"],
-    coverSrc: "/work/archive/instaclone.jpg",
-    repositoryUrl: "https://github.com/marcoabelz/instaclone",
-  },
-  {
-    id: "chatting-app",
-    contextId: "training",
-    name: "Chatting App",
-    stack: ["JavaScript", "Socket.IO", "Firebase"],
-    coverSrc: "/work/archive/chatting-app.png",
-  },
-  {
-    id: "omahucok",
-    contextId: "training",
-    name: "Omahucok",
-    stack: ["React", "Express.js", "PostgreSQL", "Tailwind CSS", "Midtrans"],
-    coverSrc: "/work/archive/omahucok.png",
-    repositoryUrl: "https://github.com/marcoabelz/IP-HCK71",
-  },
-] as const satisfies readonly {
-  readonly id: ArchiveProjectId;
-  readonly contextId: Extract<ProjectContextId, "commercial" | "training">;
-  readonly name: string;
-  readonly stack: readonly string[];
-  readonly coverSrc: string;
-  readonly repositoryUrl?: `https://github.com/${string}`;
-}[];
 
 const copyCaseStudy = (caseStudy: CaseStudyContent): CaseStudyContent => ({
   overview: [...caseStudy.overview],
@@ -125,29 +18,39 @@ const copyCaseStudy = (caseStudy: CaseStudyContent): CaseStudyContent => ({
   responsibilities: [...caseStudy.responsibilities],
 });
 
-// Only projects cleared for public screenshots have any; the rest fall back to
-// the sanitized cover. Captions live in the catalogs and pair by index.
-const SCREENSHOT_FACTS: Partial<Record<SelectedProjectSlug, readonly string[]>> = {
-  satellyte: [
-    "/work/satellyte/satellyte-1.png",
-    "/work/satellyte/satellyte-2.png",
-    "/work/satellyte/satellyte-3.png",
-    "/work/satellyte/satellyte-4.png",
-    "/work/satellyte/satellyte-5.png",
-  ],
+type SelectedCopy = {
+  readonly descriptor: string;
+  readonly contextLabel: string;
+  readonly role: string;
+  readonly outcome: string;
+  readonly highlights: readonly string[];
+  readonly cover: { readonly alt: string };
+  readonly screenshots?: readonly string[];
+  readonly caseStudy: CaseStudyContent;
 };
 
-export function getSelectedProjects(locale: Locale): readonly SelectedProject[] {
-  const copy = getMessages(locale).projects.selected;
+type ArchiveCopy = {
+  readonly descriptor: string;
+  readonly contextLabel: string;
+  readonly coverAlt: string;
+};
 
-  return SELECTED_PROJECT_FACTS.map((fact): SelectedProject => {
+// Only projects cleared for public screenshots have any; the rest fall back to
+// the sanitized cover. Captions live in the catalogs and pair by index.
+export function getSelectedProjects(locale: Locale): readonly SelectedProject[] {
+  // Validation guarantees every fact has its copy, so the lookups below cannot miss.
+  const copy = getMessages(locale).projects.selected as Record<string, SelectedCopy>;
+
+  return getContentFiles().projects.selected.map((fact): SelectedProject => {
     const localized = copy[fact.slug];
     const cover = fact.cover.kind === "image"
-      ? { kind: "image" as const, src: fact.cover.src, alt: localized.cover.alt }
+      ? { kind: "image" as const, src: fact.cover.src, width: fact.cover.width, height: fact.cover.height, alt: localized.cover.alt }
       : { kind: "abstract" as const, variant: fact.cover.variant, alt: localized.cover.alt };
-    const captions = "screenshots" in localized ? localized.screenshots : [];
-    const screenshots = (SCREENSHOT_FACTS[fact.slug] ?? []).map((src, index) => ({
+    const captions = localized.screenshots ?? [];
+    const screenshots = fact.screenshots.map(({ src, width, height }, index) => ({
       src,
+      width,
+      height,
       alt: captions[index] ?? localized.cover.alt,
     }));
     const localizedFields = {
@@ -155,11 +58,13 @@ export function getSelectedProjects(locale: Locale): readonly SelectedProject[] 
       contextLabel: localized.contextLabel,
       role: localized.role,
       outcome: localized.outcome,
-      highlights: [localized.highlights[0], localized.highlights[1], localized.highlights[2]] as const,
+      highlights: [...localized.highlights],
       screenshots,
       caseStudy: copyCaseStudy(localized.caseStudy),
     };
 
+    // A public app without a live URL stays public and simply has no Live link; it is
+    // never quietly turned into a private card.
     if (fact.privacy === "public") {
       return {
         slug: fact.slug,
@@ -167,7 +72,7 @@ export function getSelectedProjects(locale: Locale): readonly SelectedProject[] 
         name: fact.name,
         stack: [...fact.stack],
         privacy: "public",
-        liveUrl: fact.liveUrl,
+        ...(fact.liveUrl ? { liveUrl: fact.liveUrl as `https://${string}` } : {}),
         cover,
         ...localizedFields,
       };
@@ -186,9 +91,9 @@ export function getSelectedProjects(locale: Locale): readonly SelectedProject[] 
 }
 
 export function getArchiveProjects(locale: Locale): readonly ArchiveProject[] {
-  const copy = getMessages(locale).projects.archive;
+  const copy = getMessages(locale).projects.archive as Record<string, ArchiveCopy>;
 
-  return ARCHIVE_PROJECT_FACTS.map((fact): ArchiveProject => {
+  return getContentFiles().projects.archive.map((fact): ArchiveProject => {
     const localized = copy[fact.id];
     const project = {
       id: fact.id,
@@ -197,11 +102,11 @@ export function getArchiveProjects(locale: Locale): readonly ArchiveProject[] {
       descriptor: localized.descriptor,
       contextLabel: localized.contextLabel,
       stack: [...fact.stack],
-      cover: { src: fact.coverSrc, alt: localized.coverAlt },
+      cover: { src: fact.cover.src, alt: localized.coverAlt },
     };
 
-    return "repositoryUrl" in fact
-      ? { ...project, repositoryUrl: fact.repositoryUrl }
+    return fact.repositoryUrl
+      ? { ...project, repositoryUrl: fact.repositoryUrl as `https://github.com/${string}` }
       : project;
   });
 }

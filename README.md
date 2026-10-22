@@ -34,8 +34,8 @@ pnpm test:routes  # production build, boots a server, smoke-checks every public 
 ## What it does
 
 - **Two languages.** English keeps unprefixed URLs, Indonesian uses `/id`. Every visible string lives in `client/messages/{en,id}/`, and tests fail if the two drift apart.
-- **A chat widget** that answers questions about the work using only the data in `client/src/data`, and declines everything else. Off unless `GEMINI_API_KEY` is set.
-- **A content editor at `/admin`** that edits those message files in the browser and commits the result to this repository, so changing copy needs neither an editor nor a manual deploy. Off unless its five environment variables are set. See [Content editor](client/README.md#content-editor).
+- **A chat widget** that answers questions about the work using only the facts in `client/content/*.json` and the copy in `client/messages`, joined in `client/src/data`, and declines everything else. Off unless `GEMINI_API_KEY` is set.
+- **A content editor at `/admin`** that edits the site's facts (`client/content/*.json`), both languages of the copy, images, the CV, and section order and visibility in the browser, and commits the result to this repository as one commit, so changing content needs neither a code editor nor a manual deploy. Off unless its five environment variables are set. See [Content editor](client/README.md#content-editor).
 
 ## Deployment
 

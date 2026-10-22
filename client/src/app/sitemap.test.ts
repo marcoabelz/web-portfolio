@@ -12,7 +12,7 @@ function absolute(path: string): string {
 }
 
 describe("sitemap", () => {
-  it("contains all 14 localized documents with absolute language alternates", () => {
+  it("contains every localized document with absolute language alternates", () => {
     const logicalPaths = [
       "/",
       ...getSelectedProjectSlugs().map((slug) => `/work/${slug}`),
@@ -23,7 +23,7 @@ describe("sitemap", () => {
     );
     const entries = sitemap();
 
-    expect(entries).toHaveLength(14);
+    expect(entries).toHaveLength(logicalPaths.length * routing.locales.length);
     expect(entries.map(({ url }) => url)).toEqual(expectedUrls);
 
     for (const path of logicalPaths) {

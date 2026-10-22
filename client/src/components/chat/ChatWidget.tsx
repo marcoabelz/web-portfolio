@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { MessageCircle, RotateCcw, Send, X } from "lucide-react";
 
 import { MAX_MESSAGE_LENGTH } from "@/lib/chat/validate";
+import { PHONE_QUERY, trapTarget } from "./focus-trap";
+import { SUGGESTED_QUESTIONS, showSuggestions } from "./suggestions";
 import type { ChatMessage } from "@/types/chat";
 
 const SESSION_MESSAGE_CAP = 20;
@@ -16,13 +18,15 @@ const HINT_HOLD_MS = 5000;
 
 // The visitor's bubble sits right and filled, the assistant's left and outlined, so the
 // two sides stay distinguishable by position and weight, not by colour alone.
-const BUBBLE_BASE = "max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm";
+const BUBBLE_BASE = "max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-base md:text-[15px] md:leading-6";
 const USER_BUBBLE = `${BUBBLE_BASE} ml-auto rounded-br-sm bg-accent text-canvas`;
 // Text colour is appended per bubble rather than shared: two colour utilities on one
 // element are decided by CSS source order, not by the order they appear in className.
 const MODEL_BUBBLE_BASE = `${BUBBLE_BASE} mr-auto rounded-bl-sm border border-line bg-elevated`;
 const MODEL_BUBBLE = `${MODEL_BUBBLE_BASE} text-ink`;
-const THINKING_BUBBLE = `${MODEL_BUBBLE_BASE} text-muted`;
+// Three shimmering lines stand in for the reply; the visually hidden label keeps the
+// pending state announced, since the lines carry no text.
+const THINKING_BUBBLE = `${MODEL_BUBBLE_BASE} w-[min(15rem,85%)] space-y-2`;
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,17 +37,61 @@ export function ChatWidget() {
   const [failedMessage, setFailedMessage] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(true);
   const [typedLength, setTypedLength] = useState(0);
+  const [sheet, setSheet] = useState<{ top: number; height: number } | null>(null);
+  const [isPhone, setIsPhone] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   const askedCount = messages.filter((message) => message.role === "user").length;
   const capReached = askedCount >= SESSION_MESSAGE_CAP;
 
+  // Phone or desktop is re-read on every change of the media query, so rotating a
+  // tablet across the breakpoint switches the sheet, the scroll lock, and the modal
+  // semantics without reopening the panel.
   useEffect(() => {
-    if (isOpen) inputRef.current?.focus();
+    const phone = window.matchMedia(PHONE_QUERY);
+    const update = () => setIsPhone(phone.matches);
+
+    update();
+    phone.addEventListener("change", update);
+    return () => phone.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    // Focusing the input on a phone raises the keyboard before the visitor has read
+    // anything, so the sheet's own close button takes focus instead: focus still moves
+    // into the dialog, and the keyboard waits until the visitor taps the input.
+    if (window.matchMedia(PHONE_QUERY).matches) closeRef.current?.focus();
+    else inputRef.current?.focus();
   }, [isOpen]);
+
+  // On a phone the sheet follows the visual viewport: 100dvh does not shrink when the
+  // on-screen keyboard opens, so a dvh-sized sheet leaves the input underneath it.
+  useEffect(() => {
+    if (!isOpen || !isPhone) return;
+
+    const viewport = window.visualViewport;
+
+    if (!viewport) return;
+
+    const update = () => {
+      setSheet({ top: viewport.offsetTop + 8, height: Math.max(viewport.height - 16, 0) });
+    };
+
+    update();
+    viewport.addEventListener("resize", update);
+    viewport.addEventListener("scroll", update);
+    return () => {
+      viewport.removeEventListener("resize", update);
+      viewport.removeEventListener("scroll", update);
+      setSheet(null);
+    };
+  }, [isOpen, isPhone]);
 
   // Motion is the whole point of the hint, so anyone who asked for less of it gets the
   // finished sentence instead of a moving one.
@@ -80,8 +128,7 @@ export function ChatWidget() {
   // scrolling content you cannot see reads as the widget being broken. The blur that
   // goes with it is the backdrop below, hidden at the same breakpoint.
   useEffect(() => {
-    if (!isOpen) return;
-    if (!window.matchMedia("(max-width: 767px)").matches) return;
+    if (!isOpen || !isPhone) return;
 
     const previousOverflow = document.body.style.overflow;
 
@@ -89,12 +136,25 @@ export function ChatWidget() {
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [isOpen]);
+  }, [isOpen, isPhone]);
 
   useEffect(() => {
     if (!isOpen) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
+      // On a phone the sheet is modal (aria-modal), so Tab cycles inside it rather than
+      // reaching the page hidden behind it.
+      if (event.key === "Tab" && isPhone && panelRef.current) {
+        const target = trapTarget(panelRef.current, document.activeElement, event.shiftKey);
+
+        if (target) {
+          event.preventDefault();
+          target.focus();
+        }
+
+        return;
+      }
+
       if (event.key !== "Escape") return;
 
       setIsOpen(false);
@@ -105,7 +165,7 @@ export function ChatWidget() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isOpen]);
+  }, [isOpen, isPhone]);
 
   const send = async (text: string, history: ChatMessage[]) => {
     setIsSending(true);
@@ -140,10 +200,10 @@ export function ChatWidget() {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    const text = input.trim();
+  // The input and the suggestion chips both go through here, so they share the same
+  // guards (blank, in flight, session cap) and the same /api/chat validation.
+  const submit = (raw: string) => {
+    const text = raw.trim();
 
     if (text === "" || isSending || capReached) return;
 
@@ -152,6 +212,11 @@ export function ChatWidget() {
     setMessages((current) => [...current, { role: "user", text }]);
     setInput("");
     void send(text, history);
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    submit(input);
   };
 
   const handleRetry = () => {
@@ -232,11 +297,29 @@ export function ChatWidget() {
           still in the tab order. */}
       <div
         id="chat-panel"
+        ref={panelRef}
+        role="dialog"
+        aria-modal={isOpen && isPhone ? true : undefined}
+        aria-label="Ask about Abel"
         hidden={!isOpen}
-        className={`fixed bottom-32 right-5 z-50 ${isOpen ? "flex" : ""} h-[26rem] max-h-[calc(100vh-9rem)] w-[min(22rem,calc(100vw-2.5rem))] flex-col border border-line bg-surface shadow-editorial md:bottom-36 md:max-h-[calc(100vh-10rem)] md:right-8`}
+        style={sheet ? { top: sheet.top, height: sheet.height, bottom: "auto" } : undefined}
+        className={`fixed inset-x-2 bottom-[calc(env(safe-area-inset-bottom)+0.5rem)] z-50 ${isOpen ? "flex" : ""} h-[calc(100dvh-1rem-env(safe-area-inset-bottom))] flex-col border border-line bg-surface shadow-editorial md:inset-x-auto md:bottom-36 md:right-8 md:h-[min(45rem,80vh)] md:max-h-[calc(100dvh-11rem)] md:w-[min(30rem,calc(100vw-4rem))]`}
       >
-        <div className="border-b border-line px-4 py-3">
+        <div className="flex items-center justify-between border-b border-line px-4 py-3">
           <p className="font-mono text-xs uppercase tracking-widest text-muted">Ask about Abel</p>
+          {/* The sheet covers the launcher on a phone, so it carries its own close. */}
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={() => {
+              setIsOpen(false);
+              toggleRef.current?.focus();
+            }}
+            aria-label="Close chat panel"
+            className="-mr-2 inline-flex size-9 items-center justify-center text-muted transition-colors hover:text-ink focus-visible:text-ink md:hidden"
+          >
+            <X className="size-4" strokeWidth={1.8} aria-hidden="true" />
+          </button>
         </div>
 
         <div
@@ -244,9 +327,24 @@ export function ChatWidget() {
           role="log"
           aria-live="polite"
           aria-label="Chat messages"
-          className="flex-1 space-y-3 overflow-y-auto px-4 py-3 text-sm"
+          className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-3 text-base md:text-[15px]"
         >
           <p className={MODEL_BUBBLE}>{GREETING}</p>
+
+          {showSuggestions({ messageCount: askedCount, pending: isSending, capReached }) && (
+            <div className="flex flex-wrap gap-2">
+              {SUGGESTED_QUESTIONS.map((question) => (
+                <button
+                  key={question}
+                  type="button"
+                  onClick={() => submit(question)}
+                  className="chip min-h-9 px-3 text-left hover:border-accent focus-visible:border-accent"
+                >
+                  {question}
+                </button>
+              ))}
+            </div>
+          )}
 
           {messages.map((message, index) => (
             <p key={index} className={message.role === "user" ? USER_BUBBLE : MODEL_BUBBLE}>
@@ -257,7 +355,14 @@ export function ChatWidget() {
             </p>
           ))}
 
-          {isSending && <p className={THINKING_BUBBLE}>Thinking…</p>}
+          {isSending && (
+            <div role="status" className={THINKING_BUBBLE}>
+              <span className="sr-only">Thinking…</span>
+              <span aria-hidden="true" className="skeleton h-3 w-full rounded-full" />
+              <span aria-hidden="true" className="skeleton h-3 w-5/6 rounded-full" />
+              <span aria-hidden="true" className="skeleton h-3 w-2/3 rounded-full" />
+            </div>
+          )}
 
           {error && (
             <div className="space-y-2">
@@ -278,13 +383,13 @@ export function ChatWidget() {
           )}
         </div>
 
-        <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-line p-2">
+        <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-line p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
           <label className="sr-only" htmlFor="chat-input">
             Your question
           </label>
           {/* The input is 16px on a phone: iOS Safari zooms the whole page in when a
               focused field is any smaller, dropping the reader somewhere they did not
-              ask to be. It drops back to the panel's own scale from sm up. */}
+              ask to be. It drops back to the panel's own scale from md up. */}
           <input
             id="chat-input"
             ref={inputRef}
@@ -293,7 +398,7 @@ export function ChatWidget() {
             maxLength={MAX_MESSAGE_LENGTH}
             disabled={capReached}
             placeholder={capReached ? "Message limit reached — reload to reset" : "Type a question…"}
-            className="min-h-9 flex-1 bg-transparent px-2 text-base text-ink placeholder:text-muted focus:outline-none disabled:cursor-not-allowed sm:text-sm"
+            className="min-h-11 flex-1 bg-transparent px-2 text-base text-ink placeholder:text-muted focus:outline-none disabled:cursor-not-allowed md:text-[15px]"
           />
           <button
             type="submit"

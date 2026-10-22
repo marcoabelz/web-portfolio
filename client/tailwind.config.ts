@@ -17,10 +17,15 @@ const config: Config = {
         line: "rgb(var(--line) / <alpha-value>)",
         accent: "rgb(var(--accent) / <alpha-value>)",
         "accent-strong": "rgb(var(--accent-strong) / <alpha-value>)",
+        ok: "rgb(var(--ok) / <alpha-value>)",
       },
       fontFamily: {
-        sans: ["var(--font-manrope)", "sans-serif"],
-        mono: ["var(--font-ibm-plex-mono)", "monospace"],
+        sans: ["var(--font-sans)", "sans-serif"],
+        display: ["var(--font-display)", "var(--font-sans)", "sans-serif"],
+        mono: ["var(--font-mono)", "monospace"],
+      },
+      borderRadius: {
+        card: "22px",
       },
       boxShadow: {
         editorial: "var(--shadow-editorial)",

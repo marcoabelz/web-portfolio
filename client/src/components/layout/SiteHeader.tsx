@@ -169,9 +169,9 @@ export function SiteHeader({ locale, navigation, profile, labels }: SiteHeaderPr
           <Image
             src={icon}
             alt={labels.logo}
-            width={32}
-            height={32}
-            className="h-8 w-8"
+            width={40}
+            height={40}
+            className="h-10 w-10"
           />
         </Link>
 
@@ -191,14 +191,20 @@ export function SiteHeader({ locale, navigation, profile, labels }: SiteHeaderPr
                   <li key={item.href} className="flex">
                     <Link
                       href={item.href}
-                      className={`flex items-center border-b-2 px-2.5 text-xs font-semibold tracking-wide transition-colors lg:px-3.5 lg:text-sm ${
-                        isActive
-                          ? "border-accent text-ink"
-                          : "border-transparent text-muted hover:border-line hover:text-ink"
+                      className={`flex items-center px-2.5 text-xs font-semibold tracking-wide transition-colors hover:text-ink lg:px-3.5 lg:text-sm ${
+                        isActive ? "text-ink" : "text-muted"
                       }`}
                       aria-current={isActive ? "location" : undefined}
                     >
-                      {item.label}
+                      <span className="relative">
+                        {item.label}
+                        {isActive ? (
+                          <span
+                            aria-hidden="true"
+                            className="absolute inset-x-0 bottom-[-7px] h-0.5 bg-accent"
+                          />
+                        ) : null}
+                      </span>
                     </Link>
                   </li>
                 );

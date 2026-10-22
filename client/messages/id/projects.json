@@ -11,14 +11,15 @@
         "API produksi dan alur otomasi"
       ],
       "cover": {
-        "alt": "Peta sinyal abstrak yang menggambarkan alur intelijen lead Satellyte"
+        "alt": "Tabel lead Satellyte berisi skor, label sinyal, dan status pipeline dengan data dummy"
       },
       "screenshots": [
-        "Daftar radar sinyal, setiap radar memiliki ICP, jumlah lead, dan status eksekusinya sendiri.",
-        "Tabel lead lengkap dengan skor, jenis sinyal, radar asal, email dan telepon hasil enrichment, beserta statusnya.",
-        "AI discovery: cukup jelaskan kebutuhan dengan bahasa sehari-hari, hasilnya perusahaan yang sesuai.",
-        "Panel perusahaan yang menampilkan para pengambil keputusan, dikelompokkan per level.",
-        "Pengaturan integrasi untuk Slack, HeyReach, Instantly, dan webhook API mandiri."
+        "Radar memantau LinkedIn untuk sinyal pembelian yang cocok dengan profil target.",
+        "Tentukan profil pelanggan ideal sekali saja: jabatan, lokasi, industri, dan ukuran perusahaan.",
+        "Pilih perilaku yang dihitung sebagai niat beli: posting, rekrutmen, pendanaan, pindah kerja, atau kompetitor.",
+        "Setiap lead masuk dengan skor dan label sinyal yang memunculkannya.",
+        "Satu linimasa per lead: pemicunya dan tindak lanjut yang sudah dilakukan.",
+        "Lihat pengambil keputusan lain di perusahaan yang sama, dikelompokkan per level."
       ],
       "caseStudy": {
         "overview": [
@@ -55,18 +56,27 @@
         "Pengiriman event tahan koneksi putus"
       ],
       "cover": {
-        "alt": "Bingkai kamera dan kotak deteksi abstrak yang menggambarkan visi komputer Palmgrade"
+        "alt": "Konsol grading langsung AutoGrade dengan tiga lini kamera, jumlah tandan, dan ripe rate berisi data demo"
       },
+      "screenshots": [
+        "Tiga lini konveyor dinilai langsung: jumlah tandan, ripe rate, berat timbangan, dan truk yang sedang bongkar.",
+        "Tampilan langsung yang sama dalam mode gelap, dengan tabel hasil grading hari ini yang terus terisi.",
+        "Setiap tandan menyimpan foto dan hasil grading-nya; ketuk thumbnail untuk melihat ukuran penuh.",
+        "Papan timbangan empat tahap: tiba, bongkar, timbang keluar, dan selesai, lengkap dengan berat bersih per truk.",
+        "Rekap per truk: jumlah tandan, komposisi ripe, unripe, JK, dan TP, ripe rate, dan berat bersih, bisa diunduh CSV.",
+        "Daftar truk beserta pemasok dan sumbernya, internal atau eksternal, plus cetak QR untuk dipindai."
+      ],
       "caseStudy": {
         "overview": [
-          "Palmgrade menilai kualitas buah sawit saat melewati tiga kamera produksi, lalu menampilkan hasilnya kepada operator selagi batch tersebut masih berjalan di lini."
+          "AutoGrade menilai kualitas buah sawit saat melewati tiga kamera produksi, lalu menampilkan hasilnya kepada operator selagi batch tersebut masih berjalan di lini."
         ],
         "features": [
           "Inferensi langsung dari tiga kamera sekaligus menggunakan YOLO, OpenCV, dan TensorRT di balik layanan FastAPI.",
           "Dashboard operator untuk tiga lini produksi dengan pembaruan langsung melalui Server-Sent Events.",
           "Penampil hasil tangkapan AI, sehingga keluaran model dapat diperiksa secara persis.",
           "Akses berbasis peran yang memisahkan operator dan supervisor.",
-          "Pengiriman event yang tahan koneksi putus: buffer lokal dan sinkronisasi batch dengan UUID, sehingga pengiriman ulang tidak menghasilkan data ganda."
+          "Pengiriman event yang tahan koneksi putus: buffer lokal dan sinkronisasi batch dengan UUID, sehingga pengiriman ulang tidak menghasilkan data ganda.",
+          "Tiket timbangan empat langkah dengan bruto, tara, dan neto per kunjungan truk, serta rekap per hari dan per truk dengan ekspor CSV."
         ],
         "responsibilities": [
           "Membangun layanan inferensi Python di sekitar model visi dan pipeline kameranya.",
@@ -74,6 +84,302 @@
           "Membangun dashboard operator di Next.js beserta penampil hasil tangkapan AI.",
           "Menyusun strategi buffer dan sinkronisasi untuk koneksi pabrik yang tidak stabil.",
           "Mengemas seluruh sistem menjadi container berversi untuk dipasang di pabrik."
+        ]
+      }
+    },
+    "autoerp": {
+      "descriptor": "ERP Pabrik Kelapa Sawit",
+      "contextLabel": "Produksi",
+      "role": "Full-Stack Engineer",
+      "outcome": "Mengubah setiap truk yang ditimbang dan dinilai menjadi tiket lengkap dengan harga, nota penerimaan stok, dan laporan rendemen harian.",
+      "highlights": [
+        "Alur dari timbangan sampai penerimaan",
+        "Potongan mutu dari grading AI",
+        "Laporan OER dan KER harian"
+      ],
+      "cover": {
+        "alt": "Ringkasan pabrik AutoERP dengan pintasan dokumen, kartu rendemen, dan grafik harian berisi data dummy"
+      },
+      "screenshots": [
+        "Satu layar untuk seluruh pabrik: pintasan dokumen, TBS diterima, nilai pembelian, dan rendemen harian.",
+        "Tiket timbang dengan status, truk, berat bersih, dan nilai; tiket yang masih menunggu tampil di samping yang sudah final.",
+        "Tiket final: bruto, tara, netto, potongan mutu, harga per kilogram, dan hasil AutoGrade.",
+        "Rincian sortasi per kriteria beserta beratnya, dan tautan ke nota penerimaan yang dibuatnya.",
+        "Nota penerimaan yang dibuat dari tiket, dengan kuantitas diambil dari berat bersih.",
+        "Rendemen per hari: TBS yang diolah dibandingkan dengan CPO dan inti sawit yang dihasilkan."
+      ],
+      "caseStudy": {
+        "overview": [
+          "AutoERP adalah ERP untuk pabrik kelapa sawit, dibangun sebagai modul khusus di atas Frappe dan ERPNext. AutoERP melanjutkan pekerjaan timbangan dan AutoGrade: setiap kunjungan truk menjadi tiket lengkap dengan harga, tiket tersebut membuat nota penerimaan stoknya sendiri, dan produksi dilaporkan sebagai rendemen minyak dan inti harian."
+        ],
+        "features": [
+          "Tiket timbang dengan bruto, tara, dan neto untuk setiap kunjungan truk.",
+          "Potongan mutu dan harga per kilogram dihitung dari hasil grading janjang AutoGrade.",
+          "Nota penerimaan pembelian dibuat otomatis saat tiket difinalkan, dan tertaut kembali ke tiketnya.",
+          "Entri produksi harian dan laporan rendemen untuk CPO dan inti.",
+          "Ringkasan pabrik dengan pintasan dokumen, angka utama, dan grafik tren.",
+          "Profil peran untuk staf pabrik dan antarmuka berbahasa Indonesia."
+        ],
+        "responsibilities": [
+          "Membangun modul pabrik di atas Frappe dan ERPNext: doctype, alur kerja, dan laporan.",
+          "Menghubungkan hasil AutoGrade ke tiket timbang beserta aturan harganya.",
+          "Mengotomatiskan posting tiket menjadi penerimaan stok di ERPNext.",
+          "Membangun laporan rendemen dan ringkasan pabrik.",
+          "Mengemas sistem dengan Docker untuk deployment."
+        ]
+      }
+    },
+    "ujigo": {
+      "descriptor": "Platform Latihan Ujian Online",
+      "contextLabel": "Produksi",
+      "role": "Full-Stack Engineer",
+      "outcome": "Membantu mahasiswa pendidikan jarak jauh berlatih ujian berwaktu, mempelajari setiap jawaban, dan mengulang soal yang salah.",
+      "highlights": [
+        "Mode belajar dan ujian berwaktu",
+        "Buku kesalahan dengan pengulangan berjarak",
+        "Leaderboard XP dan streak"
+      ],
+      "cover": {
+        "alt": "Pembahasan jawaban UjiGo dengan nilai, jawaban benar, dan penjelasannya, berisi data dummy"
+      },
+      "screenshots": [
+        "Bank simulasi ujian yang disaring sesuai program studi, dengan paket gratis dan PRO.",
+        "Pilih Mode Belajar dengan pembahasan langsung, atau Mode Ujian dengan batas waktu.",
+        "Layar ujian yang fokus dengan timer, navigasi soal, dan progres yang tersimpan otomatis.",
+        "Hasil lulus atau tidak langsung muncul, lengkap dengan nilai dan pintasan untuk mengulang soal yang salah.",
+        "Setiap soal dibahas dengan jawaban benar dan penjelasan tertulis.",
+        "Soal yang salah muncul lagi sesuai jadwal berjarak sampai dikuasai.",
+        "Dashboard harian dengan streak, nilai rata-rata, aksi cepat, dan area perbaikan.",
+        "Leaderboard XP dengan liga, streak, dan akurasi."
+      ],
+      "caseStudy": {
+        "overview": [
+          "UjiGo adalah platform latihan ujian online untuk mahasiswa pendidikan jarak jauh di Indonesia. Mahasiswa memilih paket latihan per mata kuliah, mengerjakannya dalam mode belajar atau mode ujian berwaktu, langsung melihat nilainya, membaca setiap pembahasan, lalu terus berlatih dengan soal yang tadinya salah."
+        ],
+        "features": [
+          "Bank simulasi ujian per mata kuliah dan program studi, dengan paket gratis dan berbayar.",
+          "Mode belajar dengan pembahasan langsung, dan mode ujian dengan timer serta proteksi salin-tempel.",
+          "Progres tersimpan otomatis, navigasi soal, dan penilaian instan.",
+          "Halaman pembahasan dengan jawaban benar dan penjelasan untuk setiap soal.",
+          "Buku kesalahan yang memunculkan kembali soal yang salah dengan jadwal pengulangan berjarak.",
+          "Dashboard, streak, XP, dan leaderboard agar mahasiswa terus kembali berlatih.",
+          "Paket berbayar melalui Midtrans."
+        ],
+        "responsibilities": [
+          "Membangun alur ujian dari awal sampai akhir di Next.js: bank soal, sesi ujian, penilaian, dan pembahasan.",
+          "Memodelkan mata kuliah, percobaan, dan buku kesalahan di PostgreSQL dengan Prisma.",
+          "Membangun jadwal pengulangan berjarak, pelacakan progres, dan leaderboard.",
+          "Mengintegrasikan pembayaran Midtrans untuk paket berbayar.",
+          "Membangun dashboard, streak, dan sistem XP."
+        ]
+      }
+    },
+    "production-tracking": {
+      "descriptor": "Sistem Pelacakan Lot Produksi",
+      "contextLabel": "Produksi",
+      "role": "Full-Stack Engineer",
+      "outcome": "Melacak setiap box komponen, mulai dari kartu lot yang dicetak, scan di setiap stasiun, sampai papan monitoring langsung.",
+      "highlights": [
+        "Kartu lot QR dan barcode",
+        "Kiosk scan per stasiun",
+        "Papan monitoring lot langsung"
+      ],
+      "cover": {
+        "alt": "Papan monitoring Production Tracking dengan jumlah lot per stasiun dan tabel lot berisi data dummy"
+      },
+      "screenshots": [
+        "Pecah satu batch menjadi lot seukuran box, lalu cek pratinjau kartunya sebelum dicetak.",
+        "Satu kartu per box, lengkap dengan QR dan barcode yang siap dicetak di printer label.",
+        "Scan kartu di stasiun, dan layar langsung menunjukkan barang masuk atau keluar.",
+        "Tampilan langsung semua lot: posisinya, berapa lama tertahan, dan mana yang macet.",
+        "Riwayat lengkap per lot, dari kartu dibuat sampai perakitan.",
+        "Papan di lantai produksi yang membandingkan target shift dengan hasil mesin saat ini."
+      ],
+      "caseStudy": {
+        "overview": [
+          "Production Tracking melacak komponen di pabrik satu box demi satu box. Setiap box mendapat kartu lot yang dicetak, setiap stasiun melakukan scan masuk dan keluar, dan supervisor memantau papan langsung yang menunjukkan posisi setiap lot, berapa lama lot tersebut tertahan, dan lot mana yang macet."
+        ],
+        "features": [
+          "Pembuatan lot yang memecah batch menjadi lot seukuran box dan mencetak kartu QR serta Code 128.",
+          "Kiosk scan di setiap stasiun dengan konfirmasi masuk atau keluar satu layar penuh, lewat scanner atau kamera.",
+          "Papan monitoring dengan jumlah lot per stasiun, status subkontrak, dan lot yang tertahan terlalu lama.",
+          "Riwayat scan per lot yang hanya bisa ditambah: scan yang salah dibatalkan, bukan dihapus.",
+          "Papan counter mesin yang membandingkan target shift dengan hasil aktual."
+        ],
+        "responsibilities": [
+          "Membangun aplikasi Next.js: pembuatan lot, cetak kartu, kiosk scan, dan papan monitoring.",
+          "Merancang skema PostgreSQL untuk lot, rute, dan log scan yang hanya bisa ditambah.",
+          "Membangun tata letak kartu QR dan barcode untuk printer label.",
+          "Membangun tampilan counter mesin untuk lantai produksi."
+        ]
+      }
+    },
+    "event-agency": {
+      "descriptor": "Website Event Dua Bahasa dan CMS",
+      "contextLabel": "Komersial",
+      "role": "Full-Stack Engineer",
+      "outcome": "Membawa pengunjung dari event berikutnya ke tiket dan lineup-nya, dan mengirim setiap brief dari brand ke CMS yang dikelola sendiri oleh agensi.",
+      "highlights": [
+        "Halaman event dua bahasa",
+        "Tingkatan tiket dengan hitung mundur",
+        "CMS dengan inbox dan statistik pengunjung"
+      ],
+      "cover": {
+        "alt": "Kartu event berikutnya di beranda website agensi event, lengkap dengan tombol tiket"
+      },
+      "screenshots": [
+        "Beranda langsung menampilkan event berikutnya dan link tiketnya di layar pertama.",
+        "Daftar event mendatang, masing-masing dengan status yang dihitung dari tanggalnya: dijual, ditunda, segera, atau RSVP.",
+        "Setiap halaman event dibuka dengan info yang dibutuhkan pembeli tiket: tanggal, jam buka, venue, batas usia, dan genre.",
+        "Tingkatan tiket dengan hitung mundur langsung, di samping lineup dan jadwal tampil.",
+        "Brand mengirim brief lewat formulir yang masuk ke inbox CMS.",
+        "Portofolio karya event, digital, dan talent yang bisa disaring per layanan.",
+        "Satu CMS untuk event, konten, inbox, dan jumlah pengunjung."
+      ],
+      "caseStudy": {
+        "overview": [
+          "Website dua bahasa dan CMS admin untuk agensi kreatif dan event. Pengunjung menemukan event berikutnya, mengecek tiket dan lineup, lalu mengirim brief; tim agensi mengelola event, halaman, talent, dan pesan masuk dari satu CMS."
+        ],
+        "features": [
+          "Halaman bahasa Inggris dan Indonesia untuk layanan, karya, talent, event, dan kontak.",
+          "Halaman event dengan tingkatan tiket, hitung mundur, lineup, jadwal tampil, dan detail venue, dengan penjualan lewat platform tiket eksternal.",
+          "Status event dihitung dari tanggal, bukan dari penanda yang harus diingat untuk diperbarui.",
+          "Formulir kontak dengan topik dan persetujuan yang mengirim brief ke inbox CMS.",
+          "CMS untuk event, venue, artis, karya, talent, halaman, dan FAQ, dengan login dua faktor.",
+          "Dasbor dengan jumlah pesan masuk, pelanggan, dan pengunjung anonim."
+        ],
+        "responsibilities": [
+          "Membangun website dan CMS dari awal sebagai developer utama.",
+          "Merancang skema PostgreSQL dan migrasi SQL biasa di balik struktur controller, service, dan repository.",
+          "Menyiapkan login CMS dengan Better Auth dan autentikasi dua faktor.",
+          "Membangun routing dan teks dua bahasa untuk Inggris dan Indonesia.",
+          "Menulis tes Playwright dan Vitest, dan menjalankan database dengan Docker Compose."
+        ]
+      }
+    },
+    "e-passport": {
+      "descriptor": "Aplikasi Paspor Peserta Event",
+      "contextLabel": "Komersial",
+      "role": "Full-Stack Developer",
+      "outcome": "Memandu peserta event mengunjungi booth lewat ponsel: kuis singkat, PIN dari petugas booth, lalu event kit setelah semua booth selesai.",
+      "highlights": [
+        "Kuis booth dan check-in PIN",
+        "Progres yang membuka hadiah",
+        "CMS admin untuk seluruh event"
+      ],
+      "cover": {
+        "alt": "Tiga layar ponsel E-Passport pada event demo: beranda peserta, kuis booth, dan klaim hadiah"
+      },
+      "screenshots": [
+        "Pada event demo: peserta masuk dengan nomor ponsel, dan pencarian otomatis mengisi profilnya dari daftar peserta.",
+        "Beranda pribadi dengan progres booth dan menu yang diatur dari backend.",
+        "Setiap booth adalah checkpoint; event kit tetap terkunci sampai semua booth selesai.",
+        "Kuis singkat di setiap booth, dimuat dari API.",
+        "Petugas booth mengonfirmasi kunjungan dengan PIN sekali pakai.",
+        "Konfirmasi langsung, dengan progres tersimpan di server.",
+        "Booth terakhir melengkapi paspor dan membuka event kit.",
+        "Halaman hadiah, diberikan di booth dengan PIN petugas.",
+        "Sesi simposium tampil di samping booth, lengkap dengan waktu dan ruangan."
+      ],
+      "caseStudy": {
+        "overview": [
+          "E-Passport adalah aplikasi web mobile untuk peserta event. Setiap peserta membawa paspor digital: mengunjungi booth, menjawab kuis singkat di setiap booth, meminta petugas booth mengonfirmasi kunjungan dengan PIN, lalu mengklaim event kit setelah semua booth selesai. Penyelenggara mengelola event, booth, kuis, dan hadiah dari CMS admin. Screenshot di sini memakai event demo rekaan."
+        ],
+        "features": [
+          "Login dengan nomor ponsel dan pencarian yang otomatis mengisi data peserta dari daftar peserta.",
+          "Aktivitas booth dengan kuis dan check-in PIN sekali pakai dari petugas booth.",
+          "Progres disimpan di server, dan event kit hanya terbuka setelah semua booth selesai.",
+          "Klaim hadiah yang dibuka dengan PIN petugas, sekali per hari.",
+          "Sesi simposium dengan waktu dan ruangan, di samping booth.",
+          "CMS admin untuk event, booth, pertanyaan kuis, item menu, dan hadiah."
+        ],
+        "responsibilities": [
+          "Sebagian besar kontribusi saya ada di CMS admin: pengelolaan event, booth, kuis, dan hadiah.",
+          "Membangun endpoint API Express dan Prisma untuk check-in, progres, dan hadiah.",
+          "Membangun layar di aplikasi peserta berbasis Next.js.",
+          "Bekerja dalam tim kecil di aplikasi peserta, API, dan CMS."
+        ]
+      }
+    },
+    "pet-microsite": {
+      "descriptor": "Microsite Merek Perawatan Hewan dan CMS",
+      "contextLabel": "Komersial",
+      "role": "Frontend Developer",
+      "outcome": "Microsite resmi Pawlo, merek suplemen dan vitamin hewan: produk per kategori, pertanyaan dari pemilik hewan dan klinik, dan CMS yang dikelola editor tanpa developer.",
+      "highlights": [
+        "Microsite merek yang sudah live",
+        "Katalog produk dari CMS",
+        "Formulir pertanyaan ke inbox CMS"
+      ],
+      "cover": {
+        "alt": "Halaman produk Pawlo dengan banner merek dan grid produk"
+      },
+      "screenshots": [
+        "Beranda Pawlo yang sudah live, dengan hero yang diatur dari CMS.",
+        "Dua lini produk, produk resep dokter dan perawatan harian, masing-masing dengan gayanya sendiri.",
+        "Grid produk dengan filter kategori, disajikan dari CMS.",
+        "Halaman produk dengan galeri, tag, dan tombol marketplace.",
+        "Formulir pertanyaan untuk pemilik hewan dan klinik, diisi di sini tetapi tidak dikirim.",
+        "Katalog yang sama di ponsel: situs ini dibangun mobile-first.",
+        "CMS, dengan data demo: editor bisa menemukan produk apa pun di tabel yang bisa dicari dan diurutkan.",
+        "CMS, dengan data demo: formulir produk dengan deskripsi, SKU, tag berwarna, dan link marketplace.",
+        "CMS, dengan data demo: semua pertanyaan dari formulir publik, bisa disaring per tujuan, sumber, dan jenis hewan."
+      ],
+      "caseStudy": {
+        "overview": [
+          "Pawlo adalah merek suplemen dan vitamin untuk hewan peliharaan, dan ini microsite resminya yang sudah live, lengkap dengan CMS-nya sendiri. Pengunjung menjelajahi dua lini produk, membuka produk, dan mengirim pertanyaan; editor mengelola produk, gambar, bagian halaman, dan pertanyaan masuk di CMS, dan perubahannya tampil di situs tanpa rilis baru. Layar CMS di sini memakai data demo."
+        ],
+        "features": [
+          "Microsite mobile-first dengan kategori, grid produk yang bisa disaring, dan halaman produk.",
+          "Halaman produk dengan galeri gambar, tag, dan link ke marketplace online.",
+          "Formulir pertanyaan dengan validasi yang mengirim leads ke CMS.",
+          "CMS untuk produk, grup produk, kategori, gambar, bagian halaman, dan pengguna.",
+          "Pengeditan produk dengan tag berwarna, link marketplace, serta unggah dan urutan gambar.",
+          "Pengeditan teks kaya untuk bagian halaman dengan Tiptap."
+        ],
+        "responsibilities": [
+          "Kontributor utama CMS: layar produk, gambar, bagian halaman, dan pertanyaan masuk.",
+          "Membangun pengeditan produk, termasuk tag, link marketplace, dan pengelola gambar.",
+          "Berkontribusi pada halaman dan komponen microsite sebagai bagian dari tim frontend.",
+          "Menghubungkan kedua aplikasi ke REST API tim dengan login berbasis token."
+        ]
+      }
+    },
+    "pediatric-nutrition-calculator": {
+      "descriptor": "Kalkulator Pertumbuhan Anak dan Formula",
+      "contextLabel": "Komersial",
+      "role": "Software Developer",
+      "outcome": "Membantu dokter anak mengecek pertumbuhan anak berdasarkan standar WHO dan menyusun rencana pemberian formula dalam beberapa langkah.",
+      "highlights": [
+        "Status z-score WHO",
+        "Kurva pertumbuhan interaktif",
+        "Rencana takaran formula"
+      ],
+      "cover": {
+        "alt": "Kalkulator gizi anak yang menampilkan status pertumbuhan anak per indikator WHO"
+      },
+      "screenshots": [
+        "Klinisi mengisi tanggal konsultasi, jenis kelamin, tanggal lahir, berat, dan tinggi anak.",
+        "Status pertumbuhan per indikator WHO, dengan berat ideal, kebutuhan kalori, dan target kenaikan berat.",
+        "Posisi anak pada kurva pertumbuhan WHO.",
+        "Rencana formula bertahap dengan perhitungan volume dan takaran yang langsung diperbarui.",
+        "Hasilnya: volume harian, takaran, dan jumlah kaleng yang dibutuhkan, siap diunduh atau dibagikan."
+      ],
+      "caseStudy": {
+        "overview": [
+          "Kalkulator web untuk dokter anak. Dokter mengisi ukuran tubuh anak, melihat status pertumbuhan di setiap indikator WHO dan pada kurva pertumbuhan, lalu menyusun rencana pemberian formula lengkap dengan volume harian, takaran, dan jumlah kaleng."
+        ],
+        "features": [
+          "Status z-score WHO untuk berat menurut umur, panjang menurut umur, dan berat menurut panjang.",
+          "Berat ideal, kebutuhan kalori harian, dan target kenaikan berat dari input yang sama.",
+          "Kurva pertumbuhan WHO interaktif yang digambar dengan ECharts.",
+          "Rencana formula langkah demi langkah dengan perhitungan takaran langsung.",
+          "Halaman hasil yang bisa diunduh atau dikirim lewat WhatsApp.",
+          "Produk formula dan konten yang dikelola dari CMS admin."
+        ],
+        "responsibilities": [
+          "Mengerjakan kalkulator ini sebagai bagian dari tim yang lebih besar.",
+          "Berkontribusi pada CMS admin yang mengelola produk formula dan konten kalkulator."
         ]
       }
     },
@@ -188,31 +494,6 @@
       "descriptor": "Profil perusahaan, alur publikasi, CMS mandiri, dan penanganan kontak otomatis.",
       "contextLabel": "Komersial",
       "coverAlt": "Beranda profil perusahaan Zamasto"
-    },
-    "m-event": {
-      "descriptor": "Aplikasi mobile untuk mencari event terdekat, membeli tiket, dan membayar melalui Midtrans.",
-      "contextLabel": "Pelatihan",
-      "coverAlt": "Layar pencarian event seluler M Event"
-    },
-    "xiaopee": {
-      "descriptor": "Katalog produk responsif dengan pencarian tanpa batas, akun, detail, dan wishlist.",
-      "contextLabel": "Pelatihan",
-      "coverAlt": "Beranda katalog produk Xiaopee"
-    },
-    "instaclone": {
-      "descriptor": "Feed sosial mobile dengan login, follow, like, komentar, dan pencarian pengguna.",
-      "contextLabel": "Pelatihan",
-      "coverAlt": "Feed sosial seluler Instaclone"
-    },
-    "chatting-app": {
-      "descriptor": "Chat room real-time di browser yang dibangun menggunakan event Socket.IO.",
-      "contextLabel": "Pelatihan",
-      "coverAlt": "Papan percakapan real-time Chatting App"
-    },
-    "omahucok": {
-      "descriptor": "Alur pemesanan hotel dan CMS dengan ketersediaan kamar, media, dan pembayaran.",
-      "contextLabel": "Pelatihan",
-      "coverAlt": "Beranda pemesanan hotel Omahucok"
     }
   }
 }

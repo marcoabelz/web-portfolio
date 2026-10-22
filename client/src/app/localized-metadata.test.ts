@@ -5,8 +5,9 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("next-intl/server", () => ({ setRequestLocale: vi.fn() }));
 // The shell layout now owns the fonts, and next/font only runs inside the compiler.
 vi.mock("next/font/google", () => ({
-  Manrope: () => ({ variable: "--font-sans" }),
-  IBM_Plex_Mono: () => ({ variable: "--font-mono" }),
+  Inter_Tight: () => ({ variable: "--font-display" }),
+  Inter: () => ({ variable: "--font-sans" }),
+  JetBrains_Mono: () => ({ variable: "--font-mono" }),
 }));
 
 import ProjectPage, {
@@ -22,8 +23,15 @@ import OpenGraphImage, {
   alt as openGraphImageAlt,
   contentType as openGraphImageContentType,
 } from "@/app/opengraph-image";
+import { getProject, getSelectedProjectSlugs } from "@/data/projects";
 import { getMessages } from "@/i18n/messages";
+import { routing } from "@/i18n/routing";
 import { SITE } from "@/lib/site";
+import { SOCIAL_IMAGE_IDENTITY } from "@/lib/social-image";
+
+// Rules, not copy: the slug and name come from the content files, so editing or
+// reordering apps in /admin cannot turn these tests red.
+const SLUG = getSelectedProjectSlugs()[0];
 
 (globalThis as typeof globalThis & { React: typeof React }).React = React;
 
@@ -46,7 +54,7 @@ describe.each([
 ] as const)("%s homepage metadata", (locale, pathname, openGraphLocale) => {
   it("uses localized copy, canonical, language alternates, and shared social image", () => {
     const labels = getMessages(locale).common.labels;
-    const title = labels.siteMetadataTitle.replace("{name}", "Marco Abel Zefanya");
+    const title = labels.siteMetadataTitle.replace("{name}", SITE.name);
     const description = labels.siteMetadataDescription;
     const metadata = generateHomeMetadata({ params: { locale } });
 
@@ -84,19 +92,21 @@ describe("shared Open Graph image", () => {
 
     expect(response.status).toBe(200);
     expect(openGraphImageContentType).toBe("image/png");
-    expect(openGraphImageAlt).toBe("Marco Abel Zefanya — Full-Stack Engineer");
+    expect(openGraphImageAlt).toBe(`${SITE.name} — ${SOCIAL_IMAGE_IDENTITY.role}`);
   });
 });
 
 describe("localized work route static generation", () => {
-  it("generates all five project slugs for both locales", () => {
+  it("generates every project slug for both locales", () => {
     expect(generateProjectStaticParams()).toEqual(
       expect.arrayContaining([
-        { locale: "en", slug: "satellyte" },
-        { locale: "id", slug: "satellyte" },
+        { locale: "en", slug: SLUG },
+        { locale: "id", slug: SLUG },
       ]),
     );
-    expect(generateProjectStaticParams()).toHaveLength(10);
+    expect(generateProjectStaticParams()).toHaveLength(
+      getSelectedProjectSlugs().length * routing.locales.length,
+    );
   });
 
   it("generates the archive for both locales", () => {
@@ -105,14 +115,14 @@ describe("localized work route static generation", () => {
 });
 
 describe.each([
-  ["en", "/work/satellyte", "en_US"],
-  ["id", "/id/work/satellyte", "id_ID"],
-] as const)("%s Satellyte metadata", (locale, pathname, openGraphLocale) => {
+  ["en", `/work/${SLUG}`, "en_US"],
+  ["id", `/id/work/${SLUG}`, "id_ID"],
+] as const)("%s first app metadata", (locale, pathname, openGraphLocale) => {
   it("uses localized copy, canonical, language alternates, and shared social image", () => {
     const messages = getMessages(locale);
-    const metadata = generateProjectMetadata({ params: { locale, slug: "satellyte" } });
-    const project = messages.projects.selected.satellyte;
-    const title = messages.common.labels.caseStudyMetadataTitle.replace("{projectName}", "Satellyte");
+    const metadata = generateProjectMetadata({ params: { locale, slug: SLUG } });
+    const project = (messages.projects.selected as Record<string, { descriptor: string; outcome: string }>)[SLUG];
+    const title = messages.common.labels.caseStudyMetadataTitle.replace("{projectName}", getProject(SLUG, locale)!.name);
     const description = `${project.descriptor}. ${project.outcome}`;
 
     expect(metadata).toMatchObject({
@@ -121,8 +131,8 @@ describe.each([
       alternates: {
         canonical: absolute(pathname),
         languages: {
-          en: absolute("/work/satellyte"),
-          id: absolute("/id/work/satellyte"),
+          en: absolute(`/work/${SLUG}`),
+          id: absolute(`/id/work/${SLUG}`),
         },
       },
       openGraph: {
@@ -152,7 +162,7 @@ describe.each([
     const title = common.labels.projectArchiveMetadataTitle;
     const description = common.labels.projectArchiveMetadataDescription.replace(
       "{name}",
-      "Marco Abel Zefanya",
+      SITE.name,
     );
     const metadata = generateArchiveMetadata({ params: { locale } });
 
@@ -182,7 +192,7 @@ describe.each(["en", "id"] as const)("localized %s work markup", (locale) => {
   it("renders localized case-study and archive copy with locale-aware links", async () => {
     const common = getMessages(locale).common;
     const prefix = locale === "en" ? "" : "/id";
-    const project = await ProjectPage({ params: { locale, slug: "satellyte" } });
+    const project = await ProjectPage({ params: { locale, slug: SLUG } });
     const archive = await ArchivePage({ params: { locale } });
     const projectHtml = renderToStaticMarkup(project);
     const archiveHtml = renderToStaticMarkup(archive);
@@ -193,12 +203,12 @@ describe.each(["en", "id"] as const)("localized %s work markup", (locale) => {
     expect(projectText).toContain(common.caseStudy.sections.overview);
     expect(projectText).toContain(common.caseStudy.sections.stack);
     expect(projectText).toContain(common.caseStudy.relatedWork);
-    expect(projectHtml).toContain(`href="${prefix || "/"}#work"`);
+    expect(projectHtml).toContain(`href="${prefix || "/"}#apps"`);
     expect(projectHtml).toContain(`href="${prefix}/work/archive"`);
 
     expect(archiveText).toContain(common.sections.archive.title);
     expect(archiveText).toContain(common.sections.archive.description);
     expect(archiveText).toContain(common.actions.repository);
-    expect(archiveHtml).toContain(`href="${prefix || "/"}#work"`);
+    expect(archiveHtml).toContain(`href="${prefix || "/"}#apps"`);
   });
 });

@@ -2,12 +2,18 @@ import type { Locale } from "@/i18n/locale";
 import type { MessageDomain } from "@/i18n/messages";
 import { routing } from "@/i18n/routing";
 
-// Message catalogues are plain JSON: nested objects, arrays for display order, and
-// strings at every leaf. Nothing here has to survive a richer shape, and rejecting
-// one is how the save path stays a trust boundary.
-export type MessageNode = string | MessageNode[] | { [key: string]: MessageNode };
+import { checkCatalogParity, type MessageCatalogs, type MessageNode, type NodePath } from "@/lib/content/catalog";
+import { checkClientNamesInPaths } from "@/lib/content/client-names";
+import { COLLECTIONS } from "@/lib/content/collections";
+import type { ContentFileName, ContentFiles } from "@/lib/content/schema";
+import { checkContentReferences, parseContentFiles, type ContentIssue } from "@/lib/content/validate";
 
-export type MessageDraft = Record<Locale, Record<MessageDomain, MessageNode>>;
+// The node helpers moved to lib/content/catalog.ts so the content validator can share
+// them; re-exported so the editor's imports stay put.
+export { leafPaths, placeholdersOf } from "@/lib/content/catalog";
+export type { MessageNode, NodePath } from "@/lib/content/catalog";
+
+export type MessageDraft = MessageCatalogs;
 
 export const MESSAGE_DOMAINS = [
   "common",
@@ -16,42 +22,6 @@ export const MESSAGE_DOMAINS = [
 ] as const satisfies readonly MessageDomain[];
 
 export const MESSAGE_LOCALES = routing.locales;
-
-export type NodePath = readonly (string | number)[];
-
-// Same shape as the parity assertions in i18n/messages.test.ts, so a draft that
-// passes here is a draft that keeps those tests green.
-export function leafPaths(node: MessageNode, prefix = ""): string[] {
-  if (typeof node === "string") {
-    return [prefix];
-  }
-
-  if (Array.isArray(node)) {
-    return node.flatMap((entry, index) => leafPaths(entry, `${prefix}[${index}]`));
-  }
-
-  return Object.entries(node).flatMap(([key, value]) =>
-    leafPaths(value, prefix ? `${prefix}.${key}` : key),
-  );
-}
-
-export function placeholdersOf(text: string): string[] {
-  return (text.match(/\{[^{}]*\}/g) ?? []).sort();
-}
-
-function leafEntries(node: MessageNode, prefix = ""): [string, string][] {
-  if (typeof node === "string") {
-    return [[prefix, node]];
-  }
-
-  if (Array.isArray(node)) {
-    return node.flatMap((entry, index) => leafEntries(entry, `${prefix}[${index}]`));
-  }
-
-  return Object.entries(node).flatMap(([key, value]) =>
-    leafEntries(value, prefix ? `${prefix}.${key}` : key),
-  );
-}
 
 // A new array item copies the shape of the previous one with every string blanked,
 // which is what keeps a freshly added entry structurally identical across locales.
@@ -117,124 +87,357 @@ export function removeItem(root: MessageNode, path: NodePath, index: number): Me
   });
 }
 
-export type DraftCheck = { ok: true; value: MessageDraft } | { ok: false; error: string };
+// An image or the CV that was uploaded in this editing session and is not in the
+// repository yet. `sha` is the blob GitHub already holds for it.
+export type PendingMedia = {
+  kind: "image" | "resume";
+  repoPath: string;
+  publicPath: string;
+  sha: string;
+};
 
-// Arrays may grow and shrink — that is the whole point of "add an item" — so only
-// object keys are pinned to the reference. Everything the editor cannot legitimately
-// produce (new keys, nested nulls, numbers where a string belongs) is rejected here.
-function matchesShape(candidate: unknown, reference: MessageNode): boolean {
+export type ContentDraft = {
+  content: ContentFiles;
+  messages: MessageCatalogs;
+  media: PendingMedia[];
+};
+
+export const CONTENT_FILES = [
+  "site",
+  "portfolio",
+  "projects",
+] as const satisfies readonly ContentFileName[];
+
+export function contentFilePath(file: ContentFileName): string {
+  return `client/content/${file}.json`;
+}
+
+const PUBLIC_ROOT = "client/public";
+const MEDIA_ROOT = `${PUBLIC_ROOT}/media/`;
+
+// Matches the formatting the repo's JSON files already use, so a commit from the editor
+// produces a readable diff instead of reformatting every line.
+export function serializeJson(value: unknown): string {
+  return `${JSON.stringify(value, null, 2)}\n`;
+}
+
+type MediaRef = { file: ContentFileName; path: string; src: string };
+
+function mediaRefs(content: ContentFiles): MediaRef[] {
+  const { site, projects } = content;
+  const refs: MediaRef[] = [
+    { file: "site", path: "profile.resumePath", src: site.profile.resumePath },
+    { file: "site", path: "profile.portrait.src", src: site.profile.portrait.src },
+  ];
+
+  projects.selected.forEach((app, index) => {
+    if (app.cover.kind === "image") {
+      refs.push({ file: "projects", path: `selected[${index}].cover.src`, src: app.cover.src });
+    }
+
+    app.screenshots.forEach((shot, shotIndex) =>
+      refs.push({ file: "projects", path: `selected[${index}].screenshots[${shotIndex}].src`, src: shot.src }),
+    );
+  });
+
+  projects.archive.forEach((project, index) =>
+    refs.push({ file: "projects", path: `archive[${index}].cover.src`, src: project.cover.src }),
+  );
+
+  return refs;
+}
+
+// Every site path the content points at, so a save can tell which uploads it still needs
+// and which files it would leave dangling.
+export function referencedMedia(content: ContentFiles): string[] {
+  return Array.from(new Set(mediaRefs(content).map((ref) => ref.src)));
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function joinKey(path: string, key: string | number): string {
+  if (typeof key === "number") {
+    return `${path}[${key}]`;
+  }
+
+  return path ? `${path}.${key}` : key;
+}
+
+// First step of the trust boundary: only strings, arrays, and plain objects may reach
+// the pinning and parity checks, which assume that shape.
+function nodeProblem(value: unknown, path: string): { path: string; message: string } | null {
+  if (typeof value === "string") {
+    return null;
+  }
+
+  if (Array.isArray(value)) {
+    for (let index = 0; index < value.length; index += 1) {
+      const problem = nodeProblem(value[index], joinKey(path, index));
+
+      if (problem) {
+        return problem;
+      }
+    }
+
+    return null;
+  }
+
+  if (isRecord(value)) {
+    for (const [key, member] of Object.entries(value)) {
+      const problem = nodeProblem(member, joinKey(path, key));
+
+      if (problem) {
+        return problem;
+      }
+    }
+
+    return null;
+  }
+
+  return { path, message: "Must be text, a list, or a group of fields." };
+}
+
+// The objects keyed by entry id. Their keys are the one place a draft may add or remove
+// names; each entry inside is checked against its template by checkContentReferences.
+const CONTAINERS = new Set(
+  COLLECTIONS.flatMap((collection) =>
+    collection.copy ? [`${collection.copy.domain}.${collection.copy.path.join(".")}`] : [],
+  ),
+);
+
+// Arrays may grow and shrink, which is the point of "add an item", so only object keys
+// are pinned to the repository's current files. Everything the editor cannot legitimately
+// produce (new keys, changed kinds of value) is reported here.
+function pinProblems(
+  candidate: MessageNode,
+  reference: MessageNode,
+  path: string,
+  trail: string,
+  issues: ContentIssue[],
+): void {
+  const add = (at: string, message: string) => issues.push({ file: "messages", path: at, message });
+
   if (typeof reference === "string") {
-    return typeof candidate === "string";
+    if (typeof candidate !== "string") {
+      add(path, "Must be text.");
+    }
+
+    return;
   }
 
   if (Array.isArray(reference)) {
     if (!Array.isArray(candidate)) {
-      return false;
+      add(path, "Must be a list.");
+    } else if (reference.length === 0) {
+      // An empty reference list carries no template, so nothing can be added to it.
+      if (candidate.length > 0) {
+        add(path, "This list has no template to add items from.");
+      }
+    } else {
+      candidate.forEach((entry, index) =>
+        pinProblems(entry, reference[0], joinKey(path, index), joinKey(trail, index), issues),
+      );
     }
 
-    // An empty reference array carries no template, so nothing can be validated
-    // against it and nothing may be added to it.
-    if (reference.length === 0) {
-      return candidate.length === 0;
+    return;
+  }
+
+  if (!isRecord(candidate) || Array.isArray(candidate)) {
+    add(path, "Must be a group of fields.");
+
+    return;
+  }
+
+  // `trail` is the position without the locale, which is what CONTAINERS is keyed by.
+  if (CONTAINERS.has(trail)) {
+    return;
+  }
+
+  const keys = Object.keys(candidate);
+
+  for (const key of keys) {
+    if (!Object.hasOwn(reference, key)) {
+      add(joinKey(path, key), "This field does not exist in the repository's file.");
     }
-
-    // Every entry of a message array shares one shape, so the first reference entry
-    // is the template each candidate entry has to match.
-    return candidate.every((entry) => matchesShape(entry, reference[0]));
   }
 
-  if (typeof candidate !== "object" || candidate === null || Array.isArray(candidate)) {
-    return false;
+  for (const key of Object.keys(reference)) {
+    if (!Object.hasOwn(candidate, key)) {
+      add(joinKey(path, key), "This field is missing.");
+    } else {
+      pinProblems(candidate[key], reference[key], joinKey(path, key), joinKey(trail, key), issues);
+    }
   }
-
-  const candidateKeys = Object.keys(candidate).sort();
-  const referenceKeys = Object.keys(reference).sort();
-
-  if (candidateKeys.length !== referenceKeys.length) {
-    return false;
-  }
-
-  return referenceKeys.every(
-    (key, index) =>
-      candidateKeys[index] === key &&
-      matchesShape((candidate as Record<string, unknown>)[key], reference[key]),
-  );
 }
 
-export function checkDraft(candidate: unknown, reference: MessageDraft): DraftCheck {
-  if (typeof candidate !== "object" || candidate === null) {
-    return { ok: false, error: "Draft must be an object." };
+const BLOB_SHA = /^[0-9a-f]{40}$/;
+
+function hasTraversal(path: string): boolean {
+  return path.includes("\\") || path.includes("//") || path.split("/").some((part) => part === ".." || part === ".");
+}
+
+function mediaProblems(
+  media: unknown,
+  resumePath: string,
+  issues: ContentIssue[],
+): PendingMedia[] | null {
+  const add = (path: string, message: string) => issues.push({ file: "media", path, message });
+
+  if (!Array.isArray(media)) {
+    add("media", "Pending uploads must be a list.");
+
+    return null;
   }
 
-  const draft = candidate as Record<string, unknown>;
+  const before = issues.length;
+  const resumeRepoPath = `${PUBLIC_ROOT}${resumePath}`;
+
+  const seen = new Set<string>();
+
+  media.forEach((entry, index) => {
+    const at = `media[${index}]`;
+
+    if (
+      !isRecord(entry) ||
+      (entry.kind !== "image" && entry.kind !== "resume") ||
+      typeof entry.repoPath !== "string" ||
+      typeof entry.publicPath !== "string" ||
+      typeof entry.sha !== "string" ||
+      // A git blob id, exactly as createBlob returned it; anything else is not ours.
+      !BLOB_SHA.test(entry.sha)
+    ) {
+      add(at, "Not a valid pending upload.");
+
+      return;
+    }
+
+    const { kind, repoPath, publicPath } = entry as PendingMedia;
+
+    if (seen.has(repoPath)) {
+      add(`${at}.repoPath`, `${repoPath} is uploaded twice.`);
+
+      return;
+    }
+
+    seen.add(repoPath);
+
+    if (hasTraversal(repoPath) || hasTraversal(publicPath)) {
+      add(`${at}.repoPath`, "Path may not contain . or .. segments.");
+    } else if (kind === "image" && !(repoPath.startsWith(MEDIA_ROOT) && (repoPath.endsWith(".webp") || repoPath.endsWith(".jpg")))) {
+      add(`${at}.repoPath`, `An image must be a .webp or .jpg file under ${MEDIA_ROOT}.`);
+    } else if (kind === "resume" && (repoPath !== resumeRepoPath || !repoPath.endsWith(".pdf"))) {
+      add(`${at}.repoPath`, `The CV can only be written to ${resumeRepoPath}.`);
+    } else if (repoPath !== `${PUBLIC_ROOT}${publicPath}`) {
+      add(`${at}.publicPath`, "Does not match the repository path.");
+    }
+  });
+
+  return issues.length === before ? (media as PendingMedia[]) : null;
+}
+
+// `stoppedEarly` is true when a structural stage failed, so the reference and upload
+// checks never ran and fixing these issues can surface more.
+export type DraftCheck =
+  | { ok: true; value: ContentDraft }
+  | { ok: false; issues: ContentIssue[]; stoppedEarly: boolean };
+
+// The server never trusts the client: this re-runs every rule the build runs, then pins
+// the message structure to the repository's own files and confines uploads to the media
+// folder and the CV path. The candidate's own key order is kept so an unchanged file
+// serializes to the same bytes it was read as.
+export function checkDraft(
+  candidate: unknown,
+  reference: ContentDraft,
+  publicFiles: readonly string[],
+): DraftCheck {
+  if (!isRecord(candidate)) {
+    return {
+      ok: false,
+      issues: [{ file: "messages", path: "", message: "Draft must be an object." }],
+      stoppedEarly: true,
+    };
+  }
+
+  const issues: ContentIssue[] = [];
+  const add = (file: ContentIssue["file"], path: string, message: string) =>
+    issues.push({ file, path, message });
+  const { messages } = candidate;
 
   for (const locale of MESSAGE_LOCALES) {
-    const domains = draft[locale];
+    const domains = isRecord(messages) ? messages[locale] : undefined;
 
-    if (typeof domains !== "object" || domains === null) {
-      return { ok: false, error: `Draft is missing the ${locale} catalogue.` };
+    if (!isRecord(domains)) {
+      add("messages", locale, "The catalogue is missing.");
+      continue;
     }
 
     for (const domain of MESSAGE_DOMAINS) {
-      const node = (domains as Record<string, unknown>)[domain];
+      const where = `${locale}.${domain}`;
+      const node = domains[domain];
+      const problem = nodeProblem(node, where);
 
-      if (!matchesShape(node, reference[locale][domain])) {
-        return {
-          ok: false,
-          error: `${locale}/${domain}.json no longer matches the file it came from.`,
-        };
+      if (problem) {
+        add("messages", problem.path, problem.message);
+      } else {
+        pinProblems(node as MessageNode, reference.messages[locale][domain], where, domain, issues);
       }
     }
   }
 
-  const value = draft as MessageDraft;
+  const rawContent = isRecord(candidate.content) ? candidate.content : {};
+  const parsed = parseContentFiles({
+    site: rawContent.site,
+    portfolio: rawContent.portfolio,
+    projects: rawContent.projects,
+  });
 
-  for (const domain of MESSAGE_DOMAINS) {
-    const english = leafEntries(value.en[domain]);
-    const indonesian = leafEntries(value.id[domain]);
-    const translations = new Map(indonesian);
+  if (!parsed.ok) {
+    issues.push(...parsed.issues);
+  }
 
-    for (const [label, entries] of [
-      ["English", english],
-      ["Indonesian", indonesian],
-    ] as const) {
-      const blank = entries.find(([, text]) => text.trim() === "");
+  // Everything below reads the parsed content and the message tree, so it only runs once
+  // both are the shape the editor could have produced.
+  if (issues.length > 0 || !parsed.ok) {
+    return { ok: false, issues, stoppedEarly: true };
+  }
 
-      if (blank) {
-        return { ok: false, error: `${label} ${domain}.json still has an empty field: ${blank[0]}` };
-      }
-    }
+  const catalogs = messages as MessageCatalogs;
+  issues.push(...checkContentReferences(parsed.value, catalogs), ...checkCatalogParity(catalogs));
 
-    if (english.length !== indonesian.length) {
-      return {
-        ok: false,
-        error: `${domain}.json has a different number of entries per language.`,
-      };
-    }
+  // The CV URL is fixed (the editor never edits it, only replaces the file behind it), so
+  // a candidate cannot move it, nor aim a CV upload anywhere else.
+  const resumePath = reference.content.site.profile.resumePath;
 
-    for (const [path, text] of english) {
-      const translated = translations.get(path);
+  if (parsed.value.site.profile.resumePath !== resumePath) {
+    add("site", "profile.resumePath", `The CV path is fixed at ${resumePath}.`);
+  }
 
-      if (translated === undefined) {
-        return { ok: false, error: `Indonesian ${domain}.json is missing ${path}.` };
-      }
+  const media = mediaProblems(candidate.media, resumePath, issues);
+  issues.push(...checkClientNamesInPaths((media ?? []).map((item) => item.publicPath)));
+  const available = new Set([...publicFiles, ...(media ?? []).map((item) => item.publicPath)]);
 
-      // A placeholder present in one language and not the other renders as a literal
-      // "{name}" or throws at request time, so it never reaches a commit.
-      if (placeholdersOf(text).join("|") !== placeholdersOf(translated).join("|")) {
-        return {
-          ok: false,
-          error: `${domain}.json placeholders differ between languages at ${path}.`,
-        };
-      }
+  for (const ref of mediaRefs(parsed.value)) {
+    if (!available.has(ref.src)) {
+      add(ref.file, ref.path, `No file at ${ref.src} in the repository or the pending uploads.`);
     }
   }
 
-  return { ok: true, value };
-}
+  if (issues.length > 0 || !media) {
+    return { ok: false, issues, stoppedEarly: false };
+  }
 
-// Matches the formatting the repo's JSON files already use, so a commit from the CMS
-// produces a readable diff instead of reformatting every line.
-export function serializeMessages(node: MessageNode): string {
-  return `${JSON.stringify(node, null, 2)}\n`;
+  return {
+    ok: true,
+    value: {
+      content: {
+        site: rawContent.site,
+        portfolio: rawContent.portfolio,
+        projects: rawContent.projects,
+      } as ContentFiles,
+      messages: catalogs,
+      media,
+    },
+  };
 }

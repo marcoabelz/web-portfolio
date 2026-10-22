@@ -24,7 +24,7 @@ function profileSection(): string {
     `Email: ${profile.email}`,
     `Availability: ${profile.availability}`,
     `Resume: ${profile.resumePath}`,
-    `Introduction: ${profile.introduction}`,
+    `Introduction: ${profile.intro.lead} ${profile.intro.tail}`,
     `About: ${content.aboutParagraphs.join(" ")}`,
   ].join("\n");
 }
@@ -48,7 +48,7 @@ function selectedProjectsSection(): string {
     [
       `### ${project.name} — ${project.descriptor}`,
       `Context: ${project.contextLabel} | Role: ${project.role}`,
-      `Access: ${project.privacy === "public" ? project.liveUrl : "private, no public link"}`,
+      `Access: ${project.privacy === "public" ? (project.liveUrl ?? "public, no live link") : "private, no public link"}`,
       `Outcome: ${project.outcome}`,
       bullets(project.highlights),
       `Stack: ${project.stack.join(", ")}`,

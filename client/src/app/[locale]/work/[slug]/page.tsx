@@ -7,6 +7,8 @@ import { getProject, getSelectedProjects } from "@/data/projects";
 import { isLocale, languageAlternates, localizePath } from "@/i18n/locale";
 import { getMessages } from "@/i18n/messages";
 import { routing } from "@/i18n/routing";
+import { getContentFiles } from "@/lib/content/load";
+import { resolveTechTag } from "@/lib/icons";
 import { SITE } from "@/lib/site";
 import { getSharedSocialImage } from "@/lib/social-image";
 
@@ -82,11 +84,13 @@ export default function ProjectPage({ params: { locale, slug } }: Props) {
   setRequestLocale(locale);
 
   const common = getMessages(locale).common;
+  const { skillIcons } = getContentFiles().portfolio;
   return (
     <CaseStudy
       project={project}
+      stack={project.stack.map((name) => resolveTechTag(name, skillIcons))}
       links={{
-        selectedWork: localizePath("/#work", locale),
+        selectedWork: localizePath("/#apps", locale),
         archive: localizePath("/work/archive", locale),
       }}
       labels={{
@@ -104,6 +108,7 @@ export default function ProjectPage({ params: { locale, slug } }: Props) {
         sanitizedVisualDescription: common.labels.sanitizedVisualDescription,
         enlargeScreenshot: common.accessibility.enlargeScreenshot,
         closeScreenshot: common.accessibility.closeScreenshot,
+        projectHighlights: common.accessibility.projectHighlights,
         relatedWork: common.caseStudy.relatedWork,
         browseEarlierProjects: common.actions.browseEarlierProjects,
         sections: common.caseStudy.sections,

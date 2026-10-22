@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 
+import { COLLECTIONS } from "@/lib/content/collections";
+import { getContentFiles } from "@/lib/content/load";
+
 import { getMessages } from "./messages";
 
 type MessageValue = string | readonly MessageValue[] | MessageObject;
@@ -21,20 +24,30 @@ function leafKeyPaths(value: MessageValue, prefix = ""): string[] {
   );
 }
 
-function expectPopulated(value: MessageValue): void {
+// Copy of a collection is an object keyed by fact id, so it is legitimately empty
+// while the collection has no entries (testimonials ships that way). Nothing else may be.
+const COLLECTION_COPY_PATHS = new Set(
+  COLLECTIONS.flatMap(({ copy }) => (copy ? [[copy.domain, ...copy.path].join(".")] : [])),
+);
+
+function expectPopulated(value: MessageValue, path = ""): void {
   if (typeof value === "string") {
-    expect(value.trim()).not.toBe("");
+    expect(value.trim(), path).not.toBe("");
     return;
   }
 
   if (Array.isArray(value)) {
-    expect(value.length).toBeGreaterThan(0);
-    value.forEach(expectPopulated);
+    expect(value.length, path).toBeGreaterThan(0);
+    value.forEach((entry, index) => expectPopulated(entry, `${path}[${index}]`));
     return;
   }
 
-  expect(Object.keys(value).length).toBeGreaterThan(0);
-  Object.values(value).forEach(expectPopulated);
+  if (!COLLECTION_COPY_PATHS.has(path)) {
+    expect(Object.keys(value).length, path).toBeGreaterThan(0);
+  }
+  Object.entries(value).forEach(([key, entry]) =>
+    expectPopulated(entry, path ? `${path}.${key}` : key),
+  );
 }
 
 function stringLeaves(
@@ -82,19 +95,12 @@ describe("localized message catalogs", () => {
     },
   );
 
-  it("identifies the current language in each locale", () => {
-    expect(english.common.language.current).toBe("English");
-    expect(indonesian.common.language.current).toBe("Indonesia");
-  });
-
-  it("contains exactly five selected projects per locale", () => {
-    expect(Object.keys(english.projects.selected)).toHaveLength(5);
-    expect(Object.keys(indonesian.projects.selected)).toHaveLength(5);
-  });
-
-  it("contains exactly seven archive projects per locale", () => {
-    expect(Object.keys(english.projects.archive)).toHaveLength(7);
-    expect(Object.keys(indonesian.projects.archive)).toHaveLength(7);
+  it("keeps a copy entry for every selected and archive fact in each locale", () => {
+    const { projects } = getContentFiles();
+    for (const messages of [english, indonesian]) {
+      expect(Object.keys(messages.projects.selected).sort()).toEqual(projects.selected.map((app) => app.slug).sort());
+      expect(Object.keys(messages.projects.archive).sort()).toEqual(projects.archive.map((app) => app.id).sort());
+    }
   });
 
   it.each(["common", "portfolio", "projects"] as const)(
@@ -117,14 +123,13 @@ describe("localized message catalogs", () => {
       expect(portfolio.profile).not.toHaveProperty("location");
       expect(portfolio.profile).not.toHaveProperty("email");
       expect(portfolio.profile).not.toHaveProperty("resumePath");
-      expect(portfolio.aboutFacts).not.toContain("Jakarta, Indonesia");
       expect(common.footer).not.toHaveProperty("links");
       expect(common.labels).not.toHaveProperty("email");
       expect(common.labels).not.toHaveProperty("linkedIn");
       expect(common.labels).not.toHaveProperty("gitHub");
       expect(common.labels).not.toHaveProperty("whatsApp");
       expect(Object.values(stringLeaves(common))).not.toContainEqual(
-        expect.stringContaining("Marco Abel Zefanya"),
+        expect.stringContaining(getContentFiles().site.profile.name),
       );
 
       Object.values(portfolio.experiences).forEach((experience) => {

@@ -2,13 +2,12 @@
   "profile": {
     "title": "Full-Stack Engineer",
     "specialty": "Backend, Sistem AI & Infrastruktur Produksi",
-    "introduction": "Saya membangun produk SaaS dan produk berbasis AI secara menyeluruh hingga berjalan di produksi—mulai dari antarmuka Next.js dan API Fastify, pipeline data, otomasi browser, computer vision, sampai deployment berbasis Docker.",
-    "availability": "Terbuka untuk peluang full-stack, backend, dan rekayasa produk AI yang sesuai."
+    "intro": {
+      "lead": "Full-stack engineer yang membangun produk SaaS dan AI kelas produksi,",
+      "tail": "dari antarmuka sampai infrastruktur tempatnya berjalan."
+    },
+    "availability": "Terbuka untuk posisi full-time dan proyek freelance."
   },
-  "aboutFacts": [
-    "Pengalaman gabungan 4+ tahun",
-    "Software Engineer & Software Quality Assurance"
-  ],
   "aboutParagraphs": [
     "Full-Stack Engineer dengan pengalaman lebih dari 4 tahun dalam pengembangan software serta quality assurance.",
     "Pengalaman saya mencakup pengembangan SaaS B2B, produk berbasis AI, computer vision, sistem perusahaan, pemantauan industri, otomatisasi browser, sistem pembayaran dan penagihan, serta infrastruktur produksi. Saya terbiasa menangani pengembangan produk secara menyeluruh, mulai dari menerjemahkan kebutuhan operasional menjadi rancangan sistem hingga implementasi, deployment, dan menjaga keandalan sistem di lingkungan produksi.",
@@ -17,8 +16,6 @@
   "experiences": {
     "satellyte": {
       "title": "Full-Stack Engineer",
-      "displayStart": "Maret 2026",
-      "displayEnd": "Sekarang",
       "summary": "Membangun platform intelijen penjualan B2B berbasis AI yang mengubah sinyal pembelian menjadi lead dengan skor.",
       "highlights": [
         "Mengembangkan dashboard Next.js dan layanan Fastify/BullMQ yang menjalankan beragam strategi sinyal pembelian.",
@@ -30,8 +27,6 @@
     },
     "nexio": {
       "title": "Full-Stack Engineer",
-      "displayStart": "September 2025",
-      "displayEnd": "Maret 2026",
       "summary": "Membangun dan merilis tiga sistem produksi: computer vision, rekrutmen berbasis AI, dan monitoring industri.",
       "highlights": [
         "Membangun layanan computer vision Python dengan FastAPI, YOLO, OpenCV, dan TensorRT untuk tiga kamera industri.",
@@ -43,8 +38,6 @@
     },
     "delta": {
       "title": "Full-Stack Developer",
-      "displayStart": "Agustus 2024",
-      "displayEnd": "Agustus 2025",
       "summary": "Mengembangkan platform ERP internal yang menghubungkan operasional Penjualan, Pembelian, Inventaris, dan Produksi.",
       "highlights": [
         "Membangun antarmuka Next.js dan React yang ditopang REST API berbasis Node.js dan Express.js.",
@@ -55,8 +48,6 @@
     },
     "sys": {
       "title": "Software QA Engineer",
-      "displayStart": "September 2021",
-      "displayEnd": "November 2023",
       "summary": "Menguji software embedded untuk kontrol transmisi otomotif sesuai standar internal, otomotif, dan rekayasa Jepang.",
       "highlights": [
         "Melakukan white-box testing pada software embedded kontrol transmisi yang ditulis dengan bahasa C.",
@@ -67,13 +58,13 @@
     }
   },
   "skillGroupTitles": {
-    "programmingLanguages": "Bahasa Pemrograman",
+    "programming-languages": "Bahasa Pemrograman",
     "frontend": "Frontend",
-    "backendApis": "Backend & API",
+    "backend-apis": "Backend & API",
     "databases": "Database",
-    "aiAutomation": "AI & Otomasi",
+    "ai-automation": "AI & Otomasi",
     "infrastructure": "Infrastruktur",
-    "industrialIot": "Industri & IoT"
+    "industrial-iot": "Industri & IoT"
   },
   "education": {
     "hacktiv8": {
@@ -96,6 +87,48 @@
       "name": "Bahasa Inggris",
       "proficiency": "Kemampuan Profesional",
       "evidence": "Englishvit TOEFL ITP-style Assessment — 477, November 2024"
+    }
+  },
+  "services": {
+    "saas-web-apps": {
+      "title": "Aplikasi SaaS & web",
+      "description": "Dari skema database sampai produk Next.js yang sudah live, dibangun dan saya pegang penuh."
+    },
+    "ai-automation": {
+      "title": "Fitur AI & otomasi",
+      "description": "Alur kerja LLM, pengayaan data, otomasi browser, dan computer vision yang andal di produksi."
+    },
+    "dashboards-tools": {
+      "title": "Dashboard & tools internal",
+      "description": "Dashboard operator, modul ERP, dan panel admin yang merapikan operasional menjadi alur yang jelas."
+    },
+    "apis-infra": {
+      "title": "API, pipeline & infrastruktur",
+      "description": "REST API, antrean, pipeline data, Docker, dan CI/CD, supaya rilis berjalan tanpa drama."
+    }
+  },
+  "process": [
+    {
+      "title": "Pahami",
+      "description": "Saya memetakan masalah operasional, penggunanya, dan batasannya sebelum menulis kode."
+    },
+    {
+      "title": "Rancang",
+      "description": "Saya merancang model data, API, dan batas sistem agar produk bisa terus berkembang."
+    },
+    {
+      "title": "Bangun & uji",
+      "description": "Saya merilis bertahap dalam potongan kecil yang teruji. Latar belakang QA saya menjaga kasus tepi tetap tertangani."
+    },
+    {
+      "title": "Rilis & pantau",
+      "description": "Saya deploy dengan Docker dan CI/CD, lalu memantau produksi agar tetap andal."
+    }
+  ],
+  "testimonials": {},
+  "lab": {
+    "web-portfolio": {
+      "description": "Situs ini. Next.js 14, konten Inggris dan Indonesia, chat AI dengan rate limiting, dan editor konten yang commit lewat GitHub API."
     }
   }
 }

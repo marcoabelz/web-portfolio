@@ -1,63 +1,67 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { getMessages } from "@/i18n/messages";
 import { leafPaths, MESSAGE_DOMAINS, type MessageNode } from "@/lib/admin/draft";
+import { repoDraft } from "@/lib/admin/test-draft";
 
-import { Fields } from "./Fields";
+import type { EditorHandlers } from "./editor/EditorLayout";
+import type { EditorState } from "./editor/state";
+import { Fields, humanize, parseCopyPath } from "./Fields";
 
-const noop = () => {};
+const handlers: EditorHandlers = {
+  upload: async () => null,
+  searchIcons: async () => [],
+  review: () => {},
+  signOut: () => {},
+};
 
-function render(english: MessageNode, indonesian: MessageNode): string {
-  return renderToStaticMarkup(
-    <Fields
-      path={[]}
-      english={english}
-      indonesian={indonesian}
-      onEdit={noop}
-      onAdd={noop}
-      onRemove={noop}
-    />,
-  );
+function state(): EditorState {
+  const base = repoDraft();
+
+  return { base, draft: base, baseSha: "sha", publicFiles: [], section: "other", query: "", previews: {} };
+}
+
+function render(paths: readonly string[]): string {
+  return renderToStaticMarkup(<Fields paths={paths} state={state()} dispatch={() => {}} handlers={handlers} />);
 }
 
 function occurrences(markup: string, needle: string): number {
   return markup.split(needle).length - 1;
 }
 
-describe("admin fields", () => {
-  // The form is generated from the JSON rather than listed field by field, so this is
-  // the check that no wording in the real catalogue is left uneditable.
-  it.each(MESSAGE_DOMAINS)("gives every %s.json string both languages", (domain) => {
-    const english = getMessages("en")[domain] as MessageNode;
-    const leaves = leafPaths(english);
-
-    const markup = render(english, getMessages("id")[domain] as MessageNode);
-
-    expect(leaves.length).toBeGreaterThan(0);
-    expect(occurrences(markup, "<textarea")).toBe(leaves.length * 2);
+describe("other fields", () => {
+  it("parses the uncovered path format into a copy reference", () => {
+    expect(parseCopyPath("common.labels.portfolio")).toEqual({ domain: "common", path: ["labels", "portfolio"] });
+    expect(parseCopyPath("projects.selected.satellyte.screenshots[2]")).toEqual({
+      domain: "projects",
+      path: ["selected", "satellyte", "screenshots", 2],
+    });
+    expect(parseCopyPath("nowhere.at.all")).toBeNull();
   });
 
-  it("pairs each English box with the Indonesian one at the same path", () => {
-    const markup = render({ profile: { title: "Engineer" } }, { profile: { title: "Insinyur" } });
+  // Any leaf of the real catalogue that a future schema stops reaching must still be
+  // editable in both languages here.
+  it.each(MESSAGE_DOMAINS)("gives every %s.json leaf both languages", (domain) => {
+    const paths = leafPaths(repoDraft().messages.en[domain] as MessageNode).map((path) => `${domain}.${path}`);
+    const markup = render(paths);
+    const boxes = occurrences(markup, "<input") + occurrences(markup, "<textarea");
 
-    expect(markup).toContain(">Engineer</textarea>");
-    expect(markup).toContain(">Insinyur</textarea>");
+    expect(paths.length).toBeGreaterThan(0);
+    expect(boxes).toBe(paths.length * 2);
   });
 
-  it("offers add and remove per list, and nothing to add on an empty one", () => {
-    const list = { tags: ["First", "Second"], empty: [] };
+  it("labels each field from its key and shows the path as the hint", () => {
+    const markup = render(["common.labels.siteMetadataTitle"]);
 
-    const markup = render(list, { tags: ["Pertama", "Kedua"], empty: [] });
-
-    expect(occurrences(markup, "Remove")).toBe(2);
-    expect(occurrences(markup, "+ Add item")).toBe(1);
+    expect(markup).toContain("Site Metadata Title");
+    expect(markup).toContain("common.labels.siteMetadataTitle");
   });
 
-  it("still renders a field the Indonesian file has not caught up with", () => {
-    const markup = render({ newHeading: "Fresh" }, {});
+  it("renders nothing for an empty list", () => {
+    expect(render([])).not.toContain("<input");
+  });
 
-    expect(markup).toContain("New Heading");
-    expect(occurrences(markup, "<textarea")).toBe(2);
+  it("humanizes camel case keys", () => {
+    expect(humanize("newHeading")).toBe("New Heading");
   });
 });

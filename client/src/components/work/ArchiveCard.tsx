@@ -1,11 +1,16 @@
-import Image from "next/image";
 import { Github } from "lucide-react";
 
+import { Card } from "@/components/ui/Card";
 import { ExternalLink } from "@/components/ui/ExternalLink";
+import { SkeletonImage } from "@/components/ui/SkeletonImage";
+import { TechChip } from "@/components/ui/TechChip";
+import type { TechTag } from "@/lib/content/models";
 import type { ArchiveProject } from "@/types/portfolio";
 
 type ArchiveCardProps = {
   project: ArchiveProject;
+  /** Resolved on the server (the icon lookup is server-only). */
+  stack: readonly TechTag[];
   labels: {
     technologyStack: string;
     repository: string;
@@ -15,42 +20,43 @@ type ArchiveCardProps = {
   };
 };
 
-export function ArchiveCard({ project, labels }: ArchiveCardProps) {
+// Archive covers are mixed sizes (some are tall full-page captures), so the box is fixed
+// at 16:10 and the image is cropped to it, not stretched.
+const COVER_WIDTH = 1600;
+const COVER_HEIGHT = 1000;
+
+export function ArchiveCard({ project, stack, labels }: ArchiveCardProps) {
   return (
-    <article className="group flex min-w-0 flex-col overflow-hidden rounded-xl border border-line bg-surface">
-      <div className="relative aspect-[16/10] min-h-0 overflow-hidden border-b border-line bg-elevated">
-        <Image
-          fill
-          alt={project.cover.alt}
-          className="object-cover transition-transform duration-200 ease-out group-hover:scale-[1.015]"
-          sizes="(min-width: 1280px) 384px, (min-width: 1024px) 31vw, (min-width: 640px) 48vw, 100vw"
+    <Card as="article" interactive className="app-card">
+      <div className="app-media">
+        <SkeletonImage
           src={project.cover.src}
+          width={COVER_WIDTH}
+          height={COVER_HEIGHT}
+          alt={project.cover.alt}
+          sizes="(min-width: 1280px) 384px, (min-width: 1024px) 31vw, (min-width: 640px) 48vw, 100vw"
+          className="size-full"
         />
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col p-5 sm:p-6">
-        <p className="font-mono text-[0.6875rem] uppercase tracking-[0.17em] text-muted">
-          {project.contextLabel}
-        </p>
-        <h2 className="mt-3 break-words text-xl font-semibold tracking-[-0.025em] text-ink">
-          {project.name}
-        </h2>
-        <p className="mt-3 text-sm leading-6 text-muted">{project.descriptor}</p>
+      <div className="app-body">
+        <p className="app-ctx">{project.contextLabel}</p>
+        <h2 className="app-name">{project.name}</h2>
+        <p className="app-outcome">{project.descriptor}</p>
 
-        <ul
-          aria-label={labels.technologyStack}
-          className="mt-5 flex min-w-0 flex-wrap gap-x-4 gap-y-2 border-t border-line pt-4 font-mono text-[0.6875rem] leading-5 text-muted"
-        >
-          {project.stack.map((technology) => (
-            <li key={technology}>{technology}</li>
+        <ul aria-label={labels.technologyStack} className="m-0 mt-2 flex list-none flex-wrap gap-2 p-0">
+          {stack.map((tag) => (
+            <li key={tag.name}>
+              <TechChip tag={tag} size="sm" />
+            </li>
           ))}
         </ul>
 
-        <div className="mt-auto pt-6">
+        <div className="mt-auto pt-4">
           {project.repositoryUrl ? (
             <ExternalLink
               aria-label={labels.openRepository}
-              className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-ink underline decoration-line underline-offset-4 transition-colors duration-200 hover:text-accent"
+              className="app-go relative z-10"
               href={project.repositoryUrl}
               newTabLabel={labels.newTabLabel}
             >
@@ -62,6 +68,6 @@ export function ArchiveCard({ project, labels }: ArchiveCardProps) {
           )}
         </div>
       </div>
-    </article>
+    </Card>
   );
 }

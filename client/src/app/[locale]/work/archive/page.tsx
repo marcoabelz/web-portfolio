@@ -10,6 +10,8 @@ import { getArchiveProjects } from "@/data/projects";
 import { isLocale, languageAlternates, localizePath } from "@/i18n/locale";
 import { getMessages } from "@/i18n/messages";
 import { routing } from "@/i18n/routing";
+import { getContentFiles } from "@/lib/content/load";
+import { resolveTechTag } from "@/lib/icons";
 import { SITE } from "@/lib/site";
 import { getSharedSocialImage } from "@/lib/social-image";
 
@@ -76,23 +78,24 @@ export default function ProjectArchivePage({ params: { locale } }: Props) {
 
   const projects = getArchiveProjects(locale);
   const common = getMessages(locale).common;
+  const { skillIcons } = getContentFiles().portfolio;
 
   return (
     <section className="pb-20 pt-8 sm:pb-24 sm:pt-10 lg:pb-32 lg:pt-14" aria-labelledby="archive-heading">
       <Container>
         <Link
           className="inline-flex min-h-11 items-center gap-2 py-2 text-sm font-semibold text-muted underline decoration-line underline-offset-4 transition-colors duration-200 hover:text-accent"
-          href={localizePath("/#work", locale)}
+          href={localizePath("/#apps", locale)}
         >
           <ArrowLeft aria-hidden="true" className="size-4" strokeWidth={1.75} />
           {common.actions.backToSelectedWork}
         </Link>
 
-        <header className="mt-10 max-w-3xl sm:mt-14 lg:mt-20">
-          <p className="eyebrow">{common.sections.archive.eyebrow}</p>
+        <header className="mt-10 sm:mt-14 lg:mt-20">
+          <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted">{common.sections.archive.eyebrow}</p>
           <h1
             id="archive-heading"
-            className="text-balance mt-4 text-4xl font-semibold tracking-[-0.04em] text-ink sm:text-5xl lg:text-6xl"
+            className="text-balance mt-4 font-display text-[clamp(44px,8vw,112px)] font-semibold leading-[0.95] tracking-[-0.05em] text-ink"
           >
             {common.sections.archive.title}
           </h1>
@@ -101,11 +104,12 @@ export default function ProjectArchivePage({ params: { locale } }: Props) {
           </p>
         </header>
 
-        <div className="mt-12 grid min-w-0 gap-6 sm:grid-cols-2 sm:gap-8 lg:mt-16 lg:grid-cols-3">
+        <div className="mt-12 grid min-w-0 gap-3 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
           {projects.map((project) => (
             <ArchiveCard
               key={project.name}
               project={project}
+              stack={project.stack.map((name) => resolveTechTag(name, skillIcons))}
               labels={{
                 technologyStack: common.accessibility.technologyStack,
                 repository: common.actions.repository,

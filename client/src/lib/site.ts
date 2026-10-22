@@ -1,3 +1,5 @@
+import content from "../../content/site.json";
+
 const LOCAL_SITE_URL = "http://localhost:3000";
 
 function getLocalFallback(environment: string | undefined): URL {
@@ -32,9 +34,6 @@ export function getSiteUrl(
 }
 
 export const SITE = {
-  name: "Marco Abel Zefanya",
-  title: "Marco Abel Zefanya | Full-Stack Engineer",
-  description:
-    "Full-Stack Engineer specializing in backend systems, AI-powered products, computer vision, browser automation, and production infrastructure.",
+  name: content.profile.name,
   url: getSiteUrl(process.env.NEXT_PUBLIC_SITE_URL).href,
 } as const;

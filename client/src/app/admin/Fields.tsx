@@ -1,19 +1,19 @@
 "use client";
 
-import type { Locale } from "@/i18n/locale";
-import type { MessageNode, NodePath } from "@/lib/admin/draft";
+import type { Dispatch } from "react";
 
-export type EditHandlers = Readonly<{
-  onEdit: (locale: Locale, path: NodePath, value: string) => void;
-  onAdd: (path: NodePath) => void;
-  onRemove: (path: NodePath, index: number) => void;
-}>;
+import type { MessageDomain } from "@/i18n/messages";
+import { MESSAGE_DOMAINS } from "@/lib/admin/draft";
+import type { CopyRef } from "@/lib/admin/schema";
 
-export const ghostButtonClassName =
-  "min-h-9 rounded-lg border border-line px-3 text-xs font-medium text-muted transition-colors hover:border-accent hover:text-accent";
+import type { EditorHandlers } from "./editor/EditorLayout";
+import { CopyField } from "./editor/fields/CopyField";
+import { copyValue } from "./editor/fields/shared";
+import type { EditorAction, EditorState } from "./editor/state";
 
-const textareaClassName =
-  "w-full resize-y rounded-lg border border-line bg-canvas px-3 py-2 text-sm leading-relaxed text-ink outline-none transition-colors focus:border-accent";
+// The "Other" section: copy that no section of the schema reaches, so a key added to a
+// message file is still editable before anyone gives it a proper field. Kept free of
+// server actions so it can be render-tested.
 
 export function humanize(key: string): string {
   const spaced = key.replace(/([a-z0-9])([A-Z])/g, "$1 $2");
@@ -21,149 +21,60 @@ export function humanize(key: string): string {
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 }
 
-// The last string segment names the field; a trailing array index is already shown
-// by the item header above it.
-function fieldLabel(path: NodePath): string {
-  for (let index = path.length - 1; index >= 0; index -= 1) {
-    const segment = path[index];
+// "common.labels.portfolio" or "projects.selected.satellyte.screenshots[2]".
+export function parseCopyPath(text: string): CopyRef | null {
+  const [domain, ...rest] = Array.from(text.matchAll(/([^.[\]]+)|\[(\d+)\]/g)).map((match) =>
+    match[2] !== undefined ? Number(match[2]) : match[1],
+  );
 
-    if (typeof segment === "string") {
-      return humanize(segment);
-    }
+  if (typeof domain !== "string" || !(MESSAGE_DOMAINS as readonly string[]).includes(domain) || rest.length === 0) {
+    return null;
   }
 
-  return "Text";
+  return { domain: domain as MessageDomain, path: rest };
 }
 
-function Leaf({
-  path,
-  english,
-  indonesian,
-  onEdit,
-}: Readonly<{ path: NodePath; english: string; indonesian: string }> &
-  Pick<EditHandlers, "onEdit">) {
-  const rows = Math.min(
-    8,
-    Math.max(2, Math.ceil(Math.max(english.length, indonesian.length) / 70)),
-  );
+function labelOf(ref: CopyRef): string {
+  const key = [...ref.path].reverse().find((part): part is string => typeof part === "string");
 
-  return (
-    <div className="space-y-2">
-      <p className="text-sm font-medium">{fieldLabel(path)}</p>
-      <div className="grid gap-3 md:grid-cols-2">
-        {(
-          [
-            ["en", "English", english],
-            ["id", "Indonesian", indonesian],
-          ] as const
-        ).map(([locale, label, value]) => (
-          <label key={locale} className="space-y-1 text-xs text-muted">
-            <span className="font-mono uppercase tracking-wide">{label}</span>
-            <textarea
-              className={textareaClassName}
-              rows={rows}
-              value={value}
-              onChange={(event) => onEdit(locale, path, event.target.value)}
-            />
-          </label>
-        ))}
-      </div>
-    </div>
-  );
+  return humanize(key ?? "Text");
 }
 
-// Walks the English catalogue and pulls the Indonesian counterpart from the same path,
-// so the form is generated from the JSON rather than listed field by field: a key added
-// to a message file becomes editable with no change here.
 export function Fields({
-  path,
-  english,
-  indonesian,
-  onEdit,
-  onAdd,
-  onRemove,
-}: Readonly<{ path: NodePath; english: MessageNode; indonesian: MessageNode }> & EditHandlers) {
-  const handlers = { onEdit, onAdd, onRemove };
-
-  if (typeof english === "string") {
-    return (
-      <Leaf
-        path={path}
-        english={english}
-        indonesian={typeof indonesian === "string" ? indonesian : ""}
-        onEdit={onEdit}
-      />
-    );
-  }
-
-  if (Array.isArray(english)) {
-    const translations = Array.isArray(indonesian) ? indonesian : [];
-
-    return (
-      <div className="space-y-3">
-        {english.map((entry, index) => (
-          <div key={index} className="space-y-3 rounded-lg border border-line bg-surface p-3">
-            <div className="flex items-center justify-between gap-3">
-              <span className="font-mono text-xs text-muted">#{index + 1}</span>
-              <button
-                type="button"
-                className={ghostButtonClassName}
-                onClick={() => onRemove(path, index)}
-              >
-                Remove
-              </button>
-            </div>
-            <Fields
-              path={[...path, index]}
-              english={entry}
-              indonesian={translations[index] ?? ""}
-              {...handlers}
-            />
-          </div>
-        ))}
-        {/* With no existing entry there is no shape to copy, so adding is impossible
-            rather than guessed. */}
-        {english.length > 0 ? (
-          <button type="button" className={ghostButtonClassName} onClick={() => onAdd(path)}>
-            + Add item
-          </button>
-        ) : null}
-      </div>
-    );
-  }
-
-  const translations =
-    typeof indonesian === "object" && !Array.isArray(indonesian) ? indonesian : {};
-
+  paths,
+  state,
+  dispatch,
+  handlers,
+}: Readonly<{
+  paths: readonly string[];
+  state: EditorState;
+  dispatch: Dispatch<EditorAction>;
+  handlers: EditorHandlers;
+}>) {
   return (
-    <div className="space-y-4">
-      {Object.entries(english).map(([key, value]) =>
-        path.length === 0 ? (
-          <details key={key} className="rounded-xl border border-line bg-surface px-4 py-3">
-            <summary className="cursor-pointer text-sm font-semibold">{humanize(key)}</summary>
-            <div className="pt-4">
-              <Fields
-                path={[key]}
-                english={value}
-                indonesian={translations[key] ?? ""}
-                {...handlers}
-              />
-            </div>
-          </details>
-        ) : (
-          <fieldset key={key} className="space-y-3 border-l-2 border-line pl-4">
-            <legend className="text-xs font-semibold uppercase tracking-wide text-muted">
-              {humanize(key)}
-            </legend>
-            <Fields
-              path={[...path, key]}
-              english={value}
-              indonesian={translations[key] ?? ""}
-              {...handlers}
-            />
-          </fieldset>
-        ),
-      )}
+    <div data-uncovered="true" className="space-y-4">
+      {paths.map((text) => {
+        const ref = parseCopyPath(text);
+
+        if (!ref) {
+          return null;
+        }
+
+        const english = copyValue(state.draft, "en", ref);
+        // Long copy gets a growing textarea, short copy a single line.
+        const long = typeof english === "string" && english.length > 90;
+
+        return (
+          <CopyField
+            key={text}
+            field={{ kind: long ? "paragraph" : "text", label: labelOf(ref), hint: text, copy: ref }}
+            scope={{ copyBase: [] }}
+            state={state}
+            dispatch={dispatch}
+            handlers={handlers}
+          />
+        );
+      })}
     </div>
   );
 }

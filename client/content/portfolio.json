@@ -1,0 +1,467 @@
+{
+  "experiences": [
+    {
+      "id": "satellyte",
+      "company": "Satellyte",
+      "location": "Jakarta, Indonesia",
+      "workMode": "remote",
+      "startDate": "2026-03",
+      "endDate": null,
+      "stack": [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "Fastify",
+        "Node.js",
+        "BullMQ",
+        "PostgreSQL",
+        "Redis",
+        "Python",
+        "FastAPI",
+        "Playwright",
+        "Browserbase",
+        "LLM APIs",
+        "Stripe",
+        "Docker",
+        "GitHub Actions",
+        "GHCR"
+      ]
+    },
+    {
+      "id": "nexio",
+      "company": "PT Nexio Teknologi",
+      "location": "Karawang, Indonesia",
+      "workMode": "hybrid",
+      "startDate": "2025-09",
+      "endDate": "2026-03",
+      "stack": [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "Express.js",
+        "Python",
+        "FastAPI",
+        "YOLO",
+        "OpenCV",
+        "TensorRT",
+        "PostgreSQL",
+        "MongoDB",
+        "Redis",
+        "Stripe",
+        "MQTT",
+        "Node-RED",
+        "TimescaleDB",
+        "Grafana",
+        "Docker",
+        "GitHub Actions"
+      ]
+    },
+    {
+      "id": "delta",
+      "company": "PT Delta Anugrah",
+      "location": "Jakarta, Indonesia",
+      "workMode": "remote",
+      "startDate": "2024-08",
+      "endDate": "2025-08",
+      "stack": [
+        "TypeScript",
+        "Next.js",
+        "React",
+        "Node.js",
+        "Express.js",
+        "PostgreSQL",
+        "MongoDB",
+        "REST APIs"
+      ]
+    },
+    {
+      "id": "sys",
+      "company": "PT SYS Indonesia",
+      "location": "Jakarta, Indonesia",
+      "workMode": "onsite",
+      "startDate": "2021-09",
+      "endDate": "2023-11",
+      "stack": [
+        "C",
+        "winAMS",
+        "White-box Testing",
+        "Unit Testing",
+        "Microsoft Excel"
+      ]
+    }
+  ],
+  "skillGroups": [
+    {
+      "id": "programming-languages",
+      "skills": [
+        "TypeScript",
+        "JavaScript",
+        "Python",
+        "SQL",
+        "C"
+      ]
+    },
+    {
+      "id": "frontend",
+      "skills": [
+        "React",
+        "Next.js",
+        "React Native",
+        "Tailwind CSS"
+      ]
+    },
+    {
+      "id": "backend-apis",
+      "skills": [
+        "Node.js",
+        "Fastify",
+        "Express.js",
+        "FastAPI",
+        "REST APIs",
+        "GraphQL",
+        "BullMQ"
+      ]
+    },
+    {
+      "id": "databases",
+      "skills": [
+        "PostgreSQL",
+        "MongoDB",
+        "Redis",
+        "TimescaleDB"
+      ]
+    },
+    {
+      "id": "ai-automation",
+      "skills": [
+        "Playwright",
+        "YOLO",
+        "OpenCV",
+        "TensorRT"
+      ]
+    },
+    {
+      "id": "infrastructure",
+      "skills": [
+        "Docker",
+        "GitHub Actions",
+        "GHCR",
+        "DigitalOcean",
+        "Cloudflare"
+      ]
+    },
+    {
+      "id": "industrial-iot",
+      "skills": [
+        "MQTT",
+        "Node-RED",
+        "Grafana",
+        "Raspberry Pi"
+      ]
+    }
+  ],
+  "skillIcons": [
+    {
+      "name": "Next.js",
+      "icon": "nextdotjs"
+    },
+    {
+      "name": "TypeScript",
+      "icon": "typescript"
+    },
+    {
+      "name": "Node.js",
+      "icon": "nodedotjs"
+    },
+    {
+      "name": "Fastify",
+      "icon": "fastify"
+    },
+    {
+      "name": "Python",
+      "icon": "python"
+    },
+    {
+      "name": "PostgreSQL",
+      "icon": "postgresql"
+    },
+    {
+      "name": "Redis",
+      "icon": "redis"
+    },
+    {
+      "name": "Docker",
+      "icon": "docker"
+    },
+    {
+      "name": "GitHub Actions",
+      "icon": "githubactions"
+    },
+    {
+      "name": "React",
+      "icon": "react"
+    },
+    {
+      "name": "BullMQ",
+      "icon": null,
+      "monogram": "BQ"
+    },
+    {
+      "name": "FastAPI",
+      "icon": "fastapi"
+    },
+    {
+      "name": "Playwright",
+      "icon": null,
+      "monogram": "PW"
+    },
+    {
+      "name": "Browserbase",
+      "icon": null
+    },
+    {
+      "name": "LLM APIs",
+      "icon": null,
+      "monogram": "AI"
+    },
+    {
+      "name": "Stripe",
+      "icon": "stripe"
+    },
+    {
+      "name": "GHCR",
+      "icon": "github"
+    },
+    {
+      "name": "Express.js",
+      "icon": "express"
+    },
+    {
+      "name": "YOLO",
+      "icon": "ultralytics"
+    },
+    {
+      "name": "OpenCV",
+      "icon": "opencv"
+    },
+    {
+      "name": "TensorRT",
+      "icon": "nvidia"
+    },
+    {
+      "name": "MongoDB",
+      "icon": "mongodb"
+    },
+    {
+      "name": "MQTT",
+      "icon": "mqtt"
+    },
+    {
+      "name": "Node-RED",
+      "icon": "nodered"
+    },
+    {
+      "name": "TimescaleDB",
+      "icon": "timescale"
+    },
+    {
+      "name": "Grafana",
+      "icon": "grafana"
+    },
+    {
+      "name": "REST APIs",
+      "icon": "openapiinitiative"
+    },
+    {
+      "name": "C",
+      "icon": "c"
+    },
+    {
+      "name": "winAMS",
+      "icon": null
+    },
+    {
+      "name": "White-box Testing",
+      "icon": null
+    },
+    {
+      "name": "Unit Testing",
+      "icon": null
+    },
+    {
+      "name": "Microsoft Excel",
+      "icon": null
+    },
+    {
+      "name": "JavaScript",
+      "icon": "javascript"
+    },
+    {
+      "name": "SQL",
+      "icon": null,
+      "monogram": "SQL"
+    },
+    {
+      "name": "React Native",
+      "icon": "react"
+    },
+    {
+      "name": "Tailwind CSS",
+      "icon": "tailwindcss"
+    },
+    {
+      "name": "GraphQL",
+      "icon": "graphql"
+    },
+    {
+      "name": "DigitalOcean",
+      "icon": "digitalocean"
+    },
+    {
+      "name": "Cloudflare",
+      "icon": "cloudflare"
+    },
+    {
+      "name": "Raspberry Pi",
+      "icon": "raspberrypi"
+    },
+    {
+      "name": "Telegram API",
+      "icon": "telegram"
+    },
+    {
+      "name": "TanStack Query",
+      "icon": "reactquery"
+    },
+    {
+      "name": "Prisma",
+      "icon": "prisma"
+    },
+    {
+      "name": "Excel",
+      "icon": null
+    },
+    {
+      "name": "Google Apps Script",
+      "icon": "googleappsscript"
+    },
+    {
+      "name": "Expo",
+      "icon": "expo"
+    },
+    {
+      "name": "Midtrans",
+      "icon": null
+    },
+    {
+      "name": "DaisyUI",
+      "icon": "daisyui"
+    },
+    {
+      "name": "Socket.IO",
+      "icon": "socketdotio"
+    },
+    {
+      "name": "Firebase",
+      "icon": "firebase"
+    },
+    {
+      "name": "Vitest",
+      "icon": "vitest"
+    },
+    {
+      "name": "Frappe",
+      "icon": "frappe"
+    },
+    {
+      "name": "ERPNext",
+      "icon": "erpnext"
+    },
+    {
+      "name": "MariaDB",
+      "icon": "mariadb"
+    },
+    {
+      "name": "Better Auth",
+      "icon": "betterauth"
+    },
+    {
+      "name": "shadcn/ui",
+      "icon": "shadcnui"
+    },
+    {
+      "name": "MUI",
+      "icon": "mui"
+    },
+    {
+      "name": "ECharts",
+      "icon": "apacheecharts"
+    }
+  ],
+  "education": [
+    {
+      "id": "hacktiv8",
+      "institution": "Hacktiv8"
+    },
+    {
+      "id": "gunadarma",
+      "institution": "Universitas Gunadarma"
+    }
+  ],
+  "languages": [
+    {
+      "id": "indonesian"
+    },
+    {
+      "id": "english"
+    }
+  ],
+  "services": [
+    {
+      "id": "saas-web-apps",
+      "tags": [
+        "Next.js",
+        "Node.js",
+        "PostgreSQL"
+      ]
+    },
+    {
+      "id": "ai-automation",
+      "tags": [
+        "LLM APIs",
+        "Playwright",
+        "YOLO"
+      ]
+    },
+    {
+      "id": "dashboards-tools",
+      "tags": [
+        "React",
+        "RBAC",
+        "Exports"
+      ]
+    },
+    {
+      "id": "apis-infra",
+      "tags": [
+        "Fastify",
+        "BullMQ",
+        "Docker"
+      ]
+    }
+  ],
+  "testimonials": [],
+  "lab": [
+    {
+      "id": "web-portfolio",
+      "source": "repo",
+      "name": "web-portfolio",
+      "url": "https://github.com/marcoabelz/web-portfolio",
+      "stack": [
+        "Next.js",
+        "TypeScript",
+        "Vitest"
+      ]
+    }
+  ]
+}

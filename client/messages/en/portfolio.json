@@ -2,13 +2,12 @@
   "profile": {
     "title": "Full-Stack Engineer",
     "specialty": "Backend, AI Systems & Production Infrastructure",
-    "introduction": "I build production-grade SaaS and AI-powered products end-to-end, from Next.js interfaces and Fastify APIs to data pipelines, browser automation, computer vision, and Docker-based deployment.",
-    "availability": "Open to relevant full-stack, backend, and AI product engineering opportunities."
+    "intro": {
+      "lead": "Full-stack engineer building production-grade SaaS and AI products,",
+      "tail": "from the interface to the infrastructure it runs on."
+    },
+    "availability": "Open to full-time roles and freelance projects."
   },
-  "aboutFacts": [
-    "4+ years combined experience",
-    "Software Engineer & Software Quality Assurance"
-  ],
   "aboutParagraphs": [
     "I'm a Full-Stack Engineer with 4+ years of combined experience across production software development and embedded software quality assurance.",
     "My work spans B2B SaaS, AI-powered products, computer vision, enterprise software, industrial monitoring, browser automation, billing systems, and production infrastructure. I enjoy taking products from operational requirements through system design, implementation, deployment, and production reliability.",
@@ -17,8 +16,6 @@
   "experiences": {
     "satellyte": {
       "title": "Full-Stack Engineer",
-      "displayStart": "March 2026",
-      "displayEnd": "Present",
       "summary": "Building an AI-powered B2B sales intelligence platform that transforms buying signals into scored leads.",
       "highlights": [
         "Develop Next.js dashboards and Fastify/BullMQ services that process multiple buying-signal strategies.",
@@ -30,8 +27,6 @@
     },
     "nexio": {
       "title": "Full-Stack Engineer",
-      "displayStart": "September 2025",
-      "displayEnd": "March 2026",
       "summary": "Built and shipped three production systems spanning computer vision, AI recruitment, and industrial monitoring.",
       "highlights": [
         "Developed a Python computer-vision service with FastAPI, YOLO, OpenCV, and TensorRT for three industrial camera feeds.",
@@ -43,8 +38,6 @@
     },
     "delta": {
       "title": "Full-Stack Developer",
-      "displayStart": "August 2024",
-      "displayEnd": "August 2025",
       "summary": "Developed an internal ERP platform connecting Sales, Purchasing, Inventory, and Production operations.",
       "highlights": [
         "Built Next.js and React interfaces supported by REST APIs developed with Node.js and Express.js.",
@@ -55,8 +48,6 @@
     },
     "sys": {
       "title": "Software QA Engineer",
-      "displayStart": "September 2021",
-      "displayEnd": "November 2023",
       "summary": "Tested embedded automotive transmission control software under internal, automotive, and Japanese engineering standards.",
       "highlights": [
         "Performed white-box testing on embedded transmission-control software written in C.",
@@ -67,13 +58,13 @@
     }
   },
   "skillGroupTitles": {
-    "programmingLanguages": "Programming Languages",
+    "programming-languages": "Programming Languages",
     "frontend": "Frontend",
-    "backendApis": "Backend & APIs",
+    "backend-apis": "Backend & APIs",
     "databases": "Databases",
-    "aiAutomation": "AI & Automation",
+    "ai-automation": "AI & Automation",
     "infrastructure": "Infrastructure",
-    "industrialIot": "Industrial & IoT"
+    "industrial-iot": "Industrial & IoT"
   },
   "education": {
     "hacktiv8": {
@@ -96,6 +87,48 @@
       "name": "English",
       "proficiency": "Working Proficiency",
       "evidence": "Englishvit TOEFL ITP-style Assessment — 477, November 2024"
+    }
+  },
+  "services": {
+    "saas-web-apps": {
+      "title": "SaaS & web apps",
+      "description": "From database schema to a deployed Next.js product, built and owned end to end."
+    },
+    "ai-automation": {
+      "title": "AI features & automation",
+      "description": "LLM workflows, data enrichment, browser automation, and computer vision that hold up in production."
+    },
+    "dashboards-tools": {
+      "title": "Dashboards & internal tools",
+      "description": "Operator dashboards, ERP modules, and admin panels that turn messy operations into clear flows."
+    },
+    "apis-infra": {
+      "title": "APIs, pipelines & infra",
+      "description": "REST APIs, queues, data pipelines, Docker, and CI/CD, so releases stay boring."
+    }
+  },
+  "process": [
+    {
+      "title": "Understand",
+      "description": "Map the operational problem, the users, and the constraints before writing code."
+    },
+    {
+      "title": "Design",
+      "description": "Shape the data model, APIs, and system boundaries so the product can grow."
+    },
+    {
+      "title": "Build & test",
+      "description": "Ship in small, tested increments. My QA background keeps the edge cases honest."
+    },
+    {
+      "title": "Ship & monitor",
+      "description": "Deploy with Docker and CI/CD, then watch production and keep it reliable."
+    }
+  ],
+  "testimonials": {},
+  "lab": {
+    "web-portfolio": {
+      "description": "This site. Next.js 14, English and Indonesian copy, an AI chat with rate limiting, and a content editor that commits through the GitHub API."
     }
   }
 }

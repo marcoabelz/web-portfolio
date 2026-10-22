@@ -81,17 +81,27 @@ export default async function AdminPage({
   }
 
   try {
-    return <Editor initialDraft={await readDraft(config)} branch={config.branch} />;
+    const { draft, baseSha, publicFiles } = await readDraft(config);
+
+    return (
+      <Editor
+        draft={draft}
+        baseSha={baseSha}
+        publicFiles={publicFiles}
+        repo={config.repo}
+        branch={config.branch}
+      />
+    );
   } catch (error) {
     // A bad token or a renamed branch would otherwise throw past this page into the
     // generic error screen, which offers no way back out — not even signing out.
-    console.error("admin: could not load the message files", error);
+    console.error("admin: could not load the content files", error);
 
     return (
       <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-4 px-6 py-16">
         <h1 className="text-xl font-semibold tracking-tight">Could not load the content</h1>
         <p className="text-sm text-muted">
-          GitHub did not return the message files for{" "}
+          GitHub did not return the content files for{" "}
           <span className="font-mono">
             {config.repo}@{config.branch}
           </span>

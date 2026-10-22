@@ -9,7 +9,10 @@ export function getScrollBehavior(prefersReducedMotion: boolean): ScrollBehavior
 
 export function ScrollToTop({ label }: { readonly label: string }) {
   const sentinelRef = useRef<HTMLSpanElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [footerInView, setFooterInView] = useState(false);
+  // The footer carries its own back-to-top link; showing both would stack two controls.
+  const isVisible = isScrolled && !footerInView;
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -19,11 +22,19 @@ export function ScrollToTop({ label }: { readonly label: string }) {
     if (typeof IntersectionObserver === "undefined") return;
 
     const observer = new IntersectionObserver(([entry]) => {
-      setIsVisible(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+      setIsScrolled(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+    });
+    const footer = document.querySelector("footer");
+    const footerObserver = new IntersectionObserver(([entry]) => {
+      setFooterInView(entry.isIntersecting);
     });
 
     observer.observe(sentinel);
-    return () => observer.disconnect();
+    if (footer) footerObserver.observe(footer);
+    return () => {
+      observer.disconnect();
+      footerObserver.disconnect();
+    };
   }, []);
 
   const scrollToTop = () => {

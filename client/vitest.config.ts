@@ -11,6 +11,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": `${projectRoot}src`,
+      // The real package throws outside a Next build; tests get an empty module.
+      "server-only": `${projectRoot}src/test/server-only-stub.ts`,
     },
   },
   test: {

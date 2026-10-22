@@ -1,130 +1,62 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown, ArrowRight, Download } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 
-import profilePicture from "@/assets/profile_pict.jpg";
 import { Container } from "@/components/ui/Container";
+import type { HeroModel } from "@/data/home";
 
-export type HeroProps = {
-  readonly profile: {
-    readonly name: string;
-    readonly nickname: string;
-    readonly title: string;
-    readonly specialty: string;
-    readonly resumePath: string;
-  };
-  readonly facts: readonly string[];
-  readonly paragraphs: readonly string[];
-  readonly links: {
-    readonly work: string;
-    readonly contact: string;
-  };
-  readonly labels: {
-    readonly viewSelectedWork: string;
-    readonly downloadResume: string;
-    readonly getInTouch: string;
-    readonly portraitAlt: string;
-  };
-};
+const BUTTON =
+  "inline-flex h-12 items-center gap-2.5 rounded-full px-[22px] text-sm font-medium transition-[transform,background-color,color,border-color] duration-300 hover:-translate-y-0.5";
 
-export function Hero({ profile, facts, paragraphs, links, labels }: HeroProps) {
-  // Highlight the nickname in place so the name stays one string in the data.
-  const nameParts = profile.name.split(profile.nickname);
+// The name stays one string in the data; it is split on spaces here so each word can
+// rise on load and the word equal to the nickname can take the accent colour.
+export function Hero({ model }: { model: HeroModel }) {
+  const { name, nickname, intro, actions } = model;
+  const words = name.split(/\s+/).filter(Boolean);
 
   return (
-    <section
-      className="section-space pt-14 sm:pt-20 lg:pt-24"
-      aria-labelledby="hero-heading"
-    >
-      <Container className="grid items-center gap-14 lg:grid-cols-[1.12fr_0.88fr] lg:gap-20">
-        <div className="min-w-0 lg:pb-12">
-          <p className="eyebrow">{profile.title}</p>
-          <h1
-            id="hero-heading"
-            className="text-balance mt-5 max-w-4xl text-5xl font-semibold leading-[0.96] tracking-[-0.055em] sm:text-6xl lg:text-7xl xl:text-[5.5rem]"
-          >
-            {nameParts.map((part, index) => (
-              <span key={`${part}-${index}`}>
-                {index > 0 ? (
-                  <span className="text-accent">{profile.nickname}</span>
-                ) : null}
-                {part}
+    <section className="pb-6 pt-8 sm:pt-10 lg:pb-10 lg:pt-14" aria-labelledby="hero-heading">
+      <Container>
+        <h1 id="hero-heading" className="hero-name">
+          {words.map((word, index) => (
+            <span key={`${word}-${index}`}>
+              {index > 0 ? " " : null}
+              <span className="hero-word">
+                <span
+                  className={`hero-word-in${word === nickname ? " text-accent" : ""}`}
+                  style={{ animationDelay: `${100 + index * 80}ms` }}
+                >
+                  {word}
+                </span>
               </span>
-            ))}
-          </h1>
-          {/* <p className="mt-6 max-w-2xl text-xl font-semibold leading-snug tracking-[-0.02em] text-accent sm:text-2xl">
-            {profile.specialty}
-          </p> */}
-          {/* Justified text opens rivers of whitespace in a phone-width column, so
-              hyphenation carries it — the browser breaks words per the `lang` on <html>. */}
-          <div className="min-w-0 mt-6 space-y-6 text-justify hyphens-auto text-base leading-8 text-muted sm:text-lg sm:leading-9">
-            {paragraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
-          {/* Stacked full-width on a phone: three side-by-side buttons wrap into
-              ragged fragments once the labels are longer than a third of the screen. */}
-          <div className="mt-9 flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+            </span>
+          ))}
+        </h1>
+
+        <div className="mt-6 grid gap-7 sm:mt-8 lg:mt-11 lg:grid-cols-[1fr_auto] lg:items-end">
+          <p className="m-0 max-w-[34ch] font-display text-[clamp(21px,2.1vw,34px)] font-medium leading-[1.25] tracking-[-0.02em]">
+            {intro.lead} <span className="text-muted">{intro.tail}</span>
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link href={actions.apps.href} className={`${BUTTON} bg-ink text-canvas hover:bg-accent`}>
+              {actions.apps.label}
+              <ArrowDown aria-hidden="true" className="size-4" strokeWidth={1.75} />
+            </Link>
             <Link
-              href={links.work}
-              className="inline-flex min-h-11 w-full items-center justify-center gap-2 bg-ink px-5 py-3 text-sm font-semibold text-canvas transition-colors duration-200 hover:bg-accent sm:w-auto"
+              href={actions.project.href}
+              className={`${BUTTON} border border-line hover:border-ink`}
             >
-              {labels.viewSelectedWork}
-              <ArrowDown
-                aria-hidden="true"
-                className="size-4"
-                strokeWidth={1.75}
-              />
+              {actions.project.label}
+              <ArrowRight aria-hidden="true" className="size-4" strokeWidth={1.75} />
             </Link>
             <a
-              href={profile.resumePath}
+              href={actions.resume.href}
               download
-              className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-line bg-surface px-5 py-3 text-sm font-semibold text-ink transition-colors duration-200 hover:border-accent hover:text-accent sm:w-auto"
+              className="ml-1.5 inline-flex min-h-11 items-center border-b border-line text-sm text-muted transition-colors duration-200 hover:border-ink hover:text-ink"
             >
-              {labels.downloadResume}
-              <Download
-                aria-hidden="true"
-                className="size-4"
-                strokeWidth={1.75}
-              />
+              {actions.resume.label}
             </a>
-            <Link
-              href={links.contact}
-              className="inline-flex min-h-11 w-full items-center justify-center gap-2 px-3 py-3 text-sm font-semibold text-ink underline decoration-line underline-offset-4 transition-colors duration-200 hover:text-accent sm:w-auto"
-            >
-              {labels.getInTouch}
-              <ArrowRight
-                aria-hidden="true"
-                className="size-4"
-                strokeWidth={1.75}
-              />
-            </Link>
           </div>
         </div>
-
-        <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[2rem_0.5rem_2rem_0.5rem] bg-elevated lg:mx-0 lg:ml-auto lg:translate-y-8">
-          <Image
-            src={profilePicture}
-            alt={labels.portraitAlt}
-            fill
-            priority
-            sizes="(min-width: 640px) 448px, calc(100vw - 40px)"
-            className="object-cover"
-          />
-        </div>
-      </Container>
-      <Container className="">
-        {/* Three facts side by side on a phone shred into two-word columns, so they
-            stack until there is room for the row. */}
-        <ol className="flex flex-col gap-1 sm:flex-row sm:justify-between">
-          {facts.map((fact) => (
-            <li key={fact}>
-              <span className="text-sm font-semibold leading-6 text-accent sm:text-base">
-                {fact}
-              </span>
-            </li>
-          ))}
-        </ol>
       </Container>
     </section>
   );

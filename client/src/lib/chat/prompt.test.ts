@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 
+import { getPortfolioContent } from "@/data/portfolio";
+import { getArchiveProjects, getSelectedProjects } from "@/data/projects";
+import { routing } from "@/i18n/routing";
 import {
   buildPortfolioContext,
   stripDelimiters,
@@ -7,36 +10,48 @@ import {
   wrapUserMessage,
 } from "@/lib/chat/prompt";
 
+// Rules, not copy: every fact the site shows must reach the context, whatever the
+// current content is. Values come from the same models the pages render.
 describe("buildPortfolioContext", () => {
   const context = buildPortfolioContext();
+  const content = getPortfolioContent(routing.defaultLocale);
+  const selected = getSelectedProjects(routing.defaultLocale);
+  const archive = getArchiveProjects(routing.defaultLocale);
 
   it("includes the profile identity and contact facts", () => {
-    expect(context).toContain("Marco Abel Zefanya");
-    expect(context).toContain("Full-Stack Engineer");
-    expect(context).toContain("Jakarta, Indonesia");
-    expect(context).toContain("marcoabel25@gmail.com");
+    const { profile } = content;
+    for (const value of [profile.name, profile.title, profile.location, profile.email]) {
+      expect(context).toContain(value);
+    }
   });
 
   it("includes every role with its period and stack", () => {
-    expect(context).toContain("Satellyte");
-    expect(context).toContain("PT Nexio Teknologi");
-    expect(context).toContain("PT Delta Anugrah");
-    expect(context).toContain("PT SYS Indonesia");
-    expect(context).toContain("September 2021");
-    expect(context).toContain("BullMQ");
+    expect(content.experiences.length).toBeGreaterThan(0);
+    for (const role of content.experiences) {
+      expect(context).toContain(role.company);
+      expect(context).toContain(`${role.start} – ${role.end}`);
+      for (const tech of role.stack) expect(context).toContain(tech);
+    }
   });
 
-  it("includes every selected project with its access status", () => {
-    expect(context).toContain("Palmgrade");
-    expect(context).toContain("https://satellyte.ai");
-    expect(context).toContain("private, no public link");
+  it("includes every selected app with its access status", () => {
+    expect(selected.length).toBeGreaterThan(0);
+    for (const project of selected) {
+      expect(context).toContain(project.name);
+      if (project.privacy === "public" && project.liveUrl) expect(context).toContain(project.liveUrl);
+    }
+    if (selected.some((project) => project.privacy === "private")) {
+      expect(context).toContain("private, no public link");
+    }
   });
 
   it("includes archive projects, skills, education and languages", () => {
-    expect(context).toContain("Omahucok");
-    expect(context).toContain("TypeScript");
-    expect(context).toContain("Hacktiv8");
-    expect(context).toContain("Working Proficiency");
+    for (const project of archive) expect(context).toContain(project.name);
+    for (const group of content.skillGroups) {
+      for (const skill of group.skills) expect(context).toContain(skill);
+    }
+    for (const entry of content.education) expect(context).toContain(entry.institution);
+    for (const language of content.languages) expect(context).toContain(language.proficiency);
   });
 });
 

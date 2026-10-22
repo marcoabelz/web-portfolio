@@ -1,14 +1,25 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import portfolioJson from "../../content/portfolio.json";
+import projectsJson from "../../content/projects.json";
+import siteJson from "../../content/site.json";
+import { checkCatalogParity } from "@/lib/content/catalog";
+import { checkContentReferences, parseContentFiles } from "@/lib/content/validate";
+import { getContentFiles } from "@/lib/content/load";
+import { getAllMessages } from "@/i18n/messages";
 import * as projectData from "@/data/projects";
+import { NAV_SECTION_IDS } from "@/components/sections/registry";
+import { getHomeSections, getNavigation } from "@/data/home";
 import * as portfolioData from "@/data/portfolio";
 import { getMessages } from "@/i18n/messages";
 import {
   getPortfolioContent,
-  HOME_SECTION_IDS,
 } from "@/data/portfolio";
 import {
   getArchiveProjects,
   getProject,
+  getSelectedProjectSlugs,
   getSelectedProjects,
 } from "@/data/projects";
 import type { SocialLink, YearMonth } from "@/types/portfolio";
@@ -66,7 +77,7 @@ describe("portfolio content", () => {
     expect(projectData).not.toHaveProperty("ARCHIVE_PROJECTS");
     expect(() => (
       getProject as unknown as (slug: string) => unknown
-    )("satellyte")).toThrow();
+    )(getContentFiles().projects.selected[0].slug)).toThrow();
   });
 
   it.each(["en", "id"] as const)("builds complete, nonblank %s content", (locale) => {
@@ -74,9 +85,10 @@ describe("portfolio content", () => {
     const selectedProjects = getSelectedProjects(locale);
     const archiveProjects = getArchiveProjects(locale);
 
-    expect(portfolio.experiences).toHaveLength(4);
-    expect(selectedProjects).toHaveLength(5);
-    expect(archiveProjects).toHaveLength(7);
+    const facts = getContentFiles();
+    expect(portfolio.experiences).toHaveLength(facts.portfolio.experiences.length);
+    expect(selectedProjects).toHaveLength(facts.projects.selected.length);
+    expect(archiveProjects).toHaveLength(facts.projects.archive.length);
     expect(allNonBlank(portfolio.aboutParagraphs)).toBe(true);
 
     for (const experience of portfolio.experiences) {
@@ -104,16 +116,13 @@ describe("portfolio content", () => {
     const englishArchive = getArchiveProjects("en");
     const indonesianArchive = getArchiveProjects("id");
 
-    expect(indonesianPortfolio.profile.introduction).not.toBe(englishPortfolio.profile.introduction);
-    expect(englishSelected[0].outcome).toContain("signals");
-    expect(indonesianSelected[0].outcome).toContain("sinyal");
-    expect(indonesianSelected.map((project) => project.slug)).toEqual([
-      "satellyte",
-      "palmgrade",
-      "ai-recruitment-platform",
-      "internal-erp-platform",
-      "factory-monitoring-system",
-    ]);
+    expect(indonesianPortfolio.profile.intro.lead).not.toBe(englishPortfolio.profile.intro.lead);
+    englishSelected.forEach((project, index) => {
+      expect(indonesianSelected[index].outcome).not.toBe(project.outcome);
+    });
+    expect(indonesianSelected.map((project) => project.slug)).toEqual(
+      getContentFiles().projects.selected.map((app) => app.slug),
+    );
     expect(indonesianSelected.map((project) => project.slug)).toEqual(
       englishSelected.map((project) => project.slug),
     );
@@ -189,48 +198,22 @@ describe("portfolio content", () => {
     const messages = getMessages(locale);
     const portfolio = getPortfolioContent(locale);
 
-    expect(portfolio.navigation.map((item) => item.label)).toEqual([
-      messages.common.navigation.work,
-      messages.common.navigation.experience,
-      messages.common.navigation.skills,
-      messages.common.navigation.contact,
-    ]);
-    expect(portfolio.socialLinks.map(({ id, label }) => ({ id, label }))).toEqual([
-      { id: "email", label: "Email" },
-      { id: "linkedIn", label: "LinkedIn" },
-      { id: "gitHub", label: "GitHub" },
-      { id: "whatsApp", label: "WhatsApp" },
-    ]);
-    expect(getSelectedProjects(locale).map(({ contextId, contextLabel }) => ({ contextId, contextLabel }))).toEqual(
-      locale === "en"
-        ? [
-          { contextId: "production", contextLabel: "Production" },
-          { contextId: "production", contextLabel: "Production" },
-          { contextId: "commercial", contextLabel: "Commercial" },
-          { contextId: "internal", contextLabel: "Internal" },
-          { contextId: "production", contextLabel: "Production" },
-        ]
-        : [
-          { contextId: "production", contextLabel: "Produksi" },
-          { contextId: "production", contextLabel: "Produksi" },
-          { contextId: "commercial", contextLabel: "Komersial" },
-          { contextId: "internal", contextLabel: "Internal" },
-          { contextId: "production", contextLabel: "Produksi" },
-        ],
+    const { navigation } = messages.common;
+    const labelById = new Map(Object.entries(navigation));
+
+    expect(getNavigation(locale).map((item) => item.label)).toEqual(
+      getNavigation(locale).map((item) => labelById.get(item.href.slice(2))),
     );
-    expect(getArchiveProjects(locale).map(({ contextId, contextLabel }) => ({ contextId, contextLabel }))).toEqual(
-      locale === "en"
-        ? [
-          { contextId: "commercial", contextLabel: "Commercial" },
-          { contextId: "commercial", contextLabel: "Commercial" },
-          ...Array.from({ length: 5 }, () => ({ contextId: "training", contextLabel: "Training" })),
-        ]
-        : [
-          { contextId: "commercial", contextLabel: "Komersial" },
-          { contextId: "commercial", contextLabel: "Komersial" },
-          ...Array.from({ length: 5 }, () => ({ contextId: "training", contextLabel: "Pelatihan" })),
-        ],
-    );
+    expect(portfolio.socialLinks.map(({ id }) => id)).toEqual(siteJson.socialLinks.map(({ id }) => id));
+
+    // One context id means one label, so a badge never reads two ways.
+    const labels = new Map<string, string>();
+
+    for (const { contextId, contextLabel } of [...getSelectedProjects(locale), ...getArchiveProjects(locale)]) {
+      expect(contextLabel.trim()).not.toBe("");
+      expect(labels.get(contextId) ?? contextLabel).toBe(contextLabel);
+      labels.set(contextId, contextLabel);
+    }
   });
 
   it("returns isolated content graphs from repeated getter calls", () => {
@@ -238,15 +221,12 @@ describe("portfolio content", () => {
     const secondPortfolio = getPortfolioContent("en");
     expect(firstPortfolio).not.toBe(secondPortfolio);
     expect(firstPortfolio.profile).not.toBe(secondPortfolio.profile);
-    expect(firstPortfolio.aboutFacts).not.toBe(secondPortfolio.aboutFacts);
-    expect(firstPortfolio.navigation).not.toBe(secondPortfolio.navigation);
     expect(firstPortfolio.socialLinks).not.toBe(secondPortfolio.socialLinks);
     expect(firstPortfolio.aboutParagraphs).not.toBe(secondPortfolio.aboutParagraphs);
     expect(firstPortfolio.experiences).not.toBe(secondPortfolio.experiences);
     expect(firstPortfolio.skillGroups).not.toBe(secondPortfolio.skillGroups);
     expect(firstPortfolio.education).not.toBe(secondPortfolio.education);
     expect(firstPortfolio.languages).not.toBe(secondPortfolio.languages);
-    expect(firstPortfolio.navigation[0]).not.toBe(secondPortfolio.navigation[0]);
     expect(firstPortfolio.socialLinks[0]).not.toBe(secondPortfolio.socialLinks[0]);
     expect(firstPortfolio.experiences[0]).not.toBe(secondPortfolio.experiences[0]);
     expect(firstPortfolio.skillGroups[0]).not.toBe(secondPortfolio.skillGroups[0]);
@@ -273,8 +253,9 @@ describe("portfolio content", () => {
     expect(firstArchive[0].stack).not.toBe(secondArchive[0].stack);
     expect(firstArchive[0].cover).not.toBe(secondArchive[0].cover);
 
-    const firstProject = getProject("satellyte", "en");
-    const secondProject = getProject("satellyte", "en");
+    const slug = getContentFiles().projects.selected[0].slug;
+    const firstProject = getProject(slug, "en");
+    const secondProject = getProject(slug, "en");
     expect(firstProject).not.toBe(secondProject);
     expect(firstProject?.highlights).not.toBe(secondProject?.highlights);
     expect(firstProject?.stack).not.toBe(secondProject?.stack);
@@ -287,57 +268,31 @@ describe("portfolio content", () => {
     }
   });
 
-  it("keeps the approved positioning and section anchors", () => {
+  it("keeps navigation anchors in step with the section ids", () => {
     const portfolio = getPortfolioContent("en");
+    const sectionIds = getHomeSections().map(({ id }) => id);
 
-    expect(portfolio.profile.name).toBe("Marco Abel Zefanya");
-    expect(portfolio.profile.title).toBe("Full-Stack Engineer");
-    expect(portfolio.aboutFacts).toEqual([
-      "4+ years combined experience",
-      "Software Engineer & Software Quality Assurance",
-      portfolio.profile.location,
-    ]);
-    expect(portfolio.navigation.map((item) => item.label)).toEqual([
-      "Project",
-      "Experience",
-      "Skills",
-      "Contact",
-    ]);
-    expect(portfolio.navigation.map((item) => item.href.slice(2))).toEqual(HOME_SECTION_IDS);
+    expect(getNavigation("en").map((item) => item.href.slice(2))).toEqual(
+      sectionIds.filter((id) => NAV_SECTION_IDS.some((navId) => navId === id)),
+    );
+    expect(portfolio.profile.name).toBe(siteJson.profile.name);
   });
 
-  it("contains the four current roles with exact titles and dates", () => {
+  it("derives machine-readable experience ranges from the content file", () => {
     const experiences = getPortfolioContent("en").experiences;
-    expect(experiences.map(({ company, title, start, end }) => ({ company, title, start, end }))).toEqual([
-      { company: "Satellyte", title: "Full-Stack Engineer", start: "March 2026", end: "Present" },
-      { company: "PT Nexio Teknologi", title: "Full-Stack Engineer", start: "September 2025", end: "March 2026" },
-      { company: "PT Delta Anugrah", title: "Full-Stack Developer", start: "August 2024", end: "August 2025" },
-      { company: "PT SYS Indonesia", title: "Software QA Engineer", start: "September 2021", end: "November 2023" },
-    ]);
+
+    expect(experiences.map(({ id, company, startDate, endDate }) => ({ id, company, startDate, endDate }))).toEqual(
+      portfolioJson.experiences.map(({ id, company, startDate, endDate }) => ({ id, company, startDate, endDate })),
+    );
   });
 
-  it("provides canonical month values for machine-readable experience ranges", () => {
-    const experiences = getPortfolioContent("en").experiences;
-    expect(experiences.map(({ startDate, endDate }) => ({ startDate, endDate }))).toEqual([
-      { startDate: "2026-03", endDate: null },
-      { startDate: "2025-09", endDate: "2026-03" },
-      { startDate: "2024-08", endDate: "2025-08" },
-      { startDate: "2021-09", endDate: "2023-11" },
-    ]);
-  });
-
-  it("contains exactly five complete, uniquely-addressable selected projects", () => {
+  it("contains complete, uniquely-addressable selected projects", () => {
     const selectedProjects = getSelectedProjects("en");
 
-    expect(selectedProjects).toHaveLength(5);
-    expect(selectedProjects.map((project) => project.slug)).toEqual([
-      "satellyte",
-      "palmgrade",
-      "ai-recruitment-platform",
-      "internal-erp-platform",
-      "factory-monitoring-system",
-    ]);
-    expect(new Set(selectedProjects.map((project) => project.slug)).size).toBe(5);
+    expect(selectedProjects.map((project) => project.slug)).toEqual(
+      projectsJson.selected.map((app) => app.slug),
+    );
+    expect(new Set(selectedProjects.map((project) => project.slug)).size).toBe(selectedProjects.length);
 
     for (const project of selectedProjects) {
       expect(allNonBlank([
@@ -348,10 +303,9 @@ describe("portfolio content", () => {
         project.outcome,
         project.cover.alt,
       ])).toBe(true);
-      expect(project.highlights).toHaveLength(3);
+      expect(project.highlights.length).toBeGreaterThan(0);
       expect(allNonBlank(project.highlights)).toBe(true);
-      expect(project.stack.length).toBeGreaterThanOrEqual(5);
-      expect(project.stack.length).toBeLessThanOrEqual(8);
+      expect(project.stack.length).toBeGreaterThan(0);
       expect(allNonBlank(project.stack)).toBe(true);
       expect(Object.values(project.caseStudy).every((section) => section.length > 0)).toBe(true);
       expect(Object.values(project.caseStudy).every(allNonBlank)).toBe(true);
@@ -361,77 +315,119 @@ describe("portfolio content", () => {
       }
 
       if (project.privacy === "public") {
-        expect(validHttpUrl(project.liveUrl)).toBe(true);
+        // A public app may have no live URL, but one that is set has to be valid.
+        if (project.liveUrl) {
+          expect(validHttpUrl(project.liveUrl)).toBe(true);
+        }
       } else {
         expect("liveUrl" in project).toBe(false);
       }
     }
   });
 
-  it("keeps the exact selected-project access facts", () => {
-    const selectedProjects = getSelectedProjects("en");
+  it("carries every screenshot's stored size into the model", () => {
+    const facts = getContentFiles().projects.selected;
 
-    expect(selectedProjects.map((project) => ({
-      slug: project.slug,
-      privacy: project.privacy,
-      liveUrl: "liveUrl" in project ? project.liveUrl : undefined,
-    }))).toEqual([
-      { slug: "satellyte", privacy: "public", liveUrl: "https://satellyte.ai" },
-      { slug: "palmgrade", privacy: "private", liveUrl: undefined },
-      { slug: "ai-recruitment-platform", privacy: "private", liveUrl: undefined },
-      { slug: "internal-erp-platform", privacy: "private", liveUrl: undefined },
-      { slug: "factory-monitoring-system", privacy: "private", liveUrl: undefined },
-    ]);
+    for (const project of getSelectedProjects("en")) {
+      const fact = facts.find((entry) => entry.slug === project.slug)!;
+
+      expect(project.screenshots.map(({ width, height }) => ({ width, height }))).toEqual(
+        fact.screenshots.map(({ width, height }) => ({ width, height })),
+      );
+    }
+  });
+
+  it("gives a private app no live URL", () => {
+    for (const project of getSelectedProjects("en")) {
+      if (project.privacy === "private") {
+        expect("liveUrl" in project).toBe(false);
+      }
+    }
   });
 
   it("gets a selected project by slug", () => {
     const selectedProjects = getSelectedProjects("en");
 
-    expect(getProject("satellyte", "en")).toEqual(selectedProjects[0]);
-    expect(getProject("satellyte", "en")).not.toBe(selectedProjects[0]);
+    selectedProjects.forEach((project) => {
+      expect(getProject(project.slug, "en")).toEqual(project);
+      expect(getProject(project.slug, "en")).not.toBe(project);
+    });
     expect(getProject("unknown-project", "en")).toBeUndefined();
   });
 
-  it("contains the exact approved archive without placeholder links", () => {
+  it("lists the archive from the content file without placeholder links", () => {
     const archiveProjects = getArchiveProjects("en");
 
-    expect(archiveProjects.map((project) => project.name)).toEqual([
-      "Nutrical",
-      "Zamasto",
-      "M Event",
-      "Xiaopee",
-      "Instaclone",
-      "Chatting App",
-      "Omahucok",
-    ]);
-    expect(archiveProjects.map((project) => ({
-      name: project.name,
-      repositoryUrl: "repositoryUrl" in project ? project.repositoryUrl : undefined,
-    }))).toEqual([
-      { name: "Nutrical", repositoryUrl: undefined },
-      { name: "Zamasto", repositoryUrl: undefined },
-      { name: "M Event", repositoryUrl: undefined },
-      { name: "Xiaopee", repositoryUrl: "https://github.com/marcoabelz/xiaopee" },
-      { name: "Instaclone", repositoryUrl: "https://github.com/marcoabelz/instaclone" },
-      { name: "Chatting App", repositoryUrl: undefined },
-      { name: "Omahucok", repositoryUrl: "https://github.com/marcoabelz/IP-HCK71" },
-    ]);
+    expect(archiveProjects.map((project) => project.id)).toEqual(
+      projectsJson.archive.map((project) => project.id),
+    );
 
     for (const project of archiveProjects) {
       expect(project.stack.length).toBeGreaterThan(0);
-      expect(allNonBlank([
-        project.name,
-        project.descriptor,
-        project.cover.alt,
-        ...project.stack,
-      ])).toBe(true);
+      expect(allNonBlank([project.name, project.descriptor, project.cover.alt, ...project.stack])).toBe(true);
       expect(project.cover.src.trim()).not.toBe("");
       expect(project.cover.alt).not.toMatch(/project picture/i);
 
       if (project.repositoryUrl) {
-        expect(project.repositoryUrl).not.toBe("-");
         expect(/^https:\/\/github\.com\//.test(project.repositoryUrl)).toBe(true);
       }
+    }
+  });
+
+  it("keeps every content file valid and consistent with the message catalogs", () => {
+    const raw = { site: siteJson, portfolio: portfolioJson, projects: projectsJson };
+    const parsed = parseContentFiles(raw);
+
+    expect(parsed.ok ? [] : parsed.issues).toEqual([]);
+
+    if (parsed.ok) {
+      expect(checkContentReferences(parsed.value, getAllMessages())).toEqual([]);
+    }
+
+    expect(checkCatalogParity(getAllMessages())).toEqual([]);
+  });
+
+  it("points every asset path at a file under public/", () => {
+    const { site, projects } = getContentFiles();
+    const sources: string[] = [
+      site.profile.resumePath,
+      site.profile.portrait.src,
+      ...projects.selected.flatMap((app) => [
+        ...(app.cover.kind === "image" ? [app.cover.src] : []),
+        ...app.screenshots.map((shot) => shot.src),
+      ]),
+      ...projects.archive.map((project) => project.cover.src),
+    ];
+
+    for (const src of sources) {
+      expect(existsSync(join(process.cwd(), "public", src)), src).toBe(true);
+    }
+  });
+
+  it("renders a case study for every selected slug in both locales", () => {
+    for (const locale of ["en", "id"] as const) {
+      for (const slug of getSelectedProjectSlugs()) {
+        expect(getProject(slug, locale)?.slug).toBe(slug);
+      }
+    }
+
+    expect(getSelectedProjectSlugs()).toEqual(projectsJson.selected.map((app) => app.slug));
+  });
+
+  it("keeps ids in their expected formats and unique within each list", () => {
+    const slugFormat = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+    const lists = [
+      portfolioJson.experiences.map((item) => item.id),
+      projectsJson.selected.map((item) => item.slug),
+      projectsJson.archive.map((item) => item.id),
+    ];
+
+    for (const ids of lists) {
+      for (const id of ids) {
+        expect(id).toMatch(slugFormat);
+      }
+
+      expect(new Set(ids).size).toBe(ids.length);
     }
   });
 });

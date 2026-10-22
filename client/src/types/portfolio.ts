@@ -1,4 +1,6 @@
-export type HomeSectionId = "work" | "experience" | "skills" | "contact";
+import type { HomeSectionId } from "@/lib/content/schema";
+
+export type { HomeSectionId };
 
 export type NavigationItem = {
   label: string;
@@ -19,23 +21,11 @@ type Month = "01" | "02" | "03" | "04" | "05" | "06" | "07" | "08" | "09" | "10"
 
 export type YearMonth = `${"19" | "20" | "21"}${Digit}${Digit}-${Month}`;
 
-export type ExperienceId = "satellyte" | "nexio" | "delta" | "sys";
+export type ExperienceId = string;
 
-export type SelectedProjectSlug =
-  | "satellyte"
-  | "palmgrade"
-  | "ai-recruitment-platform"
-  | "internal-erp-platform"
-  | "factory-monitoring-system";
+export type SelectedProjectSlug = string;
 
-export type ArchiveProjectId =
-  | "nutrical"
-  | "zamasto"
-  | "m-event"
-  | "xiaopee"
-  | "instaclone"
-  | "chatting-app"
-  | "omahucok";
+export type ArchiveProjectId = string;
 
 export type ProjectContextId = "production" | "commercial" | "internal" | "training";
 
@@ -71,11 +61,17 @@ export type SkillGroup = {
   skills: readonly string[];
 };
 
-export type AbstractCoverVariant = "satellyte" | "vision" | "recruitment" | "monitoring";
+export type AbstractCoverVariant = "signal" | "vision" | "talent" | "telemetry";
 
 export type ProjectCover =
   | { readonly kind: "abstract"; readonly variant: AbstractCoverVariant; readonly alt: string }
-  | { readonly kind: "image"; readonly src: string; readonly alt: string };
+  | {
+      readonly kind: "image";
+      readonly src: string;
+      readonly width: number;
+      readonly height: number;
+      readonly alt: string;
+    };
 
 export type CaseStudyContent = {
   readonly overview: readonly string[];
@@ -85,11 +81,13 @@ export type CaseStudyContent = {
 
 export type ProjectScreenshot = {
   readonly src: string;
+  readonly width: number;
+  readonly height: number;
   readonly alt: string;
 };
 
 type ProjectAccess =
-  | { readonly privacy: "public"; readonly liveUrl: `https://${string}` }
+  | { readonly privacy: "public"; readonly liveUrl?: `https://${string}` }
   | { readonly privacy: "private"; readonly liveUrl?: never };
 
 export type SelectedProject = {
@@ -100,7 +98,7 @@ export type SelectedProject = {
   readonly contextLabel: string;
   readonly role: string;
   readonly outcome: string;
-  readonly highlights: readonly [string, string, string];
+  readonly highlights: readonly string[];
   readonly stack: readonly string[];
   readonly cover: ProjectCover;
   readonly screenshots: readonly ProjectScreenshot[];

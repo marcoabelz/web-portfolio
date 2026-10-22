@@ -11,14 +11,15 @@
         "Production API and automation workflows"
       ],
       "cover": {
-        "alt": "Abstract signal map representing Satellyte lead intelligence workflows"
+        "alt": "Satellyte lead table with scores, signal badges, and pipeline status on dummy data"
       },
       "screenshots": [
-        "Signal radars, each with its own ICP, lead count, and run status.",
-        "Lead table with score, signal type, source radar, enriched email and phone, and status.",
-        "AI discovery turning a plain-language prompt into matching companies.",
-        "Company drawer listing decision-makers grouped by seniority.",
-        "Integration settings for Slack, HeyReach, Instantly, and a custom webhook API."
+        "Radars watch LinkedIn for buying signals that match a target profile.",
+        "Describe the ideal customer once: job titles, locations, industries, and company size.",
+        "Pick which behaviour counts as intent: posts, hiring, funding, job changes, or competitors.",
+        "Every lead arrives scored and tagged with the signal that surfaced it.",
+        "One timeline per lead: what triggered it and what was done about it.",
+        "See who else decides at the same company, grouped by seniority."
       ],
       "caseStudy": {
         "overview": [
@@ -55,18 +56,27 @@
         "Offline-tolerant event delivery"
       ],
       "cover": {
-        "alt": "Abstract camera frames and detection boxes representing Palmgrade computer vision"
+        "alt": "AutoGrade live grading console with three camera lines, bunch counts, and ripe rate on demo data"
       },
+      "screenshots": [
+        "Three conveyor lines graded live: bunch counts, ripe rate, scale weight, and the truck being unloaded.",
+        "The same live view in dark mode, with today's grading results filling up below.",
+        "Every bunch keeps its photo and grade; tap a thumbnail to open it full size.",
+        "A four-stage weighbridge board: arrived, unloading, weighed out, and done, with net weight per truck.",
+        "A recap per truck: bunches, the ripe, unripe, JK, and TP split, ripe rate, and net weight, with CSV download.",
+        "Registered trucks with supplier and source, internal or external, plus QR printing for scanning."
+      ],
       "caseStudy": {
         "overview": [
-          "Palmgrade grades palm fruit as it passes three production camera feeds, and puts the result in front of factory operators while the batch is still on the line."
+          "AutoGrade grades palm fruit as it passes three production camera feeds, and puts the result in front of factory operators while the batch is still on the line."
         ],
         "features": [
           "Live inference on three camera feeds at once, using YOLO, OpenCV, and TensorRT behind a FastAPI service.",
           "Operator dashboard covering all three production lines, updated live over Server-Sent Events.",
           "AI capture viewer for reviewing exactly what the model saw on a graded batch.",
           "Role-based access separating operators from supervisors.",
-          "Offline-tolerant event delivery: local buffering and batch sync with UUID idempotency keys, so a retry never duplicates a reading."
+          "Offline-tolerant event delivery: local buffering and batch sync with UUID idempotency keys, so a retry never duplicates a reading.",
+          "Weighbridge tickets in four steps with gross, tare, and net weight per truck visit, plus recaps per day and per truck with CSV export."
         ],
         "responsibilities": [
           "Built the Python inference service around the vision models and the camera pipeline.",
@@ -74,6 +84,302 @@
           "Built the Next.js operator dashboard and the AI capture viewer.",
           "Designed the buffering and synchronization strategy for unstable factory connectivity.",
           "Packaged the stack as versioned containers for deployment inside the plant."
+        ]
+      }
+    },
+    "autoerp": {
+      "descriptor": "Palm Oil Mill ERP",
+      "contextLabel": "Production",
+      "role": "Full-Stack Engineer",
+      "outcome": "Turns every weighed and graded truck into a priced ticket, a stock receipt, and a daily yield report.",
+      "highlights": [
+        "Weighbridge-to-receipt flow",
+        "Quality deduction from AI grading",
+        "Daily OER and KER reporting"
+      ],
+      "cover": {
+        "alt": "AutoERP mill summary with document shortcuts, yield cards, and daily charts on dummy data"
+      },
+      "screenshots": [
+        "One screen for the whole mill: document shortcuts, fruit received, purchase value, and daily yield.",
+        "Weighbridge tickets with status, truck, net weight, and value; tickets still waiting sit next to finalised ones.",
+        "A finalised ticket: gross, tare, net, quality deduction, price per kilogram, and the AutoGrade result.",
+        "Grading breakdown per criterion with weight, and the link to the purchase receipt it created.",
+        "The purchase receipt created from the ticket, with the quantity taken from the net weight.",
+        "Yield per day: fruit processed against the crude palm oil and kernel produced."
+      ],
+      "caseStudy": {
+        "overview": [
+          "AutoERP is an ERP for palm oil mills, built as a custom module on Frappe and ERPNext. It picks up where the weighbridge and AutoGrade leave off: each truck visit becomes a priced ticket, the ticket posts its own stock receipt, and production is reported as daily oil and kernel extraction rates."
+        ],
+        "features": [
+          "Weighbridge tickets with gross, tare, and net weight for every truck visit.",
+          "Quality deduction and price per kilogram calculated from the AutoGrade bunch result.",
+          "Purchase receipts created automatically when a ticket is finalised, linked back to the ticket.",
+          "Daily production entries and an extraction rate report for crude palm oil and kernel.",
+          "A mill summary with document shortcuts, key numbers, and trend charts.",
+          "Role profiles for mill staff and an Indonesian interface."
+        ],
+        "responsibilities": [
+          "Built the mill module on Frappe and ERPNext: doctypes, workflows, and reports.",
+          "Connected AutoGrade results to the weighbridge ticket and its pricing rules.",
+          "Automated the ticket-to-receipt posting into ERPNext stock.",
+          "Built the extraction rate report and the mill summary.",
+          "Packaged the stack with Docker for deployment."
+        ]
+      }
+    },
+    "ujigo": {
+      "descriptor": "Online Exam Practice Platform",
+      "contextLabel": "Production",
+      "role": "Full-Stack Engineer",
+      "outcome": "Helps distance-learning university students practise timed exams, review every answer, and drill their mistakes.",
+      "highlights": [
+        "Study and timed exam modes",
+        "Spaced-repetition mistake book",
+        "XP leaderboard and streaks"
+      ],
+      "cover": {
+        "alt": "UjiGo answer review with the score, the correct answer, and its explanation on dummy data"
+      },
+      "screenshots": [
+        "A bank of practice exams filtered to the student's study program, with free and PRO sets.",
+        "Choose Study mode with instant explanations, or a timed Exam mode.",
+        "A focused exam screen with timer, question navigator, and autosaved progress.",
+        "An instant pass or fail result with the score and a shortcut to retry wrong answers.",
+        "Every question reviewed with the correct answer and a written explanation.",
+        "Wrong answers come back on a spaced schedule until they are mastered.",
+        "A daily dashboard with streak, average score, quick actions, and weak areas.",
+        "An XP leaderboard with leagues, streaks, and accuracy."
+      ],
+      "caseStudy": {
+        "overview": [
+          "UjiGo is an online exam practice platform for distance-learning university students in Indonesia. A student picks a practice set for a course, takes it in study or timed exam mode, sees the score straight away, reviews every explanation, and keeps drilling the questions they got wrong."
+        ],
+        "features": [
+          "A practice exam bank per course and study program, with free and paid sets.",
+          "Study mode with instant explanations, and an exam mode with a timer and copy protection.",
+          "Autosaved progress, a question navigator, and instant scoring.",
+          "A review page with the correct answer and an explanation for every question.",
+          "A mistake book that brings wrong answers back on a spaced-repetition schedule.",
+          "Dashboard, streaks, XP, and leaderboards that keep students coming back.",
+          "Paid plans through Midtrans."
+        ],
+        "responsibilities": [
+          "Built the exam flow end to end in Next.js: question bank, exam session, scoring, and review.",
+          "Modelled courses, attempts, and the mistake book in PostgreSQL with Prisma.",
+          "Built the spaced-repetition schedule, progress tracking, and the leaderboard.",
+          "Integrated Midtrans payments for the paid plans.",
+          "Built the dashboard, streaks, and XP system."
+        ]
+      }
+    },
+    "production-tracking": {
+      "descriptor": "Shop-Floor Lot Tracking System",
+      "contextLabel": "Production",
+      "role": "Full-Stack Engineer",
+      "outcome": "Follows every box of parts from a printed lot card through each station scan to a live monitoring board.",
+      "highlights": [
+        "QR and barcode lot cards",
+        "Station scan kiosks",
+        "Live lot monitoring board"
+      ],
+      "cover": {
+        "alt": "Production Tracking monitoring board with lot counts per station and a lot table on dummy data"
+      },
+      "screenshots": [
+        "Split a batch into box-sized lots and preview the cards before printing.",
+        "One card per box, with QR and barcode ready for the label printer.",
+        "Scan a card at a station and the screen confirms in or out at a glance.",
+        "A live view of every lot: where it is, how long it has waited, and what is stuck.",
+        "Full traceability per lot, from card creation to assembly.",
+        "A shop-floor board showing the shift target against live machine output."
+      ],
+      "caseStudy": {
+        "overview": [
+          "Production Tracking follows parts through a factory one box at a time. Each box gets a printed lot card, every station scans the card in and out, and supervisors watch a live board that shows where each lot is, how long it has waited, and which lots are stuck."
+        ],
+        "features": [
+          "Lot creation that splits a batch into box-sized lots and prints QR and Code 128 cards.",
+          "Station scan kiosks with a full-screen in or out confirmation, by scanner or camera.",
+          "A monitoring board with lot counts per station, subcontract status, and lots waiting too long.",
+          "An append-only scan history per lot, where a wrong scan is reversed instead of deleted.",
+          "A machine counter board comparing the shift target with actual output."
+        ],
+        "responsibilities": [
+          "Built the Next.js app: lot creation, card printing, scan kiosks, and the monitoring board.",
+          "Designed the PostgreSQL schema for lots, routes, and the append-only scan log.",
+          "Built the QR and barcode card layouts for label printers.",
+          "Built the machine counter display for the shop floor."
+        ]
+      }
+    },
+    "event-agency": {
+      "descriptor": "Bilingual Event Website and CMS",
+      "contextLabel": "Commercial",
+      "role": "Full-Stack Engineer",
+      "outcome": "Takes visitors from the next event to its tickets and lineup, and sends every brand brief to a CMS the agency runs itself.",
+      "highlights": [
+        "Bilingual event pages",
+        "Ticket tiers with countdowns",
+        "CMS with inbox and visitor stats"
+      ],
+      "cover": {
+        "alt": "Event agency homepage card for the next event with its ticket button"
+      },
+      "screenshots": [
+        "The homepage puts the next event and its ticket link in the first screen.",
+        "Upcoming events, each with a status worked out from its dates: on sale, postponed, coming soon, or RSVP.",
+        "Each event page leads with what a ticket buyer needs: date, doors, venue, age, and genre.",
+        "Ticket tiers with live countdowns, next to the lineup and timetable.",
+        "Brands send a brief through a form that lands in the CMS inbox.",
+        "A portfolio of event, digital, and talent work, filtered by service.",
+        "One CMS for events, content, the inbox, and visitor numbers."
+      ],
+      "caseStudy": {
+        "overview": [
+          "A bilingual website and admin CMS for a creative and event agency. Visitors find the next event, check the tickets and lineup, and send a brief; the agency team runs events, pages, talents, and incoming messages from one CMS."
+        ],
+        "features": [
+          "English and Indonesian pages for services, works, talents, events, and contact.",
+          "Event pages with ticket tiers, countdowns, lineup, timetable, and venue details, sold through external ticketing.",
+          "Event status derived from dates, not from flags someone has to remember to update.",
+          "A contact form with topics and consent that sends briefs to the CMS inbox.",
+          "A CMS for events, venues, artists, works, talents, pages, and FAQ, with two-factor sign-in.",
+          "A dashboard with inbox, subscriber, and anonymous visitor counts."
+        ],
+        "responsibilities": [
+          "Built the website and the CMS from the start as the main developer.",
+          "Designed the PostgreSQL schema and plain SQL migrations behind a controller, service, and repository structure.",
+          "Set up CMS sign-in with Better Auth and two-factor authentication.",
+          "Built the bilingual routing and copy for English and Indonesian.",
+          "Wrote the Playwright and Vitest tests, and ran the database with Docker Compose."
+        ]
+      }
+    },
+    "e-passport": {
+      "descriptor": "Event Attendee Passport App",
+      "contextLabel": "Commercial",
+      "role": "Full-Stack Developer",
+      "outcome": "Guides event attendees through the booths on their phone: a short quiz, a PIN from the booth rep, and an event kit once every booth is done.",
+      "highlights": [
+        "Booth quizzes and PIN check-ins",
+        "Progress that unlocks the reward",
+        "Admin CMS for the whole event"
+      ],
+      "cover": {
+        "alt": "Three E-Passport phone screens on a demo event: attendee home, booth quiz, and reward claim"
+      },
+      "screenshots": [
+        "On a demo event: attendees sign in with a phone number, and a lookup fills in their profile from the participant list.",
+        "A personal home with booth progress and a menu driven by the backend.",
+        "Each booth is a checkpoint; the event kit stays locked until every booth is done.",
+        "A short quiz at each booth, loaded from the API.",
+        "The booth rep confirms the visit with a one-time PIN.",
+        "Instant confirmation, with progress saved on the server.",
+        "The last booth completes the passport and unlocks the event kit.",
+        "The reward page, released at the booth with a rep's PIN.",
+        "Symposium sessions sit next to the booths, with time and room."
+      ],
+      "caseStudy": {
+        "overview": [
+          "E-Passport is a mobile web app for event attendees. Each attendee carries a digital passport: visit the booths, answer a short quiz at each one, have the booth rep confirm the visit with a PIN, and claim the event kit once every booth is done. Organizers run the event, booths, quizzes, and rewards from an admin CMS. The screenshots here run on an invented demo event."
+        ],
+        "features": [
+          "Phone number sign-in with a lookup that fills in the attendee from the participant list.",
+          "Booth activities with quizzes and a one-time PIN check-in from the booth rep.",
+          "Progress kept on the server, with the event kit unlocked only when every booth is done.",
+          "A reward claim released by a rep's PIN, once per day.",
+          "Symposium sessions with time and room, next to the booths.",
+          "An admin CMS for events, booths, quiz questions, menu items, and rewards."
+        ],
+        "responsibilities": [
+          "Built most of my share in the admin CMS: event, booth, quiz, and reward management.",
+          "Built Express and Prisma API endpoints for check-ins, progress, and rewards.",
+          "Built screens in the Next.js attendee app.",
+          "Worked in a small team across the attendee app, the API, and the CMS."
+        ]
+      }
+    },
+    "pet-microsite": {
+      "descriptor": "Pet Care Brand Microsite and CMS",
+      "contextLabel": "Commercial",
+      "role": "Frontend Developer",
+      "outcome": "The live microsite of Pawlo, a pet supplement and vitamin brand: products by category, inquiries from pet owners and clinics, and a CMS editors run without a developer.",
+      "highlights": [
+        "Live brand microsite",
+        "CMS-driven product catalogue",
+        "Inquiry form to CMS inbox"
+      ],
+      "cover": {
+        "alt": "Pawlo products page with its brand banner and product grid"
+      },
+      "screenshots": [
+        "The live Pawlo homepage, with its hero managed from the CMS.",
+        "Two product lines, prescription products and everyday care, each with its own style.",
+        "A product grid with category filters, served from the CMS.",
+        "A product page with gallery, tags, and marketplace buttons.",
+        "An inquiry form for pet owners and clinics, filled in here but not sent.",
+        "The same catalogue on a phone: the site is built mobile-first.",
+        "CMS, on demo data: editors find any product in a searchable, sortable table.",
+        "CMS, on demo data: the product form with description, SKU, color-coded tags, and marketplace links.",
+        "CMS, on demo data: every inquiry from the public form, filterable by purpose, source, and pet."
+      ],
+      "caseStudy": {
+        "overview": [
+          "Pawlo is a pet supplement and vitamin brand, and this is its live microsite with its own CMS. Visitors browse two product lines, open a product, and send an inquiry; editors manage products, images, page sections, and incoming inquiries in the CMS, and changes reach the site without a release. The CMS screens here run on demo data."
+        ],
+        "features": [
+          "A mobile-first microsite with categories, a filterable product grid, and product pages.",
+          "Product pages with an image gallery, tags, and links to online marketplaces.",
+          "An inquiry form with validation that sends leads to the CMS.",
+          "A CMS for products, product groups, categories, images, page sections, and users.",
+          "Product editing with color-coded tags, marketplace links, and image upload and ordering.",
+          "Rich-text editing for page sections with Tiptap."
+        ],
+        "responsibilities": [
+          "Main contributor to the CMS: the product, image, page section, and inquiry screens.",
+          "Built product editing, including tags, marketplace links, and the image manager.",
+          "Contributed microsite pages and components as part of the frontend team.",
+          "Connected both apps to the team's REST API with token sign-in."
+        ]
+      }
+    },
+    "pediatric-nutrition-calculator": {
+      "descriptor": "Child Growth and Formula Calculator",
+      "contextLabel": "Commercial",
+      "role": "Software Developer",
+      "outcome": "Helps pediatricians check a child's growth against WHO standards and work out a formula feeding plan in a few steps.",
+      "highlights": [
+        "WHO z-score status",
+        "Interactive growth curves",
+        "Formula dosing plan"
+      ],
+      "cover": {
+        "alt": "Pediatric nutrition calculator showing a child's growth status per WHO indicator"
+      },
+      "screenshots": [
+        "The clinician enters the consult date, sex, birth date, weight, and height.",
+        "Growth status per WHO indicator, with ideal weight, calorie need, and expected gain.",
+        "The child plotted on WHO growth curves.",
+        "A guided formula plan with live volume and scoop calculations.",
+        "The result: daily volume, scoops, and cans needed, ready to download or share."
+      ],
+      "caseStudy": {
+        "overview": [
+          "A web calculator for pediatricians. The doctor enters a child's measurements, sees the growth status on each WHO indicator and on the growth curves, and then builds a formula feeding plan with the daily volume, scoops, and number of cans."
+        ],
+        "features": [
+          "WHO z-score status for weight for age, length for age, and weight for length.",
+          "Ideal weight, daily calorie need, and expected weight gain from the same inputs.",
+          "Interactive WHO growth curves drawn with ECharts.",
+          "A step-by-step formula plan with live dosing calculations.",
+          "A result page that can be downloaded or sent through WhatsApp.",
+          "Formula products and content managed from an admin CMS."
+        ],
+        "responsibilities": [
+          "Worked on the calculator as part of a larger team.",
+          "Contributed to the admin CMS that manages the calculator's formula products and content."
         ]
       }
     },
@@ -188,31 +494,6 @@
       "descriptor": "Company profile, publishing workflow, custom CMS, and automated contact handling.",
       "contextLabel": "Commercial",
       "coverAlt": "Zamasto company profile homepage"
-    },
-    "m-event": {
-      "descriptor": "Mobile event discovery, nearby search, ticketing, and Midtrans payment experience.",
-      "contextLabel": "Training",
-      "coverAlt": "M Event mobile event discovery screen"
-    },
-    "xiaopee": {
-      "descriptor": "Responsive product catalogue with infinite search, accounts, details, and wishlists.",
-      "contextLabel": "Training",
-      "coverAlt": "Xiaopee product catalogue homepage"
-    },
-    "instaclone": {
-      "descriptor": "Mobile social feed with authentication, follows, likes, comments, and user search.",
-      "contextLabel": "Training",
-      "coverAlt": "Instaclone mobile social feed"
-    },
-    "chatting-app": {
-      "descriptor": "Browser-based real-time room chat built around Socket.IO events.",
-      "contextLabel": "Training",
-      "coverAlt": "Chatting App real-time conversation board"
-    },
-    "omahucok": {
-      "descriptor": "Hotel booking and CMS workflow with room availability, media, and payments.",
-      "contextLabel": "Training",
-      "coverAlt": "Omahucok hotel booking homepage"
     }
   }
 }

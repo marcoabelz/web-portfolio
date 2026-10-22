@@ -17,17 +17,14 @@ describe("buildPersonStructuredData", () => {
       url: SITE.url,
       jobTitle: portfolio.profile.title,
       description: getMessages(locale).common.labels.siteMetadataDescription,
-      sameAs: [
-        "https://www.linkedin.com/in/marco-abel-zefanya/",
-        "https://github.com/marcoabelz",
-      ],
-      alumniOf: [
-        { "@type": "EducationalOrganization", name: "Hacktiv8" },
-        { "@type": "EducationalOrganization", name: "Universitas Gunadarma" },
-      ],
+      alumniOf: portfolio.education.map(({ institution }) => ({
+        "@type": "EducationalOrganization",
+        name: institution,
+      })),
     });
-    expect(person.knowsAbout).toContain("TypeScript");
-    expect(person.knowsAbout).toContain("PostgreSQL");
+    for (const group of portfolio.skillGroups) {
+      for (const skill of group.skills) expect(person.knowsAbout).toContain(skill);
+    }
   });
 
   it("selects professional profile URLs represented by stable social-link ids", () => {

@@ -1,0 +1,629 @@
+{
+  "selected": [
+    {
+      "slug": "satellyte",
+      "contextId": "production",
+      "name": "Satellyte",
+      "years": "2026",
+      "privacy": "public",
+      "liveUrl": "https://satellyte.ai",
+      "stack": [
+        "Next.js",
+        "Fastify",
+        "BullMQ",
+        "PostgreSQL",
+        "Redis",
+        "Playwright",
+        "Docker",
+        "GitHub Actions"
+      ],
+      "cover": {
+        "kind": "image",
+        "src": "/work/satellyte/satellyte-4.webp",
+        "width": 1920,
+        "height": 1200
+      },
+      "screenshots": [
+        {
+          "src": "/work/satellyte/satellyte-1.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/satellyte/satellyte-2.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/satellyte/satellyte-3.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/satellyte/satellyte-4.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/satellyte/satellyte-5.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/satellyte/satellyte-6.webp",
+          "width": 1920,
+          "height": 1200
+        }
+      ]
+    },
+    {
+      "slug": "palmgrade",
+      "contextId": "production",
+      "name": "AutoGrade",
+      "years": "2025–26",
+      "privacy": "private",
+      "stack": [
+        "Python",
+        "FastAPI",
+        "YOLO",
+        "OpenCV",
+        "TensorRT",
+        "Next.js",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "cover": {
+        "kind": "image",
+        "src": "/work/palmgrade/palmgrade-1.webp",
+        "width": 1920,
+        "height": 1200
+      },
+      "screenshots": [
+        {
+          "src": "/work/palmgrade/palmgrade-1.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/palmgrade/palmgrade-2.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/palmgrade/palmgrade-3.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/palmgrade/palmgrade-4.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/palmgrade/palmgrade-5.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/palmgrade/palmgrade-6.webp",
+          "width": 1920,
+          "height": 1200
+        }
+      ]
+    },
+    {
+      "slug": "autoerp",
+      "contextId": "production",
+      "name": "AutoERP",
+      "years": "2026",
+      "privacy": "private",
+      "stack": [
+        "Frappe",
+        "ERPNext",
+        "Python",
+        "MariaDB",
+        "Redis",
+        "Docker"
+      ],
+      "cover": {
+        "kind": "image",
+        "src": "/work/autoerp/autoerp-1.webp",
+        "width": 1920,
+        "height": 1200
+      },
+      "screenshots": [
+        {
+          "src": "/work/autoerp/autoerp-1.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/autoerp/autoerp-2.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/autoerp/autoerp-3.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/autoerp/autoerp-4.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/autoerp/autoerp-5.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/autoerp/autoerp-6.webp",
+          "width": 1920,
+          "height": 1200
+        }
+      ]
+    },
+    {
+      "slug": "ujigo",
+      "contextId": "production",
+      "name": "UjiGo",
+      "years": "2026",
+      "privacy": "public",
+      "liveUrl": "https://ujigo.id/",
+      "stack": [
+        "Next.js",
+        "TypeScript",
+        "Prisma",
+        "PostgreSQL",
+        "Tailwind CSS",
+        "Redis",
+        "Midtrans"
+      ],
+      "cover": {
+        "kind": "image",
+        "src": "/work/ujigo/ujigo-5.webp",
+        "width": 1920,
+        "height": 1200
+      },
+      "screenshots": [
+        {
+          "src": "/work/ujigo/ujigo-1.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/ujigo/ujigo-2.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/ujigo/ujigo-3.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/ujigo/ujigo-4.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/ujigo/ujigo-5.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/ujigo/ujigo-6.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/ujigo/ujigo-7.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/ujigo/ujigo-8.webp",
+          "width": 1920,
+          "height": 1200
+        }
+      ]
+    },
+    {
+      "slug": "production-tracking",
+      "contextId": "production",
+      "name": "Production Tracking",
+      "years": "2026",
+      "privacy": "private",
+      "stack": [
+        "Next.js",
+        "React",
+        "PostgreSQL",
+        "Tailwind CSS",
+        "Docker"
+      ],
+      "cover": {
+        "kind": "image",
+        "src": "/work/production-tracking/production-tracking-4.webp",
+        "width": 1920,
+        "height": 1200
+      },
+      "screenshots": [
+        {
+          "src": "/work/production-tracking/production-tracking-1.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/production-tracking/production-tracking-2.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/production-tracking/production-tracking-3.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/production-tracking/production-tracking-4.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/production-tracking/production-tracking-5.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/production-tracking/production-tracking-6.webp",
+          "width": 1920,
+          "height": 1200
+        }
+      ]
+    },
+    {
+      "slug": "event-agency",
+      "contextId": "commercial",
+      "name": "Event Agency Website & CMS",
+      "years": "2026",
+      "privacy": "private",
+      "stack": [
+        "Next.js",
+        "TypeScript",
+        "PostgreSQL",
+        "Better Auth",
+        "Tailwind CSS",
+        "Docker"
+      ],
+      "cover": {
+        "kind": "image",
+        "src": "/work/event-agency/event-agency-cover.webp",
+        "width": 960,
+        "height": 600
+      },
+      "screenshots": [
+        {
+          "src": "/work/event-agency/event-agency-1.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/event-agency/event-agency-2.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/event-agency/event-agency-3.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/event-agency/event-agency-4.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/event-agency/event-agency-5.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/event-agency/event-agency-6.webp",
+          "width": 1920,
+          "height": 970
+        },
+        {
+          "src": "/work/event-agency/event-agency-7.webp",
+          "width": 1920,
+          "height": 1200
+        }
+      ]
+    },
+    {
+      "slug": "e-passport",
+      "contextId": "commercial",
+      "name": "E-Passport",
+      "years": "2026",
+      "privacy": "public",
+      "liveUrl": "https://nutriciaprofessional.id/eventpassport/pit-ika-2026",
+      "stack": [
+        "Next.js",
+        "Express.js",
+        "Prisma",
+        "PostgreSQL",
+        "Tailwind CSS"
+      ],
+      "cover": {
+        "kind": "image",
+        "src": "/work/e-passport/e-passport-cover.webp",
+        "width": 1920,
+        "height": 1200
+      },
+      "screenshots": [
+        {
+          "src": "/work/e-passport/e-passport-1.webp",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "src": "/work/e-passport/e-passport-2.webp",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "src": "/work/e-passport/e-passport-3.webp",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "src": "/work/e-passport/e-passport-4.webp",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "src": "/work/e-passport/e-passport-5.webp",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "src": "/work/e-passport/e-passport-6.webp",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "src": "/work/e-passport/e-passport-7.webp",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "src": "/work/e-passport/e-passport-8.webp",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "src": "/work/e-passport/e-passport-9.webp",
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "slug": "pet-microsite",
+      "contextId": "commercial",
+      "name": "Pawlo",
+      "years": "2026",
+      "privacy": "public",
+      "liveUrl": "https://hellopawlo.com",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "shadcn/ui",
+        "Tiptap"
+      ],
+      "cover": {
+        "kind": "image",
+        "src": "/work/pet-microsite/pet-microsite-3.webp",
+        "width": 1920,
+        "height": 1200
+      },
+      "screenshots": [
+        {
+          "src": "/work/pet-microsite/pet-microsite-1.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/pet-microsite/pet-microsite-2.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/pet-microsite/pet-microsite-3.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/pet-microsite/pet-microsite-4.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/pet-microsite/pet-microsite-5.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/pet-microsite/pet-microsite-6.webp",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "src": "/work/pet-microsite/pet-microsite-7.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/pet-microsite/pet-microsite-8.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/pet-microsite/pet-microsite-9.webp",
+          "width": 1920,
+          "height": 1200
+        }
+      ]
+    },
+    {
+      "slug": "pediatric-nutrition-calculator",
+      "contextId": "commercial",
+      "name": "Pediatric Nutrition Calculator",
+      "years": "2025–26",
+      "privacy": "private",
+      "stack": [
+        "Next.js",
+        "MUI",
+        "ECharts",
+        "Express.js",
+        "Prisma",
+        "PostgreSQL"
+      ],
+      "cover": {
+        "kind": "image",
+        "src": "/work/pediatric-nutrition-calculator/pediatric-nutrition-calculator-cover.webp",
+        "width": 1280,
+        "height": 800
+      },
+      "screenshots": [
+        {
+          "src": "/work/pediatric-nutrition-calculator/pediatric-nutrition-calculator-1.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/pediatric-nutrition-calculator/pediatric-nutrition-calculator-2.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/pediatric-nutrition-calculator/pediatric-nutrition-calculator-3.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/pediatric-nutrition-calculator/pediatric-nutrition-calculator-4.webp",
+          "width": 1920,
+          "height": 1200
+        },
+        {
+          "src": "/work/pediatric-nutrition-calculator/pediatric-nutrition-calculator-5.webp",
+          "width": 1920,
+          "height": 1200
+        }
+      ]
+    },
+    {
+      "slug": "ai-recruitment-platform",
+      "contextId": "commercial",
+      "name": "AI Recruitment Platform",
+      "years": "2025–26",
+      "privacy": "private",
+      "stack": [
+        "TypeScript",
+        "Next.js",
+        "Node.js",
+        "PostgreSQL",
+        "Redis",
+        "Stripe",
+        "LLM APIs"
+      ],
+      "cover": {
+        "kind": "pattern",
+        "variant": "talent"
+      },
+      "screenshots": []
+    },
+    {
+      "slug": "internal-erp-platform",
+      "contextId": "internal",
+      "name": "Internal ERP Platform",
+      "years": "2024–25",
+      "privacy": "private",
+      "stack": [
+        "TypeScript",
+        "Next.js",
+        "React",
+        "Node.js",
+        "Express.js",
+        "PostgreSQL",
+        "MongoDB"
+      ],
+      "cover": {
+        "kind": "image",
+        "src": "/work/internal-erp.jpg",
+        "width": 1919,
+        "height": 961
+      },
+      "screenshots": []
+    },
+    {
+      "slug": "factory-monitoring-system",
+      "contextId": "production",
+      "name": "Factory Monitoring System",
+      "years": "2025–26",
+      "privacy": "private",
+      "stack": [
+        "MQTT",
+        "Node-RED",
+        "TimescaleDB",
+        "Grafana",
+        "TypeScript",
+        "Telegram API",
+        "Docker"
+      ],
+      "cover": {
+        "kind": "pattern",
+        "variant": "telemetry"
+      },
+      "screenshots": []
+    }
+  ],
+  "archive": [
+    {
+      "id": "nutrical",
+      "contextId": "commercial",
+      "name": "Nutrical",
+      "stack": [
+        "Next.js",
+        "TypeScript",
+        "TanStack Query",
+        "Express.js",
+        "Prisma",
+        "Excel"
+      ],
+      "cover": {
+        "src": "/work/archive/nutrical.jpg",
+        "width": 1919,
+        "height": 961
+      }
+    },
+    {
+      "id": "zamasto",
+      "contextId": "commercial",
+      "name": "Zamasto",
+      "stack": [
+        "React",
+        "Node.js",
+        "Express.js",
+        "PostgreSQL",
+        "Google Apps Script"
+      ],
+      "cover": {
+        "src": "/work/archive/zamasto.png",
+        "width": 1920,
+        "height": 4963
+      }
+    }
+  ]
+}

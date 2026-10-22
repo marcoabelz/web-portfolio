@@ -1,0 +1,83 @@
+{
+  "profile": {
+    "name": "Marco Abel Zefanya",
+    "nickname": "Abel",
+    "email": "marcoabel25@gmail.com",
+    "city": "Jakarta",
+    "country": "Indonesia",
+    "timezone": "GMT+7",
+    "resumePath": "/Marco_Abel_Zefanya_Full_Stack_Engineer_CV.pdf",
+    "portrait": {
+      "src": "/media/portrait.jpg",
+      "width": 640,
+      "height": 640
+    }
+  },
+  "socialLinks": [
+    {
+      "id": "email",
+      "href": "mailto:marcoabel25@gmail.com"
+    },
+    {
+      "id": "linkedIn",
+      "href": "https://www.linkedin.com/in/marco-abel-zefanya/"
+    },
+    {
+      "id": "gitHub",
+      "href": "https://github.com/marcoabelz"
+    },
+    {
+      "id": "whatsApp",
+      "href": "https://wa.me/6281294150023"
+    }
+  ],
+  "heroFacts": {
+    "experience": "4+",
+    "shipped": "5"
+  },
+  "dailyStack": [
+    "Next.js",
+    "TypeScript",
+    "Node.js",
+    "Fastify",
+    "Python",
+    "PostgreSQL",
+    "Redis",
+    "Docker",
+    "GitHub Actions"
+  ],
+  "sections": [
+    {
+      "id": "apps",
+      "visible": true
+    },
+    {
+      "id": "about",
+      "visible": true
+    },
+    {
+      "id": "services",
+      "visible": true
+    },
+    {
+      "id": "experience",
+      "visible": true
+    },
+    {
+      "id": "stack",
+      "visible": true
+    },
+    {
+      "id": "testimonials",
+      "visible": true
+    },
+    {
+      "id": "lab",
+      "visible": true
+    },
+    {
+      "id": "contact",
+      "visible": true
+    }
+  ]
+}

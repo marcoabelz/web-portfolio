@@ -1,49 +1,89 @@
 {
   "navigation": {
-    "work": "Project",
+    "apps": "Apps",
+    "about": "About",
+    "services": "Services",
     "experience": "Experience",
-    "skills": "Skills",
     "contact": "Contact",
     "resume": "Resume"
   },
   "actions": {
-    "viewSelectedWork": "View Selected Work",
-    "downloadResume": "Download Resume",
-    "getInTouch": "Get in Touch",
+    "viewApps": "View apps",
+    "startProject": "Start a project",
+    "downloadResume": "Download CV",
     "browseEarlierProjects": "Browse earlier projects",
     "backToSelectedWork": "Back",
     "viewCaseStudy": "View case study",
     "liveProduct": "View app",
-    "repository": "Repository"
+    "repository": "Repository",
+    "emailMe": "Email me",
+    "backToTop": "Back to top"
   },
   "sections": {
-    "selectedWork": {
-      "eyebrow": "Featured Projects",
-      "title": "Systems running in production.",
-      "description": "Five products spanning B2B SaaS, computer vision, recruiting, enterprise operations, and industrial monitoring."
+    "apps": {
+      "title": "Selected apps",
+      "description": "Products I've built and run in production, across B2B SaaS, computer vision, hiring, operations, and industrial monitoring.",
+      "privateNote": "Private systems are shown with invented demo data only, never client names or company data.",
+      "live": "Live"
     },
     "experience": {
-      "eyebrow": "Experience",
-      "title": "From QA to Full-Stack Engineer."
+      "title": "Experience",
+      "description": "From QA to full-stack engineer.",
+      "present": "Present",
+      "showDetails": "Show details",
+      "hideDetails": "Hide details",
+      "highlightsLabel": "Highlights",
+      "stackLabel": "Stack"
     },
-    "skills": {
-      "eyebrow": "Technical Skills",
-      "title": "Tools I build with."
+    "stack": {
+      "title": "Stack",
+      "description": "Tools I use in production, grouped by layer."
     },
-    "credentials": {
-      "eyebrow": "Education & Languages",
-      "title": "Education and languages.",
+    "about": {
+      "title": "About",
       "education": "Education",
       "languages": "Languages"
     },
+    "services": {
+      "title": "Services",
+      "description": "For teams hiring and for clients with a project. Same engineer, same standards.",
+      "process": "Process",
+      "step": "Step {number}"
+    },
     "contact": {
-      "eyebrow": "Contact",
-      "title": "Let's build software that solves an operational problem."
+      "label": "Contact",
+      "titleLead": "Let's work",
+      "titleAccent": "together.",
+      "hiring": {
+        "label": "Hiring",
+        "title": "Need an engineer on your team?",
+        "description": "Full-time roles in full-stack, backend, or AI product engineering."
+      },
+      "freelance": {
+        "label": "Freelance",
+        "title": "Have a project in mind?",
+        "description": "SaaS, AI features, dashboards, or internal tools. Tell me what you need."
+      }
     },
     "archive": {
       "eyebrow": "Earlier work",
       "title": "Project Archive",
-      "description": "A selection of earlier commercial products and training projects, kept here as a record of the work."
+      "description": "A selection of earlier commercial products, kept here as a record of the work."
+    },
+    "facts": {
+      "experienceLabel": "Experience",
+      "experienceCaption": "years across engineering and QA",
+      "shippedLabel": "Shipped",
+      "shippedCaption": "products, from SaaS to industrial systems",
+      "basedInLabel": "Based in",
+      "dailyStack": "Daily stack"
+    },
+    "testimonials": {
+      "title": "Testimonials"
+    },
+    "lab": {
+      "title": "Lab",
+      "description": "Public code anyone can read, starting with this site."
     }
   },
   "caseStudy": {
@@ -59,26 +99,22 @@
     }
   },
   "labels": {
-    "basedIn": "Based in {location}",
     "availability": "Availability",
-    "privateProject": "Private project",
     "privateProductionSystem": "Private production system",
     "repositoryUnavailable": "Repository unavailable",
     "sanitizedVisual": "Sanitized visual/cover",
     "sanitizedVisualDescription": "Representative visual published without confidential product data.",
-    "signalIntelligence": "Signal intelligence",
-    "industrialVision": "Industrial vision",
-    "talentPipeline": "Talent pipeline",
-    "plantTelemetry": "Plant telemetry",
     "portfolio": "Portfolio",
     "projectArchiveMetadataTitle": "Project Archive",
-    "projectArchiveMetadataDescription": "Earlier commercial and training projects by {name}.",
+    "projectArchiveMetadataDescription": "Earlier commercial projects by {name}.",
     "caseStudyMetadataTitle": "{projectName} Case Study",
-    "socialImageEyebrow": "Product engineering / systems / delivery",
-    "socialImageDescription": "Production-grade SaaS, AI systems, and infrastructure—from interface to deployment.",
-    "socialImageCategory": "WEB",
     "siteMetadataTitle": "{name} | Full-Stack Engineer",
-    "siteMetadataDescription": "Full-Stack Engineer specializing in backend systems, AI-powered products, computer vision, browser automation, and production infrastructure."
+    "siteMetadataDescription": "Full-Stack Engineer specializing in backend systems, AI-powered products, computer vision, browser automation, and production infrastructure.",
+    "workMode": {
+      "onsite": "On-site",
+      "hybrid": "Hybrid",
+      "remote": "Remote"
+    }
   },
   "accessibility": {
     "skipToMainContent": "Skip to main content",
@@ -89,10 +125,6 @@
     "mobileNavigation": "Mobile navigation",
     "openNavigation": "Open navigation",
     "closeNavigation": "Close navigation",
-    "socialLinks": "Social links",
-    "emailMarco": "Email {name}",
-    "marcoOnSocial": "{name} on {platform}",
-    "contactOnSocial": "Contact {name} on {platform}",
     "technologyStack": "Technology stack",
     "experienceTechnologyStack": "{company} technology stack",
     "projectHighlights": "Project highlights",

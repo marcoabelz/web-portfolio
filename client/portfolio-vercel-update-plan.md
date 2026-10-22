@@ -1,3 +1,5 @@
+> **Superseded** by the 2026-10 editorial redesign. Historical only: do not follow this plan; see `README.md` and `AGENTS.md` for how the site works now.
+
 # Portfolio Website Update Plan - Marco Abel Zefanya
 
 ## Purpose

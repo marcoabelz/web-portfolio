@@ -21,6 +21,13 @@ describe("ScrollToTop", () => {
     expect(getScrollBehavior(true)).toBe("auto");
   });
 
+  it("steps aside while the footer, which has its own back-to-top link, is in view", () => {
+    const source = readFileSync(new URL("./ScrollToTop.tsx", import.meta.url), "utf8");
+
+    expect(source).toContain('document.querySelector("footer")');
+    expect(source).toMatch(/isScrolled && !footerInView/);
+  });
+
   it("does not install a global scroll-listener fallback", () => {
     const source = readFileSync(new URL("./ScrollToTop.tsx", import.meta.url), "utf8");
 

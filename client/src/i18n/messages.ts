@@ -32,6 +32,10 @@ const messagesByLocale: Record<Locale, Messages> = {
   },
 };
 
+export function getAllMessages(): Record<Locale, Messages> {
+  return messagesByLocale;
+}
+
 export function getMessages(locale: Locale): Messages {
   return messagesByLocale[locale];
 }
