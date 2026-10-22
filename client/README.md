@@ -14,7 +14,7 @@ An editorial, server-first engineering portfolio built to present verified work 
 
 ## Local development
 
-Use Node.js 18.17 or newer and pnpm 10.28.0 (the version declared in `package.json`).
+Use Node.js 24 and pnpm 10.28.0 (both declared in `package.json`; `engines.node` is `24.x` because Vercel no longer builds on Node 20).
 
 ```bash
 pnpm install
